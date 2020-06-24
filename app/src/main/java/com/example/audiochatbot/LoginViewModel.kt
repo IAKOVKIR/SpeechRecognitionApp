@@ -1,5 +1,6 @@
 package com.example.audiochatbot
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +19,11 @@ class LoginViewModel(private val userDatabase: UserDao, private val deliveryUser
 
     val user: LiveData<User?> get() = _user
     val deliveryUser: LiveData<DeliveryUser?> get() = _deliveryUser
+
+    init {
+        getTotal()
+        Log.e("test", "$total")
+    }
 
     private fun getTotal() {
         uiScope.launch {
@@ -39,11 +45,14 @@ class LoginViewModel(private val userDatabase: UserDao, private val deliveryUser
 
                 if (char == 'D')
                     _deliveryUser.value = getDeliveryUser(id, password)
-                else if (char == 'A' || char == 'E')
+                else if (char == 'A' || char == 'E') {
                     _user.value = getUser(id, password, char)
-                else
+                }else {
                     _user.value = null
+                    Log.e("res", "2")
+                }
             } else {
+                Log.e("res", "1")
                 _user.value = null
             }
         }

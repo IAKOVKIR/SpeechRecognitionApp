@@ -58,8 +58,8 @@ abstract class UniDatabase: RoomDatabase() {
         private class DbCallback(
             private val scope: CoroutineScope
         ) : RoomDatabase.Callback(){
-            override fun onOpen(db: SupportSQLiteDatabase) {
-                super.onOpen(db)
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
                 INSTANCE?.let { database ->
                     scope.launch(Dispatchers.IO) {
                         populateDb(database.userDao)
@@ -69,15 +69,7 @@ abstract class UniDatabase: RoomDatabase() {
         }
 
         fun populateDb(userDao: UserDao) {
-            //database.insertBusiness(business)
-            //database.insertStore(store)
-            /*repeat(3) {
-                database.insertAssignedStore(
-                    AssignedStore(it + 1, it + 1, 1, 1,
-                    "19/06/2020", "11:10")
-                )
-            }*/
-            userDao.clear()
+            //userDao.clear()
             for (i in 0..2) {
                 userDao.insertUser(users[i])
             }

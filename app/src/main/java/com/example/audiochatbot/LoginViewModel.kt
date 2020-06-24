@@ -20,11 +20,6 @@ class LoginViewModel(private val userDatabase: UserDao, private val deliveryUser
     val user: LiveData<User?> get() = _user
     val deliveryUser: LiveData<DeliveryUser?> get() = _deliveryUser
 
-    init {
-        getTotal()
-        Log.e("test", "$total")
-    }
-
     private fun getTotal() {
         uiScope.launch {
             total = getTotalUsers()

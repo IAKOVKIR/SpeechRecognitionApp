@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/administrator_navigation"
+    app:startDestination="@id/home_destination">
+
+    <fragment
+        android:id="@+id/home_destination"
+        android:name="com.example.audiochatbot.administrator.AdministratorHomeFragment"
+        android:label="fragment_administrator_home"
+        tools:layout="@layout/fragment_administrator_home" />
+</navigation>

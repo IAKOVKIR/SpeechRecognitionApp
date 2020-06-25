@@ -7,8 +7,10 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.audiochatbot.administrator.AdministratorActivity
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.ActivityLoginBinding
+import com.example.audiochatbot.employee.EmployeeActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -35,9 +37,15 @@ class LoginActivity : AppCompatActivity() {
 
         loginViewModel.user.observe(this, Observer {user ->
             if (user != null) {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+                if (user.position == 'E') {
+                    val intent = Intent(this, EmployeeActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else if (user.position == 'A') {
+                    val intent = Intent(this, AdministratorActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
             } else
                 Toast.makeText(applicationContext, "wrong user id or password", Toast.LENGTH_SHORT).show()
         })

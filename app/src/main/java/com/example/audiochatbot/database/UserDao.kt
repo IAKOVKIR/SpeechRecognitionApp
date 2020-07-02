@@ -12,15 +12,6 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(user: User)
 
-    //@Insert
-    //fun insertStore(store: Store)
-
-   // @Insert
-    //fun insertAssignedStore(assignedStore: AssignedStore)
-
-    //@Insert
-    //fun insertBusiness(business: Business)
-
     @Query("DELETE FROM USER")
     fun clear()
 

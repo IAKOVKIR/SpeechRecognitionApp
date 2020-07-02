@@ -7,6 +7,7 @@ import com.example.audiochatbot.database.UserDao
 
 class LoginViewModelFactory(private val userDataSource: UserDao,
                             private val deliveryUserDataSource: DeliveryUserDao) : ViewModelProvider.Factory {
+    @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(userDataSource, deliveryUserDataSource) as T

@@ -34,13 +34,12 @@ class TestFragment : Fragment() {
         //val myID: Int = args.myId //myID
 
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
-        //val deliveryUserDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).deliveryUserDao
 
-        val viewModelFactory = TestViewModelFactory(userDataSource, application)
+        val viewModelFactory = UserManagementViewModelFactory(userDataSource, application)
 
         val testViewModel =
             ViewModelProvider(
-                this, viewModelFactory).get(TestViewModel::class.java)
+                this, viewModelFactory).get(UserManagementViewModel::class.java)
 
         testViewModel.navigateToSleepDataQuality.observe(viewLifecycleOwner, Observer { userId ->
             userId?.let {

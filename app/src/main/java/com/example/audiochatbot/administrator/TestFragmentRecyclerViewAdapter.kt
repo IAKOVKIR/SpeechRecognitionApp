@@ -2,15 +2,13 @@ package com.example.audiochatbot.administrator
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.audiochatbot.R
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.databinding.TextItemViewBinding
 
-class TestFragmentRecyclerViewAdapter(val clickListener: UserListener) : ListAdapter<User,
+class TestFragmentRecyclerViewAdapter(private val clickListener: UserListener) : ListAdapter<User,
         TestFragmentRecyclerViewAdapter.ViewHolder>(UserDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -57,11 +55,3 @@ class UserDiffCallback : DiffUtil.ItemCallback<User>() {
 class UserListener(val clickListener: (userId: Int) -> Unit) {
     fun onClick(user: User) = clickListener(user.userId)
 }
-
-/**
- * ViewHolder that holds a single [TextView].
- *
- * A ViewHolder holds a view for the [RecyclerView] as well as providing additional information
- * to the RecyclerView such as where on the screen it was last drawn during scrolling.
- */
-class TextItemViewHolder(val textView: TextView): RecyclerView.ViewHolder(textView)

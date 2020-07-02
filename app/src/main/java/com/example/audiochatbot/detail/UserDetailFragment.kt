@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
@@ -17,12 +16,6 @@ import kotlinx.coroutines.Dispatchers
 
 /**
  * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [UserDetailFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [UserDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
  */
 class UserDetailFragment : Fragment() {
 
@@ -51,16 +44,9 @@ class UserDetailFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
-        // Add an Observer to the state variable for Navigating when a Quality icon is tapped.
-        /*userDetailViewModel.navigateToSleepTracker.observe(viewLifecycleOwner, Observer {
-            if (it == true) { // Observed state is true.
-                this.findNavController().navigate(
-                    UserDetailFragmentDirections.actionSleepDetailFragmentToSleepTrackerFragment())
-                // Reset state to make sure we only navigate once, even if the device
-                // has a configuration change.
-                userDetailViewModel.doneNavigating()
-            }
-        })*/
+        binding.goBack.setOnClickListener {
+            this.findNavController().popBackStack()
+        }
 
         return binding.root
     }

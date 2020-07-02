@@ -32,6 +32,6 @@ data class Store(
     @ColumnInfo(name = "CashOnHand")
     var cashOnHand: Int,
 
-    @ColumnInfo(name = "TodaysEarnings")
-    var todaysEarnings: Int
+    @ColumnInfo(name = "TodayEarnings")
+    var todayEarnings: Int
 )

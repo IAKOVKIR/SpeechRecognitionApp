@@ -1,8 +1,6 @@
 package com.example.audiochatbot.detail
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.database.UserDao
@@ -11,7 +9,7 @@ import kotlinx.coroutines.Job
 /**
  * ViewModel for SleepQualityFragment.
  *
- * @param userKey The key of the current night we are working on.
+ * @param userKey The key of the current user we are working on.
  */
 class UserDetailViewModel(
     private val userKey: Int = 0,
@@ -39,20 +37,6 @@ class UserDetailViewModel(
     }
 
     /**
-     * Variable that tells the fragment whether it should navigate to [SleepTrackFragment].
-     *
-     * This is `private` because we don't want to expose the ability to set [MutableLiveData] to
-     * the [Fragment]
-     */
-    private val _navigateToSleepTracker = MutableLiveData<Boolean?>()
-
-    /**
-     * When true immediately navigate back to the [SleepTrackerFragment]
-     */
-    val navigateToSleepTracker: LiveData<Boolean?>
-        get() = _navigateToSleepTracker
-
-    /**
      * Cancels all coroutines when the ViewModel is cleared, to cleanup any pending work.
      *
      * onCleared() gets called when the ViewModel is destroyed.
@@ -61,18 +45,5 @@ class UserDetailViewModel(
         super.onCleared()
         viewModelJob.cancel()
     }
-
-
-    /**
-     * Call this immediately after navigating to [UserTrackerFragment]
-     */
-    fun doneNavigating() {
-        _navigateToSleepTracker.value = null
-    }
-
-    fun onClose() {
-        _navigateToSleepTracker.value = true
-    }
-
 }
 

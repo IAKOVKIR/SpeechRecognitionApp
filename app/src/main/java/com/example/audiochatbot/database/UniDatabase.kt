@@ -18,11 +18,11 @@ abstract class UniDatabase: RoomDatabase() {
 
     companion object {
 
-        private val business = Business(1, "Walmart", "King St",
+        /*private val business = Business(1, "Walmart", "King St",
             "Melbourne", "Victoria", "0493959766", "Walmart@gmail.com",
             3096)
         private val store = Store(1, 1, "Chapel St", "Melbourne",
-            "Victoria", "0495673253", 3183, 3000, 0)
+            "Victoria", "0495673253", 3183, 3000, 0)*/
 
         private val users = arrayOf(
             User(1, "Jay", "Calingacion", "jay@gmail.com",

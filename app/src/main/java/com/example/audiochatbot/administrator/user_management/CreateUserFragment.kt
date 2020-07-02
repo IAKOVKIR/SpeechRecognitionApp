@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -68,9 +69,10 @@ class CreateUserFragment : Fragment() {
         }
 
         viewModel.isUploaded.observe(viewLifecycleOwner, Observer {result ->
-            if (result) {
+            if (result)
                 this.findNavController().popBackStack()
-            }
+            else
+                Toast.makeText(context, "Something went wrong :(", Toast.LENGTH_SHORT).show()
         })
 
         return binding.root

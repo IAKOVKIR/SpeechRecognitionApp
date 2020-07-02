@@ -26,4 +26,9 @@ data class User(
 
     @ColumnInfo(name = "Position")
     var position: Char
-)
+) {
+    constructor() :
+            this(-1, "", "", "", "", "", 'L')
+    constructor(firstName: String, lastName: String, email: String, phoneNumber: String, password: String, position: Char) :
+            this(-1, firstName, lastName, email, phoneNumber, password, position)
+}

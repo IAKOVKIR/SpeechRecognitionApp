@@ -33,6 +33,9 @@ abstract class UniDatabase: RoomDatabase() {
                 "0498629803", "12345678", 'E')
         )
 
+        private val deliveryUser = DeliveryUser(1, "Saddam", "Hussein",
+        "saddam@gmail.com", "12345678", "0492121396")
+
         @Volatile
         private var INSTANCE: UniDatabase? = null
 
@@ -62,14 +65,15 @@ abstract class UniDatabase: RoomDatabase() {
                 super.onCreate(db)
                 INSTANCE?.let { database ->
                     scope.launch(Dispatchers.IO) {
-                        populateDb(database.userDao)
+                        populateDb(database.userDao, database.deliveryUserDao)
                     }
                 }
             }
         }
 
-        fun populateDb(userDao: UserDao) {
+        fun populateDb(userDao: UserDao, deliveryUserDao: DeliveryUserDao) {
             //userDao.clear()
+            deliveryUserDao.insertDeliveryUser(deliveryUser)
             for (i in 0..2) {
                 userDao.insertUser(users[i])
             }

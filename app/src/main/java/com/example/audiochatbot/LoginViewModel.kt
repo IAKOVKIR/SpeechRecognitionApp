@@ -1,6 +1,5 @@
 package com.example.audiochatbot
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +9,7 @@ import kotlinx.coroutines.*
 class LoginViewModel(private val userDatabase: UserDao, private val deliveryUserDatabase: DeliveryUserDao): ViewModel() {
 
     private var viewModelJob = Job()
-    private var total: Int = 0
+    private var one: Int = 0
 
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
@@ -20,15 +19,19 @@ class LoginViewModel(private val userDatabase: UserDao, private val deliveryUser
     val user: LiveData<User?> get() = _user
     val deliveryUser: LiveData<DeliveryUser?> get() = _deliveryUser
 
+    init {
+        getTotal()
+    }
+
     private fun getTotal() {
         uiScope.launch {
-            total = getTotalUsers()
+            one = getNumber()
         }
     }
 
-    private suspend fun getTotalUsers(): Int {
+    private suspend fun getNumber(): Int {
         return withContext(Dispatchers.IO) {
-            userDatabase.getTotal()
+            userDatabase.getOne()
         }
     }
 
@@ -40,16 +43,12 @@ class LoginViewModel(private val userDatabase: UserDao, private val deliveryUser
 
                 if (char == 'D')
                     _deliveryUser.value = getDeliveryUser(id, password)
-                else if (char == 'A' || char == 'E') {
+                else if (char == 'A' || char == 'E')
                     _user.value = getUser(id, password, char)
-                }else {
+                else
                     _user.value = null
-                    Log.e("res", "2")
-                }
-            } else {
-                Log.e("res", "1")
+            } else
                 _user.value = null
-            }
         }
     }
 

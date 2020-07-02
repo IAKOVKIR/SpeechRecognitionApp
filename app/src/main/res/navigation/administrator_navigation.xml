@@ -9,5 +9,46 @@
         android:id="@+id/home_destination"
         android:name="com.example.audiochatbot.administrator.AdministratorHomeFragment"
         android:label="fragment_administrator_home"
-        tools:layout="@layout/fragment_administrator_home" />
+        tools:layout="@layout/fragment_administrator_home" >
+        <action
+            android:id="@+id/action_home_destination_to_testFragment"
+            app:destination="@id/test_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/test_fragment"
+        android:name="com.example.audiochatbot.administrator.TestFragment"
+        android:label="fragment_test"
+        tools:layout="@layout/fragment_test">
+        <action
+            android:id="@+id/action_sleep_tracker_fragment_to_sleepDetailFragment"
+            app:destination="@id/user_detail_fragment" />
+        <argument
+            android:name="myId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_test_fragment_to_create_user_fragment"
+            app:destination="@id/create_user_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/user_detail_fragment"
+        android:name="com.example.audiochatbot.detail.UserDetailFragment"
+        android:label="fragment_user_detail"
+        tools:layout="@layout/user_detail">
+        <argument
+            android:name="userKey"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_sleepDetailFragment_to_sleep_tracker_fragment"
+            app:destination="@id/test_fragment"
+            app:launchSingleTop="false"
+            app:popUpTo="@+id/test_fragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/create_user_fragment"
+        android:name="com.example.audiochatbot.administrator.user_management.CreateUserFragment"
+        android:label="fragment_create_user"
+        tools:layout="@layout/fragment_create_user" />
 </navigation>

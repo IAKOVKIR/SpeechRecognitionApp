@@ -27,8 +27,11 @@ class TestFragmentRecyclerViewAdapter(private val clickListener: UserListener) :
         fun bind(clickListener: UserListener, item: User) {
             binding.user = item
             binding.clickListener = clickListener
-            binding.sleepLength.text = item.firstName
-            binding.qualityString.text = item.lastName
+            binding.sleepLength.text = "${item.firstName}   ${item.lastName}"
+            if (item.position == 'E')
+                binding.qualityString.text = "Employee"
+            else if (item.position == 'A')
+                binding.qualityString.text = "Administrator"
         }
 
         companion object {

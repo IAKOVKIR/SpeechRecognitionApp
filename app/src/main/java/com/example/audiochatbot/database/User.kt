@@ -7,7 +7,7 @@ import androidx.room.*
 data class User(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "UserID")
-    var userId: Int,
+    var userId: Int = 0,
 
     @ColumnInfo(name = "FirstName")
     var firstName: String,

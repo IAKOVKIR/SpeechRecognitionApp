@@ -9,11 +9,11 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/home_title"
+            android:id="@+id/create_user_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="User Management"
+            android:text="Create New User"
             android:textSize="20sp"
             android:textColor="#000"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -28,7 +28,7 @@
             android:hint="First Name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/home_title"/>
+            app:layout_constraintTop_toBottomOf="@+id/create_user_title"/>
 
         <EditText
             android:id="@+id/last_name"

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -44,9 +46,25 @@ class UserDetailFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
-        binding.goBack.setOnClickListener {
-            this.findNavController().popBackStack()
+        val adapter = ArrayAdapter(this.requireContext(),
+            android.R.layout.simple_spinner_item, resources.getStringArray(R.array.Positions))
+        binding.spinner.adapter = adapter
+
+        binding.spinner.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>,
+                                        view: View, position: Int, id: Long) {
+                //viewMode.setPos(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // write code to perform some action
+            }
         }
+
+        //binding.goBack.setOnClickListener {
+          //  this.findNavController().popBackStack()
+        //}
 
         return binding.root
     }

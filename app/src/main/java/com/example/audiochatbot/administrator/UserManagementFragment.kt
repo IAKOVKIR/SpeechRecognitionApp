@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 /**
  * A simple [Fragment] subclass.
  */
-class TestFragment : Fragment() {
+class UserManagementFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

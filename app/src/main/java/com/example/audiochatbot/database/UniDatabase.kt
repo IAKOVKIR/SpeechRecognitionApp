@@ -27,9 +27,9 @@ abstract class UniDatabase: RoomDatabase() {
         private val users = arrayOf(
             User(1, "Jay", "Calingacion", "jay@gmail.com",
                 "0498629801", "12345678", 'A'),
-            User(2, "Jamie", "Simon", "jamie@gmail.com",
+            User(2,  "Jamie", "Simon", "jamie@gmail.com",
                 "0498629802", "12345678", 'E'),
-            User(3, "Kirill", "Iakovlev", "kirill@gmail.com",
+            User(3,  "Kirill", "Iakovlev", "kirill@gmail.com",
                 "0498629803", "12345678", 'E')
         )
 

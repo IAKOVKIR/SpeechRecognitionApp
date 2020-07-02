@@ -46,6 +46,8 @@ class CreateUserViewModel(
 
     private fun submitUser(user: User) {
         uiScope.launch {
+            val uLast = getLastUser()
+            user.userId = uLast!!.userId + 1
             addUserToDb(user)
             val u = getLastUser()
             _isUploaded.value = u != null

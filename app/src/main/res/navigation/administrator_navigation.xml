@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/test_fragment"
-        android:name="com.example.audiochatbot.administrator.TestFragment"
+        android:name="com.example.audiochatbot.administrator.UserManagementFragment"
         android:label="fragment_test"
         tools:layout="@layout/fragment_test">
         <action

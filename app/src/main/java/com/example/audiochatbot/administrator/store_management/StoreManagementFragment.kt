@@ -68,7 +68,7 @@ class StoreManagementFragment : Fragment() {
         binding.storeList.adapter = adapter
 
         binding.createNewStore.setOnClickListener {
-            //this.findNavController().navigate(UserManagementFragmentDirections.actionTestFragmentToCreateUserFragment())
+            this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToCreateStoreFragment())
         }
 
         testViewModel.stores.observe(viewLifecycleOwner, Observer {

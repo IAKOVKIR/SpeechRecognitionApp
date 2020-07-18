@@ -61,5 +61,13 @@
         tools:layout="@layout/fragment_store_management" >
         <argument android:name="myId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_store_management_to_createStoreFragment"
+            app:destination="@id/create_store" />
     </fragment>
+    <fragment
+        android:id="@+id/create_store"
+        android:name="com.example.audiochatbot.administrator.store_management.CreateStoreFragment"
+        android:label="fragment_create_store"
+        tools:layout="@layout/fragment_create_store" />
 </navigation>

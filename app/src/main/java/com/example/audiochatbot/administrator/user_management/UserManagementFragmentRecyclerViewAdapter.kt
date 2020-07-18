@@ -1,4 +1,4 @@
-package com.example.audiochatbot.administrator
+package com.example.audiochatbot.administrator.user_management
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,9 @@ import com.example.audiochatbot.database.User
 import com.example.audiochatbot.databinding.TextItemViewBinding
 
 class UserManagementFragmentRecyclerViewAdapter(private val clickListener: UserListener) : ListAdapter<User,
-        UserManagementFragmentRecyclerViewAdapter.ViewHolder>(UserDiffCallback()) {
+        UserManagementFragmentRecyclerViewAdapter.ViewHolder>(
+    UserDiffCallback()
+) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
@@ -18,7 +20,9 @@ class UserManagementFragmentRecyclerViewAdapter(private val clickListener: UserL
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent)
+        return ViewHolder.from(
+            parent
+        )
     }
 
     class ViewHolder private constructor(val binding: TextItemViewBinding)
@@ -27,11 +31,11 @@ class UserManagementFragmentRecyclerViewAdapter(private val clickListener: UserL
         fun bind(clickListener: UserListener, item: User) {
             binding.user = item
             binding.clickListener = clickListener
-            binding.sleepLength.text = "${item.firstName}   ${item.lastName}"
+            binding.userName.text = "${item.firstName}   ${item.lastName}"
             if (item.position == 'E')
-                binding.qualityString.text = "Employee"
+                binding.userPosition.text = "Employee"
             else if (item.position == 'A')
-                binding.qualityString.text = "Administrator"
+                binding.userPosition.text = "Administrator"
         }
 
         companion object {
@@ -39,7 +43,9 @@ class UserManagementFragmentRecyclerViewAdapter(private val clickListener: UserL
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = TextItemViewBinding.inflate(layoutInflater, parent, false)
 
-                return ViewHolder(binding)
+                return ViewHolder(
+                    binding
+                )
             }
         }
     }

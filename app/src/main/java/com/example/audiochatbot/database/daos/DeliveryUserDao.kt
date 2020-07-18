@@ -1,9 +1,10 @@
-package com.example.audiochatbot.database
+package com.example.audiochatbot.database.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.audiochatbot.database.DeliveryUser
 
 @Dao
 interface DeliveryUserDao {

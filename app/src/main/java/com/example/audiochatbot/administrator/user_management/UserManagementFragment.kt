@@ -1,7 +1,6 @@
-package com.example.audiochatbot.administrator
+package com.example.audiochatbot.administrator.user_management
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
+import com.example.audiochatbot.administrator.user_management.view_models.UserManagementViewModel
+import com.example.audiochatbot.administrator.user_management.view_models.UserManagementViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
-import com.example.audiochatbot.databinding.FragmentTestBinding
+import com.example.audiochatbot.databinding.FragmentUserManagementBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -27,8 +28,8 @@ class UserManagementFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         // Get a reference to the binding object and inflate the fragment views.
-        val binding: FragmentTestBinding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_test, container, false)
+        val binding: FragmentUserManagementBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_user_management, container, false)
 
         val application = requireNotNull(this.activity).application
         //val args = TestF.fromBundle(requireArguments())
@@ -36,25 +37,32 @@ class UserManagementFragment : Fragment() {
 
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
-        val viewModelFactory = UserManagementViewModelFactory(userDataSource, application)
+        val viewModelFactory =
+            UserManagementViewModelFactory(
+                userDataSource,
+                application
+            )
 
         val testViewModel =
             ViewModelProvider(
                 this, viewModelFactory).get(UserManagementViewModel::class.java)
 
-        testViewModel.navigateToSleepDataQuality.observe(viewLifecycleOwner, Observer { userId ->
+        testViewModel.navigateToUserDetails.observe(viewLifecycleOwner, Observer { userId ->
             userId?.let {
                 this.findNavController().navigate(
-                    UserManagementFragmentDirections
-                        .actionSleepTrackerFragmentToSleepDetailFragment(userId))
-                Log.e("heh", "$userId")
+                    UserManagementFragmentDirections.actionSleepTrackerFragmentToSleepDetailFragment(
+                        userId
+                    )
+                )
                 testViewModel.onSleepDataQualityNavigated()
             }
         })
 
-        val adapter = UserManagementFragmentRecyclerViewAdapter(UserListener { userId ->
-            testViewModel.onUserClicked(userId)
-        })
+        val adapter =
+            UserManagementFragmentRecyclerViewAdapter(
+                UserListener { userId ->
+                    testViewModel.onUserClicked(userId)
+                })
         binding.userList.adapter = adapter
 
         binding.createNewUser.setOnClickListener {

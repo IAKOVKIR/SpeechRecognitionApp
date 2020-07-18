@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".administrator.UserManagementFragment">
+    tools:context=".administrator.user_management.UserManagementFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -51,6 +51,39 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/home_title" />
 
+        <TextView
+            android:id="@+id/store_id_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:text="Store ID: "
+            android:textColor="#000"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/show_list"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/show_list" />
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:padding="4dp"
+            android:background="@drawable/edittext_borders"
+            app:layout_constraintBottom_toBottomOf="@+id/show_list"
+            app:layout_constraintEnd_toStartOf="@+id/show_list"
+            app:layout_constraintStart_toEndOf="@+id/store_id_text_view"
+            app:layout_constraintTop_toTopOf="@+id/show_list" />
+
+        <Button
+            android:id="@+id/show_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Show List"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shipper_field"/>
+
+
         <Button
             android:id="@+id/create_new_user"
             android:layout_width="wrap_content"
@@ -59,7 +92,7 @@
             android:text="Create New User"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shipper_field" />
+            app:layout_constraintTop_toBottomOf="@+id/show_list" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/user_list"
@@ -70,7 +103,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/create_new_user"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/text_item_view"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

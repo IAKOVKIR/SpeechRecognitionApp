@@ -13,6 +13,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
+import com.example.audiochatbot.administrator.user_management.view_models.CreateUserViewModel
+import com.example.audiochatbot.administrator.user_management.view_models.CreateUserViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.databinding.FragmentCreateUserBinding
@@ -36,7 +38,11 @@ class CreateUserFragment : Fragment() {
 
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
-        val viewModelFactory = CreateUserViewModelFactory(userDataSource, application)
+        val viewModelFactory =
+            CreateUserViewModelFactory(
+                userDataSource,
+                application
+            )
 
         val viewModel =
             ViewModelProvider(

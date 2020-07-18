@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.*
+import com.example.audiochatbot.database.daos.DeliveryUserDao
+import com.example.audiochatbot.database.daos.UserDao
 import kotlinx.coroutines.*
 
 class LoginViewModel(private val userDatabase: UserDao, private val deliveryUserDatabase: DeliveryUserDao): ViewModel() {

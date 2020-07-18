@@ -1,10 +1,10 @@
-package com.example.audiochatbot.administrator.user_management
+package com.example.audiochatbot.administrator.user_management.view_models
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.audiochatbot.database.User
-import com.example.audiochatbot.database.UserDao
+import com.example.audiochatbot.database.daos.UserDao
 import kotlinx.coroutines.*
 
 class CreateUserViewModel(

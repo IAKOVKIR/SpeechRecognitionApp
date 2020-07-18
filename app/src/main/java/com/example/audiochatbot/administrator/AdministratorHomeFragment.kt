@@ -34,6 +34,10 @@ class AdministratorHomeFragment : Fragment() {
             this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeDestinationToTestFragment(userId))
         }
 
+        binding.storeManagementButton.setOnClickListener {
+            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeDestinationToStoreManagementFragment(userId))
+        }
+
         binding.logOutButton.setOnClickListener {
             logOut()
         }

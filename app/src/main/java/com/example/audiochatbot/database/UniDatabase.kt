@@ -5,24 +5,28 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.audiochatbot.database.daos.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [User::class, DeliveryUser::class/*, Business::class, Store::class, AssignedStore::class*/],
+@Database(entities = [User::class, DeliveryUser::class, Business::class, Store::class, AssignedStore::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
 
     abstract val userDao: UserDao
     abstract val deliveryUserDao: DeliveryUserDao
+    abstract val businessDao: BusinessDao
+    abstract val storeDao: StoreDao
+    abstract val assignedStoreDao: AssignedStoreDao
 
     companion object {
 
-        /*private val business = Business(1, "Walmart", "King St",
+        private val business = Business(1, "Walmart", "King St",
             "Melbourne", "Victoria", "0493959766", "Walmart@gmail.com",
             3096)
         private val store = Store(1, 1, "Chapel St", "Melbourne",
-            "Victoria", "0495673253", 3183, 3000, 0)*/
+            "Victoria", "0495673253", 3183, 3000, 0)
 
         private val users = arrayOf(
             User(1, "Jay", "Calingacion", "jay@gmail.com",
@@ -35,6 +39,10 @@ abstract class UniDatabase: RoomDatabase() {
 
         private val deliveryUser = DeliveryUser(1, "Saddam", "Hussein",
         "saddam@gmail.com", "12345678", "0492121396")
+
+        private val assignStores = arrayOf(
+            AssignedStore(1, 1, 1, 1, "18/07/2020", "13:00")
+        )
 
         @Volatile
         private var INSTANCE: UniDatabase? = null
@@ -65,17 +73,26 @@ abstract class UniDatabase: RoomDatabase() {
                 super.onCreate(db)
                 INSTANCE?.let { database ->
                     scope.launch(Dispatchers.IO) {
-                        populateDb(database.userDao, database.deliveryUserDao)
+                        populateDb(database.userDao, database.deliveryUserDao, database.businessDao,
+                        database.storeDao, database.assignedStoreDao)
                     }
                 }
             }
         }
 
-        fun populateDb(userDao: UserDao, deliveryUserDao: DeliveryUserDao) {
+        fun populateDb(userDao: UserDao, deliveryUserDao: DeliveryUserDao, businessDao: BusinessDao, storeDao: StoreDao,
+        assignedStoreDao: AssignedStoreDao) {
             //userDao.clear()
             deliveryUserDao.insertDeliveryUser(deliveryUser)
-            for (i in 0..2) {
-                userDao.insertUser(users[i])
+            for (i in users) {
+                userDao.insertUser(i)
+            }
+
+            businessDao.insertBusiness(business)
+            storeDao.insertStore(store)
+
+            for(i in assignStores) {
+                assignedStoreDao.insertAssignedStore(i)
             }
         }
     }

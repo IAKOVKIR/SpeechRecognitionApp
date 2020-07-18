@@ -5,22 +5,22 @@
 
     <data>
         <variable
-            name="user"
-            type="com.example.audiochatbot.database.User" />
+            name="store"
+            type="com.example.audiochatbot.database.Store" />
 
         <variable
             name="clickListener"
-            type="com.example.audiochatbot.administrator.user_management.UserListener" />
+            type="com.example.audiochatbot.administrator.store_management.StoreListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() -> clickListener.onClick(user)}">
+        android:onClick="@{() -> clickListener.onClick(store)}">
 
         <TextView
-            android:id="@+id/user_name"
+            android:id="@+id/store_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -29,18 +29,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Name" />
+            tools:text="Store" />
 
         <TextView
-            android:id="@+id/user_position"
+            android:id="@+id/store_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/user_name"
+            app:layout_constraintEnd_toEndOf="@+id/store_name"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/user_name"
-            app:layout_constraintTop_toBottomOf="@+id/user_name"
-            tools:text="Position" />
+            app:layout_constraintStart_toStartOf="@+id/store_name"
+            app:layout_constraintTop_toBottomOf="@+id/store_name"
+            tools:text="Address" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

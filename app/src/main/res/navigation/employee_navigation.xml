@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/employee_navigation"
-    app:startDestination="@id/home_destination">
+    app:startDestination="@id/home_administrator">
 
     <fragment
-        android:id="@+id/home_destination"
+        android:id="@+id/home_administrator"
         android:name="com.example.audiochatbot.employee.EmployeeHomeFragment"
         android:label="EmployeeHomeFragment"
         tools:layout="@layout/fragment_employee_home" />

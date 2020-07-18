@@ -1,17 +1,20 @@
-package com.example.audiochatbot.administrator
+package com.example.audiochatbot.administrator.store_management.view_models
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.audiochatbot.database.UserDao
-import kotlinx.coroutines.*
+import com.example.audiochatbot.database.daos.StoreDao
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 
 /**
- * ViewModel for UserManagementFragment.
+ * ViewModel for StoreManagementFragment.
  */
-class UserManagementViewModel(
-    val database: UserDao,
-    application: Application) : AndroidViewModel(application) {
+class StoreManagementViewModel(
+    val database: StoreDao,
+    application: Application
+) : AndroidViewModel(application) {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -26,21 +29,21 @@ class UserManagementViewModel(
      *
      * By default, all coroutines started in uiScope will launch in [Dispatchers.Main] which is
      * the main thread on Android. This is a sensible default because most coroutines started by
-     * a [UserManagementViewModel] update the UI after performing some processing.
+     * a [StoreManagementViewModel] update the UI after performing some processing.
      */
 
-    val users = database.getAllUsers()
+    val stores = database.getAllStores()
 
-    private val _navigateToSleepDataQuality = MutableLiveData<Int>()
-    val navigateToSleepDataQuality
-        get() = _navigateToSleepDataQuality
+    private val _navigateToStoreDetails = MutableLiveData<Int>()
+    val navigateToStoreDetails
+        get() = _navigateToStoreDetails
 
-    fun onUserClicked(id: Int) {
-        _navigateToSleepDataQuality.value = id
+    fun onStoreClicked(id: Int) {
+        _navigateToStoreDetails.value = id
     }
 
-    fun onSleepDataQualityNavigated() {
-        _navigateToSleepDataQuality.value = null
+    fun onStoreNavigated() {
+        _navigateToStoreDetails.value = null
     }
 
     /**

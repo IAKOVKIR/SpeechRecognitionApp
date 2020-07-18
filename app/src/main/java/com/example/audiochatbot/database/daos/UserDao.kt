@@ -1,7 +1,8 @@
-package com.example.audiochatbot.database
+package com.example.audiochatbot.database.daos
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.audiochatbot.database.User
 
 @Dao
 interface UserDao {

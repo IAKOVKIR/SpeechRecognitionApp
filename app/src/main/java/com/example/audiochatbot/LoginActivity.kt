@@ -2,15 +2,19 @@ package com.example.audiochatbot
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.audiochatbot.administrator.AdministratorActivity
+import com.example.audiochatbot.database.DeliveryUserDao
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.database.User
+import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.ActivityLoginBinding
 import com.example.audiochatbot.delivery_user.DeliveryUserActivity
 import com.example.audiochatbot.employee.EmployeeActivity
@@ -19,18 +23,28 @@ import kotlinx.coroutines.Dispatchers
 
 class LoginActivity : AppCompatActivity() {
 
+    private lateinit var userDataSource: UserDao
+    private lateinit var deliveryUserDataSource: DeliveryUserDao
+    private lateinit var loginViewModel: LoginViewModel
+    var display = false
+
+    override fun onStart() {
+        super.onStart()
+        getUser()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: ActivityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
 
         val application = requireNotNull(this).application
 
-        val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
-        val deliveryUserDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).deliveryUserDao
+        userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
+        deliveryUserDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).deliveryUserDao
 
         val viewModelFactory = LoginViewModelFactory(userDataSource, deliveryUserDataSource)
 
-        val loginViewModel =
+        loginViewModel =
             ViewModelProvider(
                 this, viewModelFactory).get(LoginViewModel::class.java)
 
@@ -53,8 +67,11 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 }
-            } else
-                Toast.makeText(applicationContext, "wrong user id or password", Toast.LENGTH_SHORT).show()
+            } else if (display) {
+                Toast.makeText(applicationContext, "wrong user id or password", Toast.LENGTH_SHORT)
+                    .show()
+            }
+            display = true
         })
 
         loginViewModel.deliveryUser.observe(this, Observer { user ->
@@ -64,6 +81,15 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
         })
+    }
+
+    private fun getUser() {
+        val pref: SharedPreferences = getSharedPreferences("eaPreferences", Context.MODE_PRIVATE)
+        val id: Int = pref.getInt("id", 0)
+        val position: String = pref.getString("position", "")!!.trim()
+        val password: String = pref.getString("password", "")!!.trim()
+        Log.e("res", "$position$id")
+        loginViewModel.checkUser("$position$id", password)
     }
 
     private fun rememberMe(user: User) {

@@ -28,7 +28,6 @@ class UserManagementViewModel(
      * the main thread on Android. This is a sensible default because most coroutines started by
      * a [UserManagementViewModel] update the UI after performing some processing.
      */
-    //private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     val users = database.getAllUsers()
 

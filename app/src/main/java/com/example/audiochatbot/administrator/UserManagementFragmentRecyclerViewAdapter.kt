@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.databinding.TextItemViewBinding
 
-class TestFragmentRecyclerViewAdapter(private val clickListener: UserListener) : ListAdapter<User,
-        TestFragmentRecyclerViewAdapter.ViewHolder>(UserDiffCallback()) {
+class UserManagementFragmentRecyclerViewAdapter(private val clickListener: UserListener) : ListAdapter<User,
+        UserManagementFragmentRecyclerViewAdapter.ViewHolder>(UserDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)

@@ -1,6 +1,7 @@
 package com.example.audiochatbot.administrator
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -44,19 +45,20 @@ class UserManagementFragment : Fragment() {
         testViewModel.navigateToSleepDataQuality.observe(viewLifecycleOwner, Observer { userId ->
             userId?.let {
                 this.findNavController().navigate(
-                    TestFragmentDirections
+                    UserManagementFragmentDirections
                         .actionSleepTrackerFragmentToSleepDetailFragment(userId))
+                Log.e("heh", "$userId")
                 testViewModel.onSleepDataQualityNavigated()
             }
         })
 
-        val adapter = TestFragmentRecyclerViewAdapter(UserListener { userId ->
+        val adapter = UserManagementFragmentRecyclerViewAdapter(UserListener { userId ->
             testViewModel.onUserClicked(userId)
         })
         binding.userList.adapter = adapter
 
         binding.createNewUser.setOnClickListener {
-            this.findNavController().navigate(TestFragmentDirections.actionTestFragmentToCreateUserFragment())
+            this.findNavController().navigate(UserManagementFragmentDirections.actionTestFragmentToCreateUserFragment())
         }
 
         testViewModel.users.observe(viewLifecycleOwner, Observer {

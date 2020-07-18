@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.LoginActivity
 import com.example.audiochatbot.R
@@ -30,10 +29,6 @@ class AdministratorHomeFragment : Fragment() {
 
         val pref: SharedPreferences = requireActivity().getSharedPreferences("eaPreferences", Context.MODE_PRIVATE)
         val userId: Int = pref.getInt("id", -1)
-
-        binding.userManagementButton.setOnClickListener { view: View ->
-            view.findNavController().navigate(R.id.action_home_destination_to_testFragment)
-        }
 
         binding.userManagementButton.setOnClickListener {
             this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeDestinationToTestFragment(userId))

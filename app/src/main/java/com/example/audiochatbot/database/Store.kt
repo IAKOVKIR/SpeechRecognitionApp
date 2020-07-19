@@ -30,8 +30,8 @@ data class Store(
     var zip_code: Int,
 
     @ColumnInfo(name = "CashOnHand")
-    var cashOnHand: Int,
-
-    @ColumnInfo(name = "TodayEarnings")
-    var todayEarnings: Int
-)
+    var cashOnHand: Float
+) {
+    constructor() :
+            this(-1, -1,"", "", "", "", -1, 0F)
+}

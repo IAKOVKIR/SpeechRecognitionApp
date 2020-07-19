@@ -1,4 +1,4 @@
-package com.example.audiochatbot.detail
+package com.example.audiochatbot.administrator.user_management.view_models
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

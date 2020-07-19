@@ -1,4 +1,4 @@
-package com.example.audiochatbot.detail
+package com.example.audiochatbot.administrator.user_management.view_models
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +16,10 @@ class UserDetailViewModelFactory(
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(UserDetailViewModel::class.java)) {
-            return UserDetailViewModel(userNightKey, dataSource) as T
+            return UserDetailViewModel(
+                userNightKey,
+                dataSource
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

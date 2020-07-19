@@ -26,7 +26,7 @@ abstract class UniDatabase: RoomDatabase() {
             "Melbourne", "Victoria", "0493959766", "Walmart@gmail.com",
             3096)
         private val store = Store(1, 1, "Chapel St", "Melbourne",
-            "Victoria", "0495673253", 3183, 3000, 0)
+            "Victoria", "0495673253", 3183, 3000F)
 
         private val users = arrayOf(
             User(1, "Jay", "Calingacion", "jay@gmail.com",

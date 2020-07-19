@@ -63,7 +63,6 @@ class CreateUserFragment : Fragment() {
                 // write code to perform some action
             }
         }
-
         binding.submit.setOnClickListener {
             val user = User()
             user.firstName = binding.firstName.text.trim().toString()

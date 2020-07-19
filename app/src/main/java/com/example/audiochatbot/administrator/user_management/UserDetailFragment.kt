@@ -1,4 +1,4 @@
-package com.example.audiochatbot.detail
+package com.example.audiochatbot.administrator.user_management
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +16,8 @@ import com.example.audiochatbot.R
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.databinding.UserDetailBinding
+import com.example.audiochatbot.administrator.user_management.view_models.UserDetailViewModel
+import com.example.audiochatbot.administrator.user_management.view_models.UserDetailViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -32,11 +34,18 @@ class UserDetailFragment : Fragment() {
             inflater, R.layout.user_detail, container, false)
 
         val application = requireNotNull(this.activity).application
-        val arguments = UserDetailFragmentArgs.fromBundle(requireArguments())
+        val arguments =
+            UserDetailFragmentArgs.fromBundle(
+                requireArguments()
+            )
 
         // Create an instance of the ViewModel Factory.
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
-        val viewModelFactory = UserDetailViewModelFactory(arguments.userKey, dataSource)
+        val viewModelFactory =
+            UserDetailViewModelFactory(
+                arguments.userKey,
+                dataSource
+            )
 
         // Get a reference to the ViewModel associated with this fragment.
         val userDetailViewModel =

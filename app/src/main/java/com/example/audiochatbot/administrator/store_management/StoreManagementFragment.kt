@@ -41,9 +41,7 @@ class StoreManagementFragment : Fragment() {
 
         val viewModelFactory =
             StoreManagementViewModelFactory(
-                storeDataSource,
-                application
-            )
+                storeDataSource, application)
 
         val testViewModel =
             ViewModelProvider(

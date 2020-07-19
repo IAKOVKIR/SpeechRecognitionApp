@@ -36,7 +36,7 @@
 
     <fragment
         android:id="@+id/user_detail"
-        android:name="com.example.audiochatbot.detail.UserDetailFragment"
+        android:name="com.example.audiochatbot.administrator.user_management.UserDetailFragment"
         android:label="fragment_user_detail"
         tools:layout="@layout/user_detail">
         <argument

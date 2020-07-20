@@ -42,12 +42,6 @@
         <argument
             android:name="userKey"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_sleepDetailFragment_to_sleep_tracker_fragment"
-            app:destination="@id/user_management"
-            app:launchSingleTop="false"
-            app:popUpTo="@+id/user_management"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/create_user"
@@ -64,6 +58,9 @@
         <action
             android:id="@+id/action_store_management_to_createStoreFragment"
             app:destination="@id/create_store" />
+        <action
+            android:id="@+id/action_store_management_to_store_detail"
+            app:destination="@id/store_detail" />
     </fragment>
     <fragment
         android:id="@+id/create_store"
@@ -72,6 +69,15 @@
         tools:layout="@layout/fragment_create_store" >
         <argument
             android:name="adminId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/store_detail"
+        android:name="com.example.audiochatbot.administrator.store_management.StoreDetailFragment"
+        android:label="fragment_store_detail"
+        tools:layout="@layout/fragment_store_detail" >
+        <argument
+            android:name="storeKey"
             app:argType="integer" />
     </fragment>
 </navigation>

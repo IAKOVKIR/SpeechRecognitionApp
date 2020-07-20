@@ -18,8 +18,7 @@ class StoreManagementViewModelFactory(
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(StoreManagementViewModel::class.java)) {
             return StoreManagementViewModel(
-                dataSource,
-                application
+                dataSource
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

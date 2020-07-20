@@ -1,8 +1,7 @@
 package com.example.audiochatbot.administrator.store_management.view_models
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.daos.StoreDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,10 +10,7 @@ import kotlinx.coroutines.Job
 /**
  * ViewModel for StoreManagementFragment.
  */
-class StoreManagementViewModel(
-    val database: StoreDao,
-    application: Application
-) : AndroidViewModel(application) {
+class StoreManagementViewModel(val database: StoreDao) : ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.

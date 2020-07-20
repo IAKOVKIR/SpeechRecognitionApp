@@ -12,6 +12,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="store_detail_title">Store %1$s Details</string>
     <string name="selected_item">Selected position:</string>
     <string-array name="Positions">
         <item>Employee</item>

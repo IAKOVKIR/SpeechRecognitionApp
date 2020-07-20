@@ -12,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.administrator.store_management.view_models.StoreManagementViewModel
 import com.example.audiochatbot.administrator.store_management.view_models.StoreManagementViewModelFactory
-import com.example.audiochatbot.administrator.user_management.UserManagementFragmentDirections
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentStoreManagementBinding
 import kotlinx.coroutines.CoroutineScope
@@ -49,11 +48,7 @@ class StoreManagementFragment : Fragment() {
 
         testViewModel.navigateToStoreDetails.observe(viewLifecycleOwner, Observer { storeId ->
             storeId?.let {
-                this.findNavController().navigate(
-                    UserManagementFragmentDirections.actionSleepTrackerFragmentToSleepDetailFragment(
-                        storeId
-                    )
-                )
+                this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToStoreDetail(storeId))
                 testViewModel.onStoreNavigated()
             }
         })

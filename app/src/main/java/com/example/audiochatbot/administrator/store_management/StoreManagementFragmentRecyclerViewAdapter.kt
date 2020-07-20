@@ -6,9 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.Store
-import com.example.audiochatbot.database.User
 import com.example.audiochatbot.databinding.StoreManagementItemViewBinding
-import com.example.audiochatbot.databinding.TextItemViewBinding
 
 class StoreManagementFragmentRecyclerViewAdapter(private val clickListener: StoreListener) : ListAdapter<Store,
         StoreManagementFragmentRecyclerViewAdapter.ViewHolder>(
@@ -33,7 +31,7 @@ class StoreManagementFragmentRecyclerViewAdapter(private val clickListener: Stor
         fun bind(clickListener: StoreListener, item: Store) {
             binding.store = item
             binding.clickListener = clickListener
-            binding.storeName.text = "Store ${item.storeId}"
+            binding.storeName.text = "Store ${item.storeId} / Business ${item.businessId}"
             binding.storeAddress.text = "${item.street}, ${item.city}"
         }
 

@@ -34,8 +34,8 @@ class StoreManagementFragment : Fragment() {
         R.layout.fragment_store_management, container, false)
 
         val application = requireNotNull(this.activity).application
-        //val args = TestF.fromBundle(requireArguments())
-        //val myID: Int = args.myId //myID
+        val args = StoreManagementFragmentArgs.fromBundle(requireArguments())
+        val myID: Int = args.myId //myID
 
         val storeDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).storeDao
 
@@ -66,7 +66,7 @@ class StoreManagementFragment : Fragment() {
         binding.storeList.adapter = adapter
 
         binding.createNewStore.setOnClickListener {
-            this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToCreateStoreFragment())
+            this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToCreateStoreFragment(myID))
         }
 
         testViewModel.stores.observe(viewLifecycleOwner, Observer {

@@ -33,10 +33,11 @@ class CreateStoreFragment : Fragment() {
         val application = requireNotNull(this.activity).application
         val storeDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).storeDao
 
+        val args = CreateStoreFragmentArgs.fromBundle(requireArguments())
+        val adminId: Int = args.adminId //adminId
+
         val viewModelFactory =
-            CreateStoreViewModelFactory(
-                storeDataSource
-            )
+            CreateStoreViewModelFactory(adminId, storeDataSource)
 
         val viewModel =
             ViewModelProvider(

@@ -10,15 +10,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [User::class, DeliveryUser::class, Business::class, Store::class, AssignedStore::class],
+@Database(entities = [User::class, DeliveryUser::class, Business::class, Store::class, AssignedUser::class, AssignedAdmin::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
 
     abstract val userDao: UserDao
-    abstract val deliveryUserDao: DeliveryUserDao
-    abstract val businessDao: BusinessDao
-    abstract val storeDao: StoreDao
-    abstract val assignedStoreDao: AssignedStoreDao
 
     companion object {
 
@@ -34,14 +30,22 @@ abstract class UniDatabase: RoomDatabase() {
             User(2,  "Jamie", "Simon", "jamie@gmail.com",
                 "0498629802", "12345678", 'E'),
             User(3,  "Kirill", "Iakovlev", "kirill@gmail.com",
-                "0498629803", "12345678", 'E')
+                "0498629803", "12345678", 'E'),
+            User(4,  "Chris", "Paul", "chris@gmail.com",
+            "0498629804", "12345678", 'E'),
+            User(5,  "Mike", "Miller", "mike@gmail.com",
+                "0498629805", "12345678", 'E')
         )
 
         private val deliveryUser = DeliveryUser(1, "Saddam", "Hussein",
         "saddam@gmail.com", "12345678", "0492121396")
 
         private val assignStores = arrayOf(
-            AssignedStore(1, 1, 1, 1, "18/07/2020", "13:00")
+            AssignedUser(1, 2, 1, 1, "18/07/2020", "13:00")
+        )
+
+        private val assignAdmins = arrayOf(
+            AssignedAdmin(1, 1, 1, 1, "13:00", "13:00")
         )
 
         @Volatile
@@ -73,26 +77,28 @@ abstract class UniDatabase: RoomDatabase() {
                 super.onCreate(db)
                 INSTANCE?.let { database ->
                     scope.launch(Dispatchers.IO) {
-                        populateDb(database.userDao, database.deliveryUserDao, database.businessDao,
-                        database.storeDao, database.assignedStoreDao)
+                        populateDb(database.userDao)
                     }
                 }
             }
         }
 
-        fun populateDb(userDao: UserDao, deliveryUserDao: DeliveryUserDao, businessDao: BusinessDao, storeDao: StoreDao,
-        assignedStoreDao: AssignedStoreDao) {
+        fun populateDb(userDao: UserDao) {
             //userDao.clear()
-            deliveryUserDao.insertDeliveryUser(deliveryUser)
+            userDao.insertDeliveryUser(deliveryUser)
             for (i in users) {
                 userDao.insertUser(i)
             }
 
-            businessDao.insertBusiness(business)
-            storeDao.insertStore(store)
+            userDao.insertBusiness(business)
+            userDao.insertStore(store)
 
             for(i in assignStores) {
-                assignedStoreDao.insertAssignedStore(i)
+                userDao.assignUser(i)
+            }
+
+            for(i in assignAdmins) {
+                userDao.assignAdmin(i)
             }
         }
     }

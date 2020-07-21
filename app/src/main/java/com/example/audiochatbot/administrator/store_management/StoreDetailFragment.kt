@@ -16,7 +16,6 @@ import com.example.audiochatbot.administrator.store_management.view_models.Store
 import com.example.audiochatbot.database.Store
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentStoreDetailBinding
-import kotlinx.android.synthetic.main.fragment_store_detail.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -33,14 +32,15 @@ class StoreDetailFragment : Fragment() {
         val binding: FragmentStoreDetailBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_store_detail, container, false)
         val application = requireNotNull(this.activity).application
-        val storeDataSource =
-            UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).storeDao
+        val dataSource =
+            UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val args = StoreDetailFragmentArgs.fromBundle(requireArguments())
+        val adminKey: Int = args.adminId
         val storeKey: Int = args.storeKey
 
         val viewModelFactory =
-            StoreDetailViewModelFactory(storeKey, storeDataSource)
+            StoreDetailViewModelFactory(storeKey, dataSource)
 
         val viewModel =
             ViewModelProvider(
@@ -66,6 +66,10 @@ class StoreDetailFragment : Fragment() {
 
         binding.deleteRecord.setOnClickListener {
             viewModel.deleteRecord()
+        }
+
+        binding.assignedUsers.setOnClickListener {
+            this.findNavController().navigate(StoreDetailFragmentDirections.actionStoreDetailToAssignedUsersFragment(adminKey, storeKey))
         }
 
         viewModel.isDone.observe(viewLifecycleOwner, Observer { result ->

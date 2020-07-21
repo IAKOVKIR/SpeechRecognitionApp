@@ -2,9 +2,9 @@ package com.example.audiochatbot.administrator.store_management.view_models
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.audiochatbot.database.daos.StoreDao
+import com.example.audiochatbot.database.daos.UserDao
 
-class StoreDetailViewModelFactory(private val storeId: Int, private val dataSource: StoreDao
+class StoreDetailViewModelFactory(private val storeId: Int, private val dataSource: UserDao
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

@@ -91,7 +91,7 @@ class UserDetailFragment : Fragment() {
             }
         })
 
-        binding.submit.setOnClickListener {
+        binding.updateRecord.setOnClickListener {
             val user = User()
             user.firstName = binding.firstName.text.trim().toString()
             user.lastName = binding.lastName.text.trim().toString()
@@ -99,6 +99,10 @@ class UserDetailFragment : Fragment() {
             user.phoneNumber = binding.phoneNumber.text.trim().toString()
             user.password = binding.password.text.trim().toString()
             userDetailViewModel.updateUser(user)
+        }
+
+        binding.deleteRecord.setOnClickListener {
+            userDetailViewModel.deleteRecord()
         }
 
         userDetailViewModel.isUploaded.observe(viewLifecycleOwner, Observer {result ->

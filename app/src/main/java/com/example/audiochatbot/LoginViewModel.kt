@@ -4,11 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.*
-import com.example.audiochatbot.database.daos.DeliveryUserDao
 import com.example.audiochatbot.database.daos.UserDao
 import kotlinx.coroutines.*
 
-class LoginViewModel(private val userDatabase: UserDao, private val deliveryUserDatabase: DeliveryUserDao): ViewModel() {
+class LoginViewModel(private val userDatabase: UserDao): ViewModel() {
 
     private var viewModelJob = Job()
     private var one: Int = 0
@@ -62,7 +61,7 @@ class LoginViewModel(private val userDatabase: UserDao, private val deliveryUser
 
     private suspend fun getDeliveryUser(userId: Int, password: String): DeliveryUser? {
         return withContext(Dispatchers.IO) {
-            deliveryUserDatabase.getDeliveryUser(userId, password)
+            userDatabase.getDeliveryUser(userId, password)
         }
     }
 

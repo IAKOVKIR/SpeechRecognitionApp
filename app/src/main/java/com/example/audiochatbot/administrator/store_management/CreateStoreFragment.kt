@@ -31,13 +31,13 @@ class CreateStoreFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding: FragmentCreateStoreBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_store, container, false)
         val application = requireNotNull(this.activity).application
-        val storeDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).storeDao
+        val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val args = CreateStoreFragmentArgs.fromBundle(requireArguments())
         val adminId: Int = args.adminId //adminId
 
         val viewModelFactory =
-            CreateStoreViewModelFactory(adminId, storeDataSource)
+            CreateStoreViewModelFactory(adminId, dataSource)
 
         val viewModel =
             ViewModelProvider(

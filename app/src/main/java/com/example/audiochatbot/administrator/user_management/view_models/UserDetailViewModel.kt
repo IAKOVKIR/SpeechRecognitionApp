@@ -3,7 +3,6 @@ package com.example.audiochatbot.administrator.user_management.view_models
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.administrator.user_management.view_models.CreateUserViewModel
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.database.daos.UserDao
 import kotlinx.coroutines.*
@@ -80,6 +79,14 @@ class UserDetailViewModel(
         }
     }
 
+    fun deleteRecord() {
+        uiScope.launch {
+            deleteRecordDb()
+            val u = retrieveUser(userKey)
+            _isUploaded.value = u == null
+        }
+    }
+
     private suspend fun retrieveUser(userKey: Int): User? {
         return withContext(Dispatchers.IO) {
             database.getUserWithId(userKey)
@@ -95,6 +102,12 @@ class UserDetailViewModel(
     private suspend fun getUpdatedUser(userId: Int): User? {
         return withContext(Dispatchers.IO) {
             database.getUserWithId(userId)
+        }
+    }
+
+    private suspend fun deleteRecordDb() {
+        withContext(Dispatchers.IO) {
+            database.deleteUserRecord(userKey)
         }
     }
 

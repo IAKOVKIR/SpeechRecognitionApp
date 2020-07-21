@@ -34,13 +34,12 @@ class StoreManagementFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
         val args = StoreManagementFragmentArgs.fromBundle(requireArguments())
-        val myID: Int = args.myId //myID
+        val adminId: Int = args.myId
 
-        val storeDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).storeDao
+        val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val viewModelFactory =
-            StoreManagementViewModelFactory(
-                storeDataSource, application)
+            StoreManagementViewModelFactory(dataSource)
 
         val testViewModel =
             ViewModelProvider(
@@ -48,7 +47,7 @@ class StoreManagementFragment : Fragment() {
 
         testViewModel.navigateToStoreDetails.observe(viewLifecycleOwner, Observer { storeId ->
             storeId?.let {
-                this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToStoreDetail(storeId))
+                this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToStoreDetail(adminId, storeId))
                 testViewModel.onStoreNavigated()
             }
         })
@@ -61,7 +60,7 @@ class StoreManagementFragment : Fragment() {
         binding.storeList.adapter = adapter
 
         binding.createNewStore.setOnClickListener {
-            this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToCreateStoreFragment(myID))
+            this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToCreateStoreFragment(adminId))
         }
 
         testViewModel.stores.observe(viewLifecycleOwner, Observer {

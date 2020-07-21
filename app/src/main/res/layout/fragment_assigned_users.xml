@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".administrator.user_management.UserManagementFragment">
+    tools:context=".administrator.store_management.AssignedUsersFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="User Management"
+            android:text="Assigned Users"
             android:textSize="20sp"
             android:textColor="#000"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -52,60 +52,52 @@
             app:layout_constraintTop_toBottomOf="@+id/home_title" />
 
         <TextView
-            android:id="@+id/store_id_text_view"
+            android:id="@+id/user_id_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:text="Store ID: "
+            android:text="User ID: "
             android:textColor="#000"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/show_list"
+            app:layout_constraintBottom_toBottomOf="@+id/assign_user"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/show_list" />
+            app:layout_constraintTop_toTopOf="@+id/assign_user" />
 
         <EditText
+            android:id="@+id/user_id_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:padding="4dp"
             android:background="@drawable/edittext_borders"
-            android:inputType="number"
-            app:layout_constraintBottom_toBottomOf="@+id/show_list"
-            app:layout_constraintEnd_toStartOf="@+id/show_list"
-            app:layout_constraintStart_toEndOf="@+id/store_id_text_view"
-            app:layout_constraintTop_toTopOf="@+id/show_list" />
+            android:inputType="text"
+            app:layout_constraintBottom_toBottomOf="@+id/assign_user"
+            app:layout_constraintEnd_toStartOf="@+id/assign_user"
+            app:layout_constraintStart_toEndOf="@+id/user_id_text_view"
+            app:layout_constraintTop_toTopOf="@+id/assign_user" />
 
         <Button
-            android:id="@+id/show_list"
+            android:id="@+id/assign_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Show List"
+            android:text="Assign User"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shipper_field"/>
 
-
-        <Button
-            android:id="@+id/create_new_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Create New User"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/show_list" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/user_list"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/create_new_user"
+            app:layout_constraintTop_toBottomOf="@id/assign_user"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/text_item_view"/>
+            tools:listitem="@layout/assigned_users_item_view"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,8 +2,8 @@ package com.example.audiochatbot.database
 
 import androidx.room.*
 
-@Entity(tableName = "ASSIGNED_STORE",
-    indices = [Index(value = ["AssignedStoreID"], unique = true)],
+@Entity(tableName = "ASSIGNED_USER",
+    indices = [Index(value = ["AssignedUserID"], unique = true)],
     foreignKeys = [
         ForeignKey(entity = User::class, parentColumns = ["UserID"],
             childColumns = ["AdministratorID"], onDelete = ForeignKey.CASCADE),
@@ -11,9 +11,9 @@ import androidx.room.*
             childColumns = ["UserID"], onDelete = ForeignKey.CASCADE),
         ForeignKey(entity = Store::class, parentColumns = ["StoreID"],
             childColumns = ["StoreID"], onDelete = ForeignKey.CASCADE)])
-data class AssignedStore(
+data class AssignedUser(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "AssignedStoreID")
+    @ColumnInfo(name = "AssignedUserID")
     var assignedStoreId: Int,
 
     @ColumnInfo(name = "UserID")

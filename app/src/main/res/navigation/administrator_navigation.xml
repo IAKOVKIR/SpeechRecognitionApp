@@ -79,5 +79,23 @@
         <argument
             android:name="storeKey"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_store_detail_to_assignedUsersFragment"
+            app:destination="@id/assigned_users" />
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/assigned_users"
+        android:name="com.example.audiochatbot.administrator.store_management.AssignedUsersFragment"
+        android:label="fragment_assigned_users"
+        tools:layout="@layout/fragment_assigned_users" >
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
     </fragment>
 </navigation>

@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.audiochatbot.administrator.AdministratorActivity
-import com.example.audiochatbot.database.daos.DeliveryUserDao
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.database.daos.UserDao
@@ -24,7 +23,6 @@ import kotlinx.coroutines.Dispatchers
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var userDataSource: UserDao
-    private lateinit var deliveryUserDataSource: DeliveryUserDao
     private lateinit var loginViewModel: LoginViewModel
     private var display = false
 
@@ -40,9 +38,8 @@ class LoginActivity : AppCompatActivity() {
         val application = requireNotNull(this).application
 
         userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
-        deliveryUserDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).deliveryUserDao
 
-        val viewModelFactory = LoginViewModelFactory(userDataSource, deliveryUserDataSource)
+        val viewModelFactory = LoginViewModelFactory(userDataSource)
 
         loginViewModel =
             ViewModelProvider(

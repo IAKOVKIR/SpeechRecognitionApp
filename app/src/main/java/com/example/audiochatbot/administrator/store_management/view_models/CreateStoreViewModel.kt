@@ -64,4 +64,14 @@ class CreateStoreViewModel(private val adminId: Int, private val database: UserD
             database.getAdminsBusinessId(adminId)
         }
     }
+
+    /**
+     * Cancels all coroutines when the ViewModel is cleared, to cleanup any pending work.
+     *
+     * onCleared() gets called when the ViewModel is destroyed.
+     */
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
+    }
 }

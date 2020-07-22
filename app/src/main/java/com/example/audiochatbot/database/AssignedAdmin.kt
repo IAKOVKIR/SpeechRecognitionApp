@@ -1,8 +1,6 @@
 package com.example.audiochatbot.database
 
 import androidx.room.*
-import com.example.audiochatbot.database.Business
-import com.example.audiochatbot.database.User
 
 @Entity(tableName = "ASSIGNED_ADMIN",
     indices = [Index(value = ["AssignedAdminID"], unique = true)],

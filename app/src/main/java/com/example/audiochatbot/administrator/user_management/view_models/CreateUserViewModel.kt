@@ -66,4 +66,14 @@ class CreateUserViewModel(
             database.getLastUser()
         }
     }
+
+    /**
+     * Cancels all coroutines when the ViewModel is cleared, to cleanup any pending work.
+     *
+     * onCleared() gets called when the ViewModel is destroyed.
+     */
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
+    }
 }

@@ -97,5 +97,8 @@
         <argument
             android:name="adminId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_assigned_users_to_user_detail"
+            app:destination="@id/user_detail" />
     </fragment>
 </navigation>

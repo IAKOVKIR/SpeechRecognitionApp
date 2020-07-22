@@ -25,11 +25,14 @@ class AssignedUsersViewModel(val adminId: Int, val storeId: Int, private val dat
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val users = database.getAllUsersWithStoreID(storeId)
+    val users = database.getAllUsersLiveWithStoreID(storeId)
 
     private val _navigateToUserDetails = MutableLiveData<Int>()
     val navigateToUserDetails
         get() = _navigateToUserDetails
+
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage get() = _errorMessage
 
     fun onUserClicked(id: Int) {
         _navigateToUserDetails.value = id
@@ -37,6 +40,18 @@ class AssignedUsersViewModel(val adminId: Int, val storeId: Int, private val dat
 
     fun onUserNavigated() {
         _navigateToUserDetails.value = null
+    }
+
+    fun onMessageCleared() {
+        _errorMessage.value = null
+    }
+
+    fun deleteRecord(userId: Int) {
+        uiScope.launch {
+            deleteRecordDb(userId)
+            //val u = retrieveUser(userKey)
+            //_isUploaded.value = u == null
+        }
     }
 
     fun assignUser(line: String) {
@@ -47,17 +62,21 @@ class AssignedUsersViewModel(val adminId: Int, val storeId: Int, private val dat
                     val id = line.substring(1).toInt()
                     if (getAssignedRecord(id) == 0) {
                         val n = AssignedUser(
-                            getLastId() + 1,
-                            id,
-                            adminId,
-                            storeId,
-                            "21/07/2020",
-                            "17:30"
-                        )
+                            getLastId() + 1, id, adminId,
+                            storeId, "21/07/2020", "17:30")
                         assignUserToTheStore(n)
-                    }
-                }
-            }
+                    } else
+                        _errorMessage.value = "the given user is already assigned to the store!"
+                } else
+                    _errorMessage.value = "only employees can be assigned to this store!"
+            } else
+                _errorMessage.value = "wrong user id!"
+        }
+    }
+
+    private suspend fun deleteRecordDb(userId: Int) {
+        withContext(Dispatchers.IO) {
+            database.removeUserFromStore(userId)
         }
     }
 

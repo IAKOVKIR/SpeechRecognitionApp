@@ -39,7 +39,7 @@ class StoreManagementFragment : Fragment() {
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val viewModelFactory =
-            StoreManagementViewModelFactory(dataSource)
+            StoreManagementViewModelFactory(adminId, dataSource)
 
         val testViewModel =
             ViewModelProvider(
@@ -47,7 +47,7 @@ class StoreManagementFragment : Fragment() {
 
         testViewModel.navigateToStoreDetails.observe(viewLifecycleOwner, Observer { storeId ->
             storeId?.let {
-                this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToStoreDetail(adminId, storeId))
+                this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToStoreDetail(storeId, adminId))
                 testViewModel.onStoreNavigated()
             }
         })

@@ -69,7 +69,7 @@ class StoreDetailFragment : Fragment() {
         }
 
         binding.assignedUsers.setOnClickListener {
-            this.findNavController().navigate(StoreDetailFragmentDirections.actionStoreDetailToAssignedUsersFragment(adminKey, storeKey))
+            this.findNavController().navigate(StoreDetailFragmentDirections.actionStoreDetailToAssignedUsersFragment(storeKey, adminKey))
         }
 
         viewModel.isDone.observe(viewLifecycleOwner, Observer { result ->

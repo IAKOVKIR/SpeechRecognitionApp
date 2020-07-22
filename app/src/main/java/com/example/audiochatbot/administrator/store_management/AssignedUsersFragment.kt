@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.administrator.store_management.view_models.AssignedUsersViewModel
 import com.example.audiochatbot.administrator.store_management.view_models.AssignedUsersViewModelFactory
-import com.example.audiochatbot.administrator.user_management.UserManagementFragmentDirections
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentAssignedUsersBinding
 import kotlinx.coroutines.CoroutineScope
@@ -45,13 +45,17 @@ class AssignedUsersFragment : Fragment() {
             ViewModelProvider(
                 this, viewModelFactory).get(AssignedUsersViewModel::class.java)
 
+        // To use the View Model with data binding, you have to explicitly
+        // give the binding object a reference to it.
+        binding.viewModel = testViewModel
+
+        binding.lifecycleOwner = this
+
         testViewModel.navigateToUserDetails.observe(viewLifecycleOwner, Observer { userId ->
             userId?.let {
-                this.findNavController().navigate(
-                    UserManagementFragmentDirections.actionSleepTrackerFragmentToSleepDetailFragment(
-                        userId)
-                )
+                this.findNavController().navigate(AssignedUsersFragmentDirections.actionAssignedUsersToUserDetail(userId))
                 testViewModel.onUserNavigated()
+                testViewModel.onMessageCleared()
             }
         })
 
@@ -59,12 +63,21 @@ class AssignedUsersFragment : Fragment() {
             AssignedUsersFragmentRecyclerViewAdapter(
                 UserListener { userId ->
                     testViewModel.onUserClicked(userId)
+                },
+                RemoveUserListener {userId ->
+                    testViewModel.deleteRecord(userId)
                 })
         binding.userList.adapter = adapter
 
         testViewModel.users.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
+            }
+        })
+
+        testViewModel.errorMessage.observe(viewLifecycleOwner, Observer { message ->
+            if (!message.isNullOrEmpty()) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         })
 

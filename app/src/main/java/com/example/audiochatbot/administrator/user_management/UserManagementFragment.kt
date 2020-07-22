@@ -1,6 +1,7 @@
 package com.example.audiochatbot.administrator.user_management
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -67,6 +68,16 @@ class UserManagementFragment : Fragment() {
 
         binding.createNewUser.setOnClickListener {
             this.findNavController().navigate(UserManagementFragmentDirections.actionTestFragmentToCreateUserFragment())
+        }
+
+        binding.showList.setOnClickListener {
+            val line = binding.storeId.text.toString()
+            if (line.isNotEmpty()) {
+                Log.e("lel", line)
+                testViewModel.retrieveList(line.toInt())
+            } else {
+
+            }
         }
 
         testViewModel.users.observe(viewLifecycleOwner, Observer {

@@ -2,7 +2,9 @@ package com.example.audiochatbot.administrator.user_management.view_models
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.audiochatbot.database.User
 import com.example.audiochatbot.database.daos.UserDao
 import kotlinx.coroutines.*
 
@@ -29,18 +31,38 @@ class UserManagementViewModel(
      * a [UserManagementViewModel] update the UI after performing some processing.
      */
 
-    val users = database.getAllUsers()
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+
+    private var _users = MutableLiveData<List<User>>()
+    val users: LiveData<List<User>> get() = _users
 
     private val _navigateToUserDetails = MutableLiveData<Int>()
     val navigateToUserDetails
         get() = _navigateToUserDetails
 
+    init {
+        retrieveList(1)
+    }
+
+    fun retrieveList(storeId: Int) {
+        uiScope.launch {
+            _users.value = getList(storeId)
+        }
+    }
+
     fun onUserClicked(id: Int) {
         _navigateToUserDetails.value = id
     }
 
+
     fun onSleepDataQualityNavigated() {
         _navigateToUserDetails.value = null
+    }
+
+    private suspend fun getList(storeId: Int): List<User> {
+        return withContext(Dispatchers.IO) {
+            database.getAllUsersWithStoreID(storeId)
+        }
     }
 
     /**

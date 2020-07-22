@@ -23,7 +23,10 @@ interface UserDao {
     fun getAllUsers(): LiveData<List<User>>
 
     @Query("SELECT * FROM USER INNER JOIN ASSIGNED_USER ON USER.UserID = ASSIGNED_USER.UserID WHERE StoreID = :storeId ORDER BY UserID DESC")
-    fun getAllUsersWithStoreID(storeId: Int): LiveData<List<User>>
+    fun getAllUsersLiveWithStoreID(storeId: Int): LiveData<List<User>>
+
+    @Query("SELECT * FROM USER INNER JOIN ASSIGNED_USER ON USER.UserID = ASSIGNED_USER.UserID WHERE StoreID = :storeId ORDER BY UserID DESC")
+    fun getAllUsersWithStoreID(storeId: Int): List<User>
 
     @Query("SELECT * FROM USER WHERE UserID = :key AND Password = :password AND Position = :char")
     fun getUser(key: Int, password: String, char: Char): User?
@@ -58,6 +61,9 @@ interface UserDao {
     @Query("SELECT COUNT(*) FROM ASSIGNED_USER WHERE UserID = :userId AND StoreID = :storeId")
     fun ifUserAssigned(userId: Int, storeId: Int): Int
 
+    @Query("DELETE FROM ASSIGNED_USER WHERE UserID = :userId")
+    fun removeUserFromStore(userId: Int)
+
     //Store
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -69,8 +75,8 @@ interface UserDao {
     @Query("DELETE FROM STORE WHERE StoreID = :storeId")
     fun deleteStoreRecord(storeId: Int)
 
-    @Query("SELECT * FROM STORE INNER JOIN BUSINESS ON STORE.BusinessID = BUSINESS.BusinessID INNER JOIN ASSIGNED_ADMIN ON BUSINESS.BusinessID = ASSIGNED_ADMIN.BusinessID ORDER BY StoreID DESC")
-    fun getAllAdminStores(): LiveData<List<Store>>
+    @Query("SELECT * FROM STORE INNER JOIN ASSIGNED_ADMIN ON STORE.BusinessID = ASSIGNED_ADMIN.BusinessID WHERE ASSIGNED_ADMIN.UserID = :adminId ORDER BY StoreID DESC")
+    fun getAllAdminStores(adminId: Int): LiveData<List<Store>>
 
     @Query("SELECT * FROM STORE ORDER BY StoreID DESC LIMIT 1")
     fun getLastStore(): Store

@@ -22,6 +22,9 @@ import kotlinx.coroutines.Dispatchers
  */
 class UserManagementFragment : Fragment() {
 
+    lateinit var testViewModel: UserManagementViewModel
+    var line = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,7 +44,7 @@ class UserManagementFragment : Fragment() {
         val viewModelFactory =
             UserManagementViewModelFactory(businessId, userDataSource)
 
-        val testViewModel =
+        testViewModel =
             ViewModelProvider(
                 this, viewModelFactory).get(UserManagementViewModel::class.java)
 
@@ -68,7 +71,7 @@ class UserManagementFragment : Fragment() {
         }
 
         binding.showList.setOnClickListener {
-            val line = binding.storeId.text.toString()
+            line = binding.storeId.text.toString()
             if (line.isNotEmpty())
                 testViewModel.retrieveList(line.toInt())
             else
@@ -84,4 +87,11 @@ class UserManagementFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (line.isNotEmpty())
+            testViewModel.retrieveList(line.toInt())
+        else
+            testViewModel.retrieveList(0)
+    }
 }

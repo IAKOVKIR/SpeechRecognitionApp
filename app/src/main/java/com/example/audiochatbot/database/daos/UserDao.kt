@@ -20,7 +20,13 @@ interface UserDao {
     fun getOne(): Int
 
     @Query("SELECT * FROM USER ORDER BY UserID DESC")
-    fun getAllUsers(): LiveData<List<User>>
+    fun getAllLiveUsers(): LiveData<List<User>>
+
+    @Query("SELECT * FROM USER ORDER BY UserID DESC")
+    fun getAllUsers(): List<User>
+
+    @Query("SELECT * FROM USER WHERE BusinessID = :businessId ORDER BY UserID DESC")
+    fun getAllUsersWithBusinessId(businessId: Int): List<User>
 
     @Query("SELECT * FROM USER INNER JOIN ASSIGNED_USER ON USER.UserID = ASSIGNED_USER.UserID WHERE StoreID = :storeId ORDER BY UserID DESC")
     fun getAllUsersLiveWithStoreID(storeId: Int): LiveData<List<User>>
@@ -75,7 +81,7 @@ interface UserDao {
     @Query("DELETE FROM STORE WHERE StoreID = :storeId")
     fun deleteStoreRecord(storeId: Int)
 
-    @Query("SELECT * FROM STORE INNER JOIN ASSIGNED_ADMIN ON STORE.BusinessID = ASSIGNED_ADMIN.BusinessID WHERE ASSIGNED_ADMIN.UserID = :adminId ORDER BY StoreID DESC")
+    @Query("SELECT * FROM STORE INNER JOIN USER ON STORE.BusinessID = USER.BusinessID WHERE USER.UserID = :adminId ORDER BY StoreID DESC")
     fun getAllAdminStores(adminId: Int): LiveData<List<Store>>
 
     @Query("SELECT * FROM STORE ORDER BY StoreID DESC LIMIT 1")
@@ -84,12 +90,15 @@ interface UserDao {
     @Query("SELECT * FROM STORE WHERE storeId = :key")
     fun getStoreWithId(key: Int): Store
 
+    @Query("SELECT COUNT(*) FROM STORE WHERE StoreID = :storeId AND BusinessID = :businessId")
+    fun ifStoreBelongToBusiness(storeId: Int, businessId: Int): Int
+
 
     //Business
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertBusiness(business: Business)
 
-    @Query("SELECT BusinessID FROM ASSIGNED_ADMIN WHERE UserID = :adminId")
+    @Query("SELECT BusinessID FROM USER WHERE UserID = :adminId")
     fun getAdminsBusinessId(adminId: Int): Int
 
 
@@ -102,9 +111,4 @@ interface UserDao {
 
     @Query("SELECT COUNT(*) FROM DELIVERY_USER")
     fun getDeliveryUserTotal(): Int
-
-
-    //Assign Admin
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun assignAdmin(assignedAdmin: AssignedAdmin)
 }

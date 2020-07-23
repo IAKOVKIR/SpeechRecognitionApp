@@ -9,13 +9,13 @@ import com.example.audiochatbot.database.daos.UserDao
  *
  * Provides the UserDao to the ViewModel.
  */
-class AssignedUsersViewModelFactory(private val adminId: Int, private val storeId: Int,
+class AssignedUsersViewModelFactory(private val storeId: Int,
     private val dataSource: UserDao
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AssignedUsersViewModel::class.java)) {
-            return AssignedUsersViewModel(adminId, storeId, dataSource) as T
+            return AssignedUsersViewModel(storeId, dataSource) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

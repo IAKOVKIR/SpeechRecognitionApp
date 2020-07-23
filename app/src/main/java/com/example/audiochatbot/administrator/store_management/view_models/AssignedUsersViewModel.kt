@@ -6,7 +6,7 @@ import com.example.audiochatbot.database.AssignedUser
 import com.example.audiochatbot.database.daos.UserDao
 import kotlinx.coroutines.*
 
-class AssignedUsersViewModel(val adminId: Int, val storeId: Int, private val database: UserDao): ViewModel() {
+class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -54,7 +54,7 @@ class AssignedUsersViewModel(val adminId: Int, val storeId: Int, private val dat
         }
     }
 
-    fun assignUser(line: String) {
+    fun assignUser(line: String, adminId: Int) {
         uiScope.launch {
             if (line.length > 1) {
                 val ch = line[0]

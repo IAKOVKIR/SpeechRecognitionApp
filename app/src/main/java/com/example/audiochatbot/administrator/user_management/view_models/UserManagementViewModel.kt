@@ -1,9 +1,9 @@
 package com.example.audiochatbot.administrator.user_management.view_models
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.database.daos.UserDao
 import kotlinx.coroutines.*
@@ -11,9 +11,7 @@ import kotlinx.coroutines.*
 /**
  * ViewModel for UserManagementFragment.
  */
-class UserManagementViewModel(
-    val database: UserDao,
-    application: Application) : AndroidViewModel(application) {
+class UserManagementViewModel(private val businessId: Int, private val database: UserDao) : ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -41,12 +39,19 @@ class UserManagementViewModel(
         get() = _navigateToUserDetails
 
     init {
-        retrieveList(1)
+        uiScope.launch {
+            _users.value = getAllUsers(businessId)
+        }
     }
 
     fun retrieveList(storeId: Int) {
         uiScope.launch {
-            _users.value = getList(storeId)
+            if (checkStore(storeId, businessId) == 1) {
+                Log.e("yes", "ho")
+                _users.value = getList(storeId)
+            }
+            else
+                _users.value = getAllUsers(businessId)
         }
     }
 
@@ -59,9 +64,27 @@ class UserManagementViewModel(
         _navigateToUserDetails.value = null
     }
 
+    private suspend fun getAllUsers(businessId: Int): List<User> {
+        return withContext(Dispatchers.IO) {
+            database.getAllUsersWithBusinessId(businessId)
+        }
+    }
+
     private suspend fun getList(storeId: Int): List<User> {
         return withContext(Dispatchers.IO) {
             database.getAllUsersWithStoreID(storeId)
+        }
+    }
+
+    /**private suspend fun getAdminBusinessId(): Int {
+        return withContext(Dispatchers.IO) {
+            database.getAdminsBusinessId(adminId)
+        }
+    }*/
+
+    private suspend fun checkStore(storeId: Int, businessId: Int): Int {
+        return withContext(Dispatchers.IO) {
+            database.ifStoreBelongToBusiness(storeId, businessId)
         }
     }
 

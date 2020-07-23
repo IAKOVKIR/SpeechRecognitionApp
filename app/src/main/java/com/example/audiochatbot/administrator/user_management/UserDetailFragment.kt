@@ -112,10 +112,6 @@ class UserDetailFragment : Fragment() {
                 Toast.makeText(context, "Something went wrong :(", Toast.LENGTH_SHORT).show()
         })
 
-        //binding.goBack.setOnClickListener {
-          //  this.findNavController().popBackStack()
-        //}
-
         return binding.root
     }
 }

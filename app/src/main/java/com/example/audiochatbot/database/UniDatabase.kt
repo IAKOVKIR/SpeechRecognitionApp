@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [User::class, DeliveryUser::class, Business::class, Store::class, AssignedUser::class, AssignedAdmin::class],
+@Database(entities = [User::class, DeliveryUser::class, Business::class, Store::class, AssignedUser::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
 
@@ -25,15 +25,15 @@ abstract class UniDatabase: RoomDatabase() {
             "Victoria", "0495673253", 3183, 3000F)
 
         private val users = arrayOf(
-            User(1, "Jay", "Calingacion", "jay@gmail.com",
+            User(1, 1, "Jay", "Calingacion", "jay@gmail.com",
                 "0498629801", "12345678", 'A'),
-            User(2,  "Jamie", "Simon", "jamie@gmail.com",
+            User(2, 1,  "Jamie", "Simon", "jamie@gmail.com",
                 "0498629802", "12345678", 'E'),
-            User(3,  "Kirill", "Iakovlev", "kirill@gmail.com",
+            User(3, 1,  "Kirill", "Iakovlev", "kirill@gmail.com",
                 "0498629803", "12345678", 'E'),
-            User(4,  "Chris", "Paul", "chris@gmail.com",
+            User(4, 1,  "Chris", "Paul", "chris@gmail.com",
             "0498629804", "12345678", 'E'),
-            User(5,  "Mike", "Miller", "mike@gmail.com",
+            User(5, 1,   "Mike", "Miller", "mike@gmail.com",
                 "0498629805", "12345678", 'E')
         )
 
@@ -42,10 +42,6 @@ abstract class UniDatabase: RoomDatabase() {
 
         private val assignStores = arrayOf(
             AssignedUser(1, 2, 1, 1, "18/07/2020", "13:00")
-        )
-
-        private val assignAdmins = arrayOf(
-            AssignedAdmin(1, 1, 1, 1, "13:00", "13:00")
         )
 
         @Volatile
@@ -85,20 +81,16 @@ abstract class UniDatabase: RoomDatabase() {
 
         fun populateDb(userDao: UserDao) {
             //userDao.clear()
+            userDao.insertBusiness(business)
+            userDao.insertStore(store)
+
             userDao.insertDeliveryUser(deliveryUser)
             for (i in users) {
                 userDao.insertUser(i)
             }
 
-            userDao.insertBusiness(business)
-            userDao.insertStore(store)
-
             for(i in assignStores) {
                 userDao.assignUser(i)
-            }
-
-            for(i in assignAdmins) {
-                userDao.assignAdmin(i)
             }
         }
     }

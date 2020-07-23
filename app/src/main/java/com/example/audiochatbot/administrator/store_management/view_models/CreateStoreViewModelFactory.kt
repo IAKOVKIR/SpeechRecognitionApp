@@ -4,13 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.audiochatbot.database.daos.UserDao
 
-class CreateStoreViewModelFactory(private val adminId: Int,
-    private val dataSource: UserDao
+class CreateStoreViewModelFactory(private val dataSource: UserDao
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CreateStoreViewModel::class.java)) {
-            return CreateStoreViewModel(adminId, dataSource) as T
+            return CreateStoreViewModel(dataSource) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

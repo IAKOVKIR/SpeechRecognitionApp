@@ -93,6 +93,7 @@ class LoginActivity : AppCompatActivity() {
         getSharedPreferences("eaPreferences", Context.MODE_PRIVATE)
             .edit()
             .putInt("id", user.userId)
+            .putInt("businessId", user.businessId)
             .putString("password", user.password)
             .putString("position", "${user.position}")
             .apply()

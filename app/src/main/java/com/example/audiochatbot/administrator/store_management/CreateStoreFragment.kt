@@ -34,10 +34,10 @@ class CreateStoreFragment : Fragment() {
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val args = CreateStoreFragmentArgs.fromBundle(requireArguments())
-        val adminId: Int = args.adminId //adminId
+        val adminId: Int = args.adminId
 
         val viewModelFactory =
-            CreateStoreViewModelFactory(adminId, dataSource)
+            CreateStoreViewModelFactory(dataSource)
 
         val viewModel =
             ViewModelProvider(
@@ -51,7 +51,7 @@ class CreateStoreFragment : Fragment() {
             store.phoneNumber = binding.storePhone.text.trim().toString()
             store.zip_code = binding.zipCode.text.toString().toInt()
             store.cashOnHand = binding.cashOnHand.text.toString().toFloat()
-            viewModel.addStore(store)
+            viewModel.submitStore(store, adminId)
         }
 
         viewModel.isUploaded.observe(viewLifecycleOwner, Observer {result ->

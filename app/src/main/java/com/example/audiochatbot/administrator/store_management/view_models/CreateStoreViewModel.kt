@@ -7,7 +7,7 @@ import com.example.audiochatbot.database.Store
 import com.example.audiochatbot.database.daos.UserDao
 import kotlinx.coroutines.*
 
-class CreateStoreViewModel(private val adminId: Int, private val database: UserDao
+class CreateStoreViewModel(private val database: UserDao
 ) : ViewModel() {
 
     /**
@@ -32,11 +32,7 @@ class CreateStoreViewModel(private val adminId: Int, private val database: UserD
     val isUploaded
         get() = _isUploaded
 
-    fun addStore(store: Store) {
-        submitStore(store)
-    }
-
-    private fun submitStore(store: Store) {
+    fun submitStore(store: Store, adminId: Int) {
         uiScope.launch {
             val uLast = getLastStore()
             store.storeId = uLast!!.storeId + 1

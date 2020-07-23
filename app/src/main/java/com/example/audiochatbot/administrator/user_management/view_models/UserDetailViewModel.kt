@@ -14,14 +14,14 @@ import kotlinx.coroutines.*
  */
 class UserDetailViewModel(
     private val userKey: Int,
-    dataSource: UserDao
+    val dataSource: UserDao
 ) : ViewModel() {
     private val positionCharArray = arrayOf('E', 'A', 'D')
 
     /**
      * Hold a reference to SleepDatabase via its SleepDatabaseDao.
      */
-    val database = dataSource
+    private val database = dataSource
 
     /** Coroutine setup variables */
 

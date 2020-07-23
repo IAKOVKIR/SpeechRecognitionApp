@@ -10,16 +10,13 @@ import com.example.audiochatbot.database.daos.UserDao
  * Provides the key for the night and the SleepDatabaseDao to the ViewModel.
  */
 class UserDetailViewModelFactory(
-    private val userNightKey: Int,
+    private val userKey: Int,
     private val dataSource: UserDao
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(UserDetailViewModel::class.java)) {
-            return UserDetailViewModel(
-                userNightKey,
-                dataSource
-            ) as T
+            return UserDetailViewModel(userKey, dataSource) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

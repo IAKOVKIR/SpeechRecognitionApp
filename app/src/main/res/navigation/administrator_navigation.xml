@@ -27,11 +27,14 @@
             android:id="@+id/action_sleep_tracker_fragment_to_sleepDetailFragment"
             app:destination="@id/user_detail" />
         <argument
-            android:name="myId"
+            android:name="adminId"
             app:argType="integer" />
         <action
             android:id="@+id/action_test_fragment_to_create_user_fragment"
             app:destination="@id/create_user" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
     </fragment>
 
     <fragment
@@ -47,7 +50,11 @@
         android:id="@+id/create_user"
         android:name="com.example.audiochatbot.administrator.user_management.CreateUserFragment"
         android:label="fragment_create_user"
-        tools:layout="@layout/fragment_create_user" />
+        tools:layout="@layout/fragment_create_user" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+    </fragment>
     <fragment
         android:id="@+id/store_management"
         android:name="com.example.audiochatbot.administrator.store_management.StoreManagementFragment"

@@ -39,7 +39,7 @@ class AssignedUsersFragment : Fragment() {
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val viewModelFactory =
-            AssignedUsersViewModelFactory(adminId, storeId, userDataSource)
+            AssignedUsersViewModelFactory(storeId, userDataSource)
 
         val testViewModel =
             ViewModelProvider(
@@ -83,7 +83,7 @@ class AssignedUsersFragment : Fragment() {
 
         binding.assignUser.setOnClickListener {
             val line = binding.userIdText.text.toString().trim()
-            testViewModel.assignUser(line)
+            testViewModel.assignUser(line, adminId)
         }
 
         return binding.root

@@ -1,15 +1,13 @@
 package com.example.audiochatbot.administrator.store_management.view_models
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.database.Store
 import com.example.audiochatbot.database.daos.UserDao
 
 /**
  * ViewModel for StoreManagementFragment.
  */
-class StoreManagementViewModel(val adminId: Int, val database: UserDao) : ViewModel() {
+class StoreManagementViewModel(val adminId: Int,val database: UserDao) : ViewModel() {
 
     val stores = database.getAllAdminStores(adminId)
 

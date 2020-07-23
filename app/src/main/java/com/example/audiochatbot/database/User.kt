@@ -3,11 +3,16 @@ package com.example.audiochatbot.database
 import androidx.room.*
 
 @Entity(tableName = "USER",
-    indices = [Index(value = ["UserID", "Email", "PhoneNumber"], unique = true)])
+    indices = [Index(value = ["UserID", "Email", "PhoneNumber"], unique = true)],
+    foreignKeys = [ForeignKey(entity = Business::class, parentColumns = [
+        "BusinessID"], childColumns = ["BusinessID"], onDelete = ForeignKey.CASCADE)])
 data class User(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "UserID")
     var userId: Int = 0,
+
+    @ColumnInfo(name = "BusinessID")
+    var businessId: Int,
 
     @ColumnInfo(name = "FirstName")
     var firstName: String,
@@ -28,7 +33,7 @@ data class User(
     var position: Char
 ) {
     constructor() :
-            this(-1, "", "", "", "", "", 'L')
+            this(-1, -1, "", "", "", "", "", 'L')
     constructor(firstName: String, lastName: String, email: String, phoneNumber: String, password: String, position: Char) :
-            this(-1, firstName, lastName, email, phoneNumber, password, position)
+            this(-1, -1, firstName, lastName, email, phoneNumber, password, position)
 }

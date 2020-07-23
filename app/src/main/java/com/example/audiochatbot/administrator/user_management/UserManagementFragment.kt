@@ -1,7 +1,6 @@
 package com.example.audiochatbot.administrator.user_management
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -33,16 +32,14 @@ class UserManagementFragment : Fragment() {
             inflater, R.layout.fragment_user_management, container, false)
 
         val application = requireNotNull(this.activity).application
-        //val args = TestF.fromBundle(requireArguments())
-        //val myID: Int = args.myId //myID
+        val args = UserManagementFragmentArgs.fromBundle(requireArguments())
+        val adminId: Int = args.adminId
+        val businessId: Int = args.businessId
 
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val viewModelFactory =
-            UserManagementViewModelFactory(
-                userDataSource,
-                application
-            )
+            UserManagementViewModelFactory(businessId, userDataSource)
 
         val testViewModel =
             ViewModelProvider(
@@ -67,17 +64,15 @@ class UserManagementFragment : Fragment() {
         binding.userList.adapter = adapter
 
         binding.createNewUser.setOnClickListener {
-            this.findNavController().navigate(UserManagementFragmentDirections.actionTestFragmentToCreateUserFragment())
+            this.findNavController().navigate(UserManagementFragmentDirections.actionTestFragmentToCreateUserFragment(adminId))
         }
 
         binding.showList.setOnClickListener {
             val line = binding.storeId.text.toString()
-            if (line.isNotEmpty()) {
-                Log.e("lel", line)
+            if (line.isNotEmpty())
                 testViewModel.retrieveList(line.toInt())
-            } else {
-
-            }
+            else
+                testViewModel.retrieveList(0)
         }
 
         testViewModel.users.observe(viewLifecycleOwner, Observer {

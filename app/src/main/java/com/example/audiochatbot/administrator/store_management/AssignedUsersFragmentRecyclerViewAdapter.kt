@@ -19,9 +19,7 @@ class AssignedUsersFragmentRecyclerViewAdapter(private val clickListener: UserLi
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(
-            parent
-        )
+        return ViewHolder.from(parent)
     }
 
     class ViewHolder private constructor(val binding: AssignedUsersItemViewBinding)

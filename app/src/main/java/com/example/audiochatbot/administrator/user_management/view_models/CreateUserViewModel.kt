@@ -1,15 +1,13 @@
 package com.example.audiochatbot.administrator.user_management.view_models
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.database.daos.UserDao
 import kotlinx.coroutines.*
 
 class CreateUserViewModel(
-    val database: UserDao,
-    application: Application) : AndroidViewModel(application) {
+    private val database: UserDao) : ViewModel() {
     private val positionCharArray = arrayOf('E', 'A', 'D')
 
     /**
@@ -39,15 +37,12 @@ class CreateUserViewModel(
         position = positionCharArray[pos]
     }
 
-    fun addUser(user: User) {
-        user.position = position
-        submitUser(user)
-    }
-
-    private fun submitUser(user: User) {
+    fun submitUser(user: User, adminId: Int) {
         uiScope.launch {
             val uLast = getLastUser()
             user.userId = uLast!!.userId + 1
+            user.businessId = getAdminBusinessId(adminId)
+            user.position = position
             addUserToDb(user)
             val u = getLastUser()
             _isUploaded.value = u != null
@@ -57,13 +52,18 @@ class CreateUserViewModel(
     private suspend fun addUserToDb(user: User) {
         withContext(Dispatchers.IO) {
             database.insertUser(user)
-
         }
     }
 
     private suspend fun getLastUser(): User? {
         return withContext(Dispatchers.IO) {
             database.getLastUser()
+        }
+    }
+
+    private suspend fun getAdminBusinessId(adminId: Int): Int {
+        return withContext(Dispatchers.IO) {
+            database.getAdminsBusinessId(adminId)
         }
     }
 

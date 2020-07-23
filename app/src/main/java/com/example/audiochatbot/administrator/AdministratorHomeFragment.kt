@@ -19,6 +19,13 @@ import com.example.audiochatbot.databinding.FragmentAdministratorHomeBinding
  */
 class AdministratorHomeFragment : Fragment() {
 
+    private lateinit var pref: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        pref = requireActivity().getSharedPreferences("eaPreferences", Context.MODE_PRIVATE)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,12 +33,11 @@ class AdministratorHomeFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding: FragmentAdministratorHomeBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_administrator_home, container, false)
-
-        val pref: SharedPreferences = requireActivity().getSharedPreferences("eaPreferences", Context.MODE_PRIVATE)
         val userId: Int = pref.getInt("id", -1)
+        val businessId: Int = pref.getInt("businessId", -1)
 
         binding.userManagementButton.setOnClickListener {
-            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeDestinationToTestFragment(userId))
+            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeDestinationToTestFragment(userId, businessId))
         }
 
         binding.storeManagementButton.setOnClickListener {
@@ -50,9 +56,9 @@ class AdministratorHomeFragment : Fragment() {
      * removing all the activities and fragments that were not destroyed before
      */
     private fun logOut() {
-        /*val editor: SharedPreferences.Editor = n.edit()
+        val editor: SharedPreferences.Editor = pref.edit()
         editor.clear()
-        editor.apply()*/
+        editor.apply()
 
         val loginIntent = Intent(requireActivity(), LoginActivity::class.java)
         // set the new task and clear flags

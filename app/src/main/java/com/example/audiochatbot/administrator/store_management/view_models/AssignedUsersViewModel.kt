@@ -3,7 +3,7 @@ package com.example.audiochatbot.administrator.store_management.view_models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.AssignedUser
-import com.example.audiochatbot.database.daos.UserDao
+import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
 class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): ViewModel() {
@@ -49,8 +49,6 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
     fun deleteRecord(userId: Int) {
         uiScope.launch {
             deleteRecordDb(userId)
-            //val u = retrieveUser(userKey)
-            //_isUploaded.value = u == null
         }
     }
 
@@ -60,13 +58,17 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
                 val ch = line[0]
                 if (ch == 'E') {
                     val id = line.substring(1).toInt()
-                    if (getAssignedRecord(id) == 0) {
-                        val n = AssignedUser(
-                            getLastId() + 1, id, adminId,
-                            storeId, "21/07/2020", "17:30")
-                        assignUserToTheStore(n)
+                    if (getUser(id) != 0) {
+                        if (getAssignedRecord(id) == 0) {
+                            val n = AssignedUser(
+                                getLastId() + 1, id, adminId,
+                                storeId, "21/07/2020", "17:30"
+                            )
+                            assignUserToTheStore(n)
+                        } else
+                            _errorMessage.value = "the given user is already assigned to the store!"
                     } else
-                        _errorMessage.value = "the given user is already assigned to the store!"
+                        _errorMessage.value = "wrong user id!"
                 } else
                     _errorMessage.value = "only employees can be assigned to this store!"
             } else
@@ -95,6 +97,12 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
     private suspend fun getAssignedRecord(userId: Int): Int {
         return withContext(Dispatchers.IO) {
             database.ifUserAssigned(userId, storeId)
+        }
+    }
+
+    private suspend fun getUser(userId: Int): Int {
+        return withContext(Dispatchers.IO) {
+            database.ifUserExist(userId)
         }
     }
 

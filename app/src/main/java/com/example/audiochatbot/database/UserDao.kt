@@ -1,8 +1,7 @@
-package com.example.audiochatbot.database.daos
+package com.example.audiochatbot.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.audiochatbot.database.*
 
 @Dao
 interface UserDao {
@@ -18,6 +17,12 @@ interface UserDao {
 
     @Query("SELECT COUNT(*) FROM USER LIMIT 1")
     fun getOne(): Int
+
+    @Query("SELECT COUNT(*) FROM USER WHERE UserID = :userId")
+    fun ifUserExist(userId: Int): Int
+
+    @Query("SELECT Position FROM USER WHERE UserID = :userId")
+    fun getUserPosition(userId: Int): Char
 
     @Query("SELECT * FROM USER ORDER BY UserID DESC")
     fun getAllLiveUsers(): LiveData<List<User>>
@@ -111,4 +116,9 @@ interface UserDao {
 
     @Query("SELECT COUNT(*) FROM DELIVERY_USER")
     fun getDeliveryUserTotal(): Int
+
+
+    //Product
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertProduct(product: Product)
 }

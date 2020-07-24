@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.administrator.user_management.view_models.CreateUserViewModel
 import com.example.audiochatbot.database.Store
-import com.example.audiochatbot.database.daos.UserDao
+import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
 class StoreDetailViewModel(private val storeId: Int, private val database: UserDao

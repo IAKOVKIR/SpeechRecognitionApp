@@ -5,12 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.audiochatbot.database.daos.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [User::class, DeliveryUser::class, Business::class, Store::class, AssignedUser::class],
+@Database(entities = [User::class, DeliveryUser::class, Business::class, Store::class, AssignedUser::class, Product::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
 
@@ -41,7 +40,20 @@ abstract class UniDatabase: RoomDatabase() {
         "saddam@gmail.com", "12345678", "0492121396")
 
         private val assignStores = arrayOf(
-            AssignedUser(1, 2, 1, 1, "18/07/2020", "13:00")
+            AssignedUser(1, 2, 1, 1, "18/07/2020", "13:00"),
+            AssignedUser(2, 3, 1, 1, "18/07/2020", "13:00"),
+            AssignedUser(3, 4, 1, 1, "18/07/2020", "13:00")
+        )
+
+        private val products = arrayOf(
+            Product(1, 1, "Coca-Cola", "bottle", "6 pack", 30, "1:6", 1.5F, 0),
+            Product(2, 1, "Snickers", "bar", "box", 23, "1:16", 1F, 5),
+            Product(3, 1, "Bundaberg Ginger Beer", "bottle", "4 pack", 15, "1:4", 2.6F, 0),
+            Product(4, 1, "Schweppes Lemon", "bottle", "4 pack", 20, "1:4", 2F, 10),
+            Product(5, 1, "Kirks Ginger Beer", "bottle", "10 pack", 25, "1:10", 1.85F, 0),
+            Product(6, 2, "Pepsi Max", "can", "10 pack", 40, "1:10", 1F, 0),
+            Product(7, 2, "Tim Tam", "pack", "family box", 50, "1:20", 2.8F, 10),
+            Product(8, 2, "Doritos Supreme", "pack", "box", 25, "1:6", 3.2F, 0)
         )
 
         @Volatile
@@ -83,14 +95,18 @@ abstract class UniDatabase: RoomDatabase() {
             //userDao.clear()
             userDao.insertBusiness(business)
             userDao.insertStore(store)
-
             userDao.insertDeliveryUser(deliveryUser)
+
             for (i in users) {
                 userDao.insertUser(i)
             }
 
             for(i in assignStores) {
                 userDao.assignUser(i)
+            }
+
+            for (i in products) {
+                userDao.insertProduct(i)
             }
         }
     }

@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.audiochatbot.administrator.AdministratorActivity
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.database.User
-import com.example.audiochatbot.database.daos.UserDao
+import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.ActivityLoginBinding
 import com.example.audiochatbot.delivery_user.DeliveryUserActivity
 import com.example.audiochatbot.employee.EmployeeActivity

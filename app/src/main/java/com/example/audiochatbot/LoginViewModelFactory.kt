@@ -2,7 +2,7 @@ package com.example.audiochatbot
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.audiochatbot.database.daos.UserDao
+import com.example.audiochatbot.database.UserDao
 
 class LoginViewModelFactory(private val userDataSource: UserDao
 ) : ViewModelProvider.Factory {

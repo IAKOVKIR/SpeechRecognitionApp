@@ -3,11 +3,12 @@ package com.example.audiochatbot.administrator.user_management.view_models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.User
-import com.example.audiochatbot.database.daos.UserDao
+import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
 class CreateUserViewModel(
-    private val database: UserDao) : ViewModel() {
+    private val database: UserDao
+) : ViewModel() {
     private val positionCharArray = arrayOf('E', 'A', 'D')
 
     /**

@@ -2,7 +2,7 @@ package com.example.audiochatbot.administrator.store_management.view_models
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.audiochatbot.database.daos.UserDao
+import com.example.audiochatbot.database.UserDao
 
 class CreateStoreViewModelFactory(private val dataSource: UserDao
 ) : ViewModelProvider.Factory {

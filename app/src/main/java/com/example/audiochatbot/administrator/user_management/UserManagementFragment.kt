@@ -22,8 +22,8 @@ import kotlinx.coroutines.Dispatchers
  */
 class UserManagementFragment : Fragment() {
 
-    lateinit var testViewModel: UserManagementViewModel
-    var line = ""
+    private lateinit var testViewModel: UserManagementViewModel
+    private var line = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

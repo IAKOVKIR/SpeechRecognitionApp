@@ -1,22 +1,22 @@
-package com.example.audiochatbot.administrator.user_management.view_models
+package com.example.audiochatbot.administrator.product_management.view_models
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.database.User
+import com.example.audiochatbot.administrator.user_management.view_models.CreateUserViewModel
+import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
 /**
- * ViewModel for SleepQualityFragment.
+ * ViewModel for ProductDetailFragment.
  *
- * @param userKey The key of the current user we are working on.
+ * @param productKey The key of the current product we are working on.
  */
-class UserDetailViewModel(
-    private val userKey: Int,
+class ProductDetailViewModel(
+    private val productKey: Int,
     val dataSource: UserDao
 ) : ViewModel() {
-    private val positionCharArray = arrayOf('E', 'A', 'D')
 
     /**
      * Hold a reference to SleepDatabase via its SleepDatabaseDao.
@@ -42,10 +42,8 @@ class UserDetailViewModel(
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    private var _user = MutableLiveData<User>()
-    val user: LiveData<User> get() = _user
-
-    private var position = 'E'
+    private var _product = MutableLiveData<Product>()
+    val product: LiveData<Product> get() = _product
 
     private val _isUploaded = MutableLiveData<Boolean>()
     val isUploaded
@@ -53,51 +51,47 @@ class UserDetailViewModel(
 
     init {
         uiScope.launch {
-            _user.value = retrieveUser(userKey)
+            _product.value = retrieveProduct(productKey)
         }
     }
 
-    fun setPos(pos: Int) {
-        position = positionCharArray[pos]
+    fun updateProduct(newProduct: Product) {
+        newProduct.productId = product.value!!.productId
+        newProduct.businessId = product.value!!.businessId
+        submitProduct(newProduct)
     }
 
-    fun updateUser(newUser: User) {
-        newUser.position = position
-        newUser.userId = user.value!!.userId
-        submitUser(newUser)
-    }
-
-    private fun submitUser(user: User) {
+    private fun submitProduct(product: Product) {
         uiScope.launch {
-            addUserToDb(user)
-            val u = retrieveUser(user.userId)
-            _isUploaded.value = u!!.userId == user.userId
+            addProductToDb(product)
+            val u = retrieveProduct(product.productId)
+            _isUploaded.value = u!!.productId == productKey
         }
     }
 
     fun deleteRecord() {
         uiScope.launch {
             deleteRecordDb()
-            val u = retrieveUser(userKey)
+            val u = retrieveProduct(productKey)
             _isUploaded.value = u == null
         }
     }
 
-    private suspend fun retrieveUser(userKey: Int): User? {
-        return withContext(Dispatchers.IO) {
-            database.getUserWithId(userKey)
+    private suspend fun addProductToDb(product: Product) {
+        withContext(Dispatchers.IO) {
+            database.update(product)
         }
     }
 
-    private suspend fun addUserToDb(user: User) {
-        withContext(Dispatchers.IO) {
-            database.update(user)
+    private suspend fun retrieveProduct(productId: Int): Product? {
+        return withContext(Dispatchers.IO) {
+            database.getProductWithId(productId)
         }
     }
 
     private suspend fun deleteRecordDb() {
         withContext(Dispatchers.IO) {
-            database.deleteUserRecord(userKey)
+            database.deleteUserRecord(productKey)
         }
     }
 
@@ -111,4 +105,3 @@ class UserDetailViewModel(
         viewModelJob.cancel()
     }
 }
-

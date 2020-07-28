@@ -33,15 +33,19 @@ class AdministratorHomeFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding: FragmentAdministratorHomeBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_administrator_home, container, false)
-        val userId: Int = pref.getInt("id", -1)
+        val adminId: Int = pref.getInt("id", -1)
         val businessId: Int = pref.getInt("businessId", -1)
 
         binding.userManagementButton.setOnClickListener {
-            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeDestinationToTestFragment(userId, businessId))
+            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeDestinationToTestFragment(adminId, businessId))
         }
 
         binding.storeManagementButton.setOnClickListener {
-            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeDestinationToStoreManagementFragment(userId))
+            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeDestinationToStoreManagementFragment(adminId))
+        }
+
+        binding.productManagementButton.setOnClickListener {
+            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeAdministratorToProductManagementFragment(adminId, businessId))
         }
 
         binding.logOutButton.setOnClickListener {

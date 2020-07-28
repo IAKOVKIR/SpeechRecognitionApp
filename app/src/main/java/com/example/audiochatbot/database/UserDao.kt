@@ -121,4 +121,20 @@ interface UserDao {
     //Product
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProduct(product: Product)
+
+    @Update
+    fun update(product: Product)
+
+    @Query("SELECT * FROM PRODUCT WHERE BusinessID = :businessId ORDER BY ProductID DESC")
+    fun getAllProductsWithBusinessId(businessId: Int): List<Product>
+
+    @Query("SELECT * FROM PRODUCT WHERE Name LIKE :line AND BusinessID = :businessId ORDER BY ProductID DESC")
+    fun getAllProductsWithString(line: String, businessId: Int): List<Product>
+
+    @Query("SELECT * FROM PRODUCT WHERE ProductID = :key")
+    fun getProductWithId(key: Int): Product
+
+    //Assigned Product
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun assignProduct(newAssignProduct: AssignedProduct)
 }

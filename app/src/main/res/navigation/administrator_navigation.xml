@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_home_destination_to_storeManagementFragment"
             app:destination="@id/store_management" />
+        <action
+            android:id="@+id/action_home_administrator_to_productManagementFragment"
+            app:destination="@id/product_management" />
     </fragment>
 
     <fragment
@@ -107,5 +110,29 @@
         <action
             android:id="@+id/action_assigned_users_to_user_detail"
             app:destination="@id/user_detail" />
+    </fragment>
+    <fragment
+        android:id="@+id/product_management"
+        android:name="com.example.audiochatbot.administrator.product_management.ProductManagementFragment"
+        android:label="ProductManagementFragment"
+        tools:layout="@layout/fragment_product_management">
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_product_management_to_productDetailFragment"
+            app:destination="@id/product_detail" />
+    </fragment>
+    <fragment
+        android:id="@+id/product_detail"
+        android:name="com.example.audiochatbot.administrator.product_management.ProductDetailFragment"
+        android:label="fragment_product_detail"
+        tools:layout="@layout/fragment_product_detail" >
+        <argument
+            android:name="productKey"
+            app:argType="integer" />
     </fragment>
 </navigation>

@@ -55,7 +55,7 @@ class UserManagementFragment : Fragment() {
                         userId
                     )
                 )
-                testViewModel.onSleepDataQualityNavigated()
+                testViewModel.onUserNavigated()
             }
         })
 

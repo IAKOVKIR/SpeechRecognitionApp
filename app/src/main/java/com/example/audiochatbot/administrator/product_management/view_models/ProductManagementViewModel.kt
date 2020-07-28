@@ -1,16 +1,17 @@
-package com.example.audiochatbot.administrator.user_management.view_models
+package com.example.audiochatbot.administrator.product_management.view_models
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.database.User
+import com.example.audiochatbot.administrator.user_management.view_models.UserManagementViewModel
+import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
 /**
- * ViewModel for UserManagementFragment.
+ * ViewModel for ProductManagementFragment.
  */
-class UserManagementViewModel(private val businessId: Int, private val database: UserDao) : ViewModel() {
+class ProductManagementViewModel(private val businessId: Int, private val database: UserDao): ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -30,55 +31,48 @@ class UserManagementViewModel(private val businessId: Int, private val database:
 
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    private var _users = MutableLiveData<List<User>>()
-    val users: LiveData<List<User>> get() = _users
+    private var _products = MutableLiveData<List<Product>>()
+    val products: LiveData<List<Product>> get() = _products
 
-    private val _navigateToUserDetails = MutableLiveData<Int>()
-    val navigateToUserDetails
-        get() = _navigateToUserDetails
+    private val _navigateToProductDetails = MutableLiveData<Int>()
+    val navigateToProductDetails
+        get() = _navigateToProductDetails
 
     init {
         uiScope.launch {
-            _users.value = getAllUsers(businessId)
+            _products.value = getAllProducts(businessId)
         }
     }
 
-    fun retrieveList(storeId: Int) {
+    fun retrieveList(str: String) {
         uiScope.launch {
-            if (checkStore(storeId, businessId) == 1) {
-                _users.value = getList(storeId)
-            } else
-                _users.value = getAllUsers(businessId)
+            if (str.isNotEmpty())
+                _products.value = getListWithString("%$str%", businessId)
+            else
+                _products.value = getAllProducts(businessId)
         }
     }
 
-    fun onUserClicked(id: Int) {
-        _navigateToUserDetails.value = id
+    fun onProductClicked(id: Int) {
+        _navigateToProductDetails.value = id
     }
 
-
-    fun onUserNavigated() {
-        _navigateToUserDetails.value = null
+    fun onProductNavigated() {
+        _navigateToProductDetails.value = null
     }
 
-    private suspend fun getAllUsers(businessId: Int): List<User> {
+    private suspend fun getAllProducts(businessId: Int): List<Product> {
         return withContext(Dispatchers.IO) {
-            database.getAllUsersWithBusinessId(businessId)
+            database.getAllProductsWithBusinessId(businessId)
         }
     }
 
-    private suspend fun getList(storeId: Int): List<User> {
+    private suspend fun getListWithString(line: String, businessId: Int): List<Product> {
         return withContext(Dispatchers.IO) {
-            database.getAllUsersWithStoreID(storeId)
+            database.getAllProductsWithString(line, businessId)
         }
     }
-
-    private suspend fun checkStore(storeId: Int, businessId: Int): Int {
-        return withContext(Dispatchers.IO) {
-            database.ifStoreBelongToBusiness(storeId, businessId)
-        }
-    }
-
+    
     /**
      * Called when the ViewModel is dismantled.
      * At this point, we want to cancel all coroutines;

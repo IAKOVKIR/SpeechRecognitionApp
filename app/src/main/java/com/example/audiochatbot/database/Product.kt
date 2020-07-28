@@ -4,15 +4,15 @@ import androidx.room.*
 
 @Entity(tableName = "PRODUCT",
     indices = [Index(value = ["ProductID"], unique = true)],
-    foreignKeys = [ForeignKey(entity = Store::class, parentColumns =
-    ["StoreID"], childColumns = ["StoreID"], onDelete = ForeignKey.CASCADE)])
+    foreignKeys = [ForeignKey(entity = Business::class, parentColumns =
+    ["BusinessID"], childColumns = ["BusinessID"], onDelete = ForeignKey.CASCADE)])
 data class Product(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ProductID")
     var productId: Int,
 
-    @ColumnInfo(name = "StoreID")
-    var storeId: Int,
+    @ColumnInfo(name = "BusinessID")
+    var businessId: Int,
 
     @ColumnInfo(name = "Name")
     var name: String,
@@ -33,5 +33,8 @@ data class Product(
     var price: Float,
 
     @ColumnInfo(name = "Sale")
-    val sale: Int
-)
+    var sale: Int
+) {
+    constructor() :
+            this(-1, -1, "", "", "", 0, "", 0.0F, 0)
+}

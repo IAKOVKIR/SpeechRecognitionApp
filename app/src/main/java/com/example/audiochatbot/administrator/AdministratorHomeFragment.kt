@@ -41,7 +41,7 @@ class AdministratorHomeFragment : Fragment() {
         }
 
         binding.storeManagementButton.setOnClickListener {
-            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeDestinationToStoreManagementFragment(adminId))
+            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeDestinationToStoreManagementFragment(adminId, businessId))
         }
 
         binding.productManagementButton.setOnClickListener {

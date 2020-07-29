@@ -36,8 +36,14 @@ interface UserDao {
     @Query("SELECT * FROM USER INNER JOIN ASSIGNED_USER ON USER.UserID = ASSIGNED_USER.UserID WHERE StoreID = :storeId ORDER BY UserID DESC")
     fun getAllUsersLiveWithStoreID(storeId: Int): LiveData<List<User>>
 
+    @Query("SELECT * FROM USER LEFT JOIN ASSIGNED_USER ON USER.UserID = ASSIGNED_USER.UserID WHERE ASSIGNED_USER.StoreID IS NOT :storeId AND USER.BusinessID = :businessId AND USER.Position = :pos ORDER BY UserID DESC")
+    fun getAllUsersLiveWithoutStoreID(storeId: Int, businessId: Int, pos: Char): LiveData<List<User>>
+
     @Query("SELECT * FROM USER INNER JOIN ASSIGNED_USER ON USER.UserID = ASSIGNED_USER.UserID WHERE StoreID = :storeId ORDER BY UserID DESC")
     fun getAllUsersWithStoreID(storeId: Int): List<User>
+
+    @Query("SELECT * FROM USER WHERE (FirstName LIKE :line OR LastName LIKE :line) AND BusinessID = :businessId ORDER BY UserID DESC")
+    fun getAllUsersWithString(line: String, businessId: Int): List<User>
 
     @Query("SELECT * FROM USER WHERE UserID = :key AND Password = :password AND Position = :char")
     fun getUser(key: Int, password: String, char: Char): User?
@@ -72,8 +78,8 @@ interface UserDao {
     @Query("SELECT COUNT(*) FROM ASSIGNED_USER WHERE UserID = :userId AND StoreID = :storeId")
     fun ifUserAssigned(userId: Int, storeId: Int): Int
 
-    @Query("DELETE FROM ASSIGNED_USER WHERE UserID = :userId")
-    fun removeUserFromStore(userId: Int)
+    @Query("DELETE FROM ASSIGNED_USER WHERE UserID = :userId AND StoreID = :storeId")
+    fun removeUserFromStore(userId: Int, storeId: Int)
 
     //Store
 

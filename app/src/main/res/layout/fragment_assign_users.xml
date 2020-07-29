@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".administrator.user_management.UserManagementFragment">
+    tools:context=".administrator.store_management.AssignUsersFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="User Management"
+            android:text="User List"
             android:textSize="20sp"
             android:textColor="#000"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -60,13 +60,13 @@
             android:padding="4dp"
             android:background="@drawable/edittext_borders"
             android:inputType="text"
-            app:layout_constraintBottom_toBottomOf="@+id/show_list"
-            app:layout_constraintEnd_toStartOf="@+id/show_list"
+            app:layout_constraintBottom_toBottomOf="@+id/find_user"
+            app:layout_constraintEnd_toStartOf="@+id/find_user"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/show_list" />
+            app:layout_constraintTop_toTopOf="@+id/find_user" />
 
         <Button
-            android:id="@+id/show_list"
+            android:id="@+id/find_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -74,28 +74,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shipper_field"/>
 
-
-        <Button
-            android:id="@+id/create_new_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Create New User"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/show_list" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/user_list"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/create_new_user"
+            app:layout_constraintTop_toBottomOf="@id/find_user"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/text_item_view"/>
+            tools:listitem="@layout/fragment_assign_users_recycler_view_adapter"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -71,6 +71,9 @@
         <action
             android:id="@+id/action_store_management_to_store_detail"
             app:destination="@id/store_detail" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/create_store"
@@ -95,6 +98,9 @@
         <argument
             android:name="adminId"
             app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/assigned_users"
@@ -110,6 +116,12 @@
         <action
             android:id="@+id/action_assigned_users_to_user_detail"
             app:destination="@id/user_detail" />
+        <action
+            android:id="@+id/action_assigned_users_to_assign_users"
+            app:destination="@id/assign_users" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/product_management"
@@ -145,6 +157,21 @@
         tools:layout="@layout/fragment_create_product" >
         <argument
             android:name="adminId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/assign_users"
+        android:name="com.example.audiochatbot.administrator.store_management.AssignUsersFragment"
+        android:label="fragment_assign_users"
+        tools:layout="@layout/fragment_assign_users" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
             app:argType="integer" />
     </fragment>
 </navigation>

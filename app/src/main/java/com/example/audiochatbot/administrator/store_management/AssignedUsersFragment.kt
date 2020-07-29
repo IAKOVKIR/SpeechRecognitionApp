@@ -81,9 +81,8 @@ class AssignedUsersFragment : Fragment() {
             }
         })
 
-        binding.assignUser.setOnClickListener {
-            val line = binding.userIdText.text.toString().trim()
-            testViewModel.assignUser(line, adminId)
+        binding.assignUsers.setOnClickListener {
+            this.findNavController().navigate(AssignedUsersFragmentDirections.actionAssignedUsersToAssignUsers(adminId, storeId, args.businessId))
         }
 
         return binding.root

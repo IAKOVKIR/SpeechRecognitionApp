@@ -18,9 +18,15 @@ abstract class UniDatabase: RoomDatabase() {
 
     companion object {
 
-        private val business = Business(1, "Walmart", "King St",
+        private val businesses = arrayOf(
+            Business(1, "Walmart", "King St",
             "Melbourne", "Victoria", "0493959766", "Walmart@gmail.com",
-            3096)
+            3096),
+            Business(2, "7-eleven", "Malcolm St",
+                "Melbourne", "Victoria", "0493959556", "seveneleven@gmail.com",
+                3093)
+        )
+
         private val stores = arrayOf(
             Store(1, 1, "Chapel St", "Melbourne",
             "Victoria", "0495673253", 3183, 3000F),
@@ -38,7 +44,9 @@ abstract class UniDatabase: RoomDatabase() {
             User(4, 1,  "Chris", "Paul", "chris@gmail.com",
             "0498629804", "12345678", 'E'),
             User(5, 1,   "Mike", "Miller", "mike@gmail.com",
-                "0498629805", "12345678", 'E')
+                "0498629805", "12345678", 'E'),
+            User(6, 2,   "Lavar", "Ball", "ball@gmail.com",
+                "0498629806", "12345678", 'E')
         )
 
         private val deliveryUser = DeliveryUser(1, "Saddam", "Hussein",
@@ -109,7 +117,9 @@ abstract class UniDatabase: RoomDatabase() {
 
         fun populateDb(userDao: UserDao) {
             //userDao.clear()
-            userDao.insertBusiness(business)
+            for (i in businesses) {
+                userDao.insertBusiness(i)
+            }
 
             for (i in stores) {
                 userDao.insertStore(i)

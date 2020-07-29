@@ -47,7 +47,7 @@ class StoreManagementFragment : Fragment() {
 
         testViewModel.navigateToStoreDetails.observe(viewLifecycleOwner, Observer { storeId ->
             storeId?.let {
-                this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToStoreDetail(storeId, adminId))
+                this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToStoreDetail(storeId, adminId, args.businessId))
                 testViewModel.onStoreNavigated()
             }
         })

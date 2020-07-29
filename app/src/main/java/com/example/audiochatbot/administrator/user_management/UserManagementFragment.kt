@@ -71,11 +71,8 @@ class UserManagementFragment : Fragment() {
         }
 
         binding.showList.setOnClickListener {
-            line = binding.storeId.text.toString()
-            if (line.isNotEmpty())
-                testViewModel.retrieveList(line.toInt())
-            else
-                testViewModel.retrieveList(0)
+            line = binding.storeId.text.toString().trim()
+            testViewModel.retrieveList(line)
         }
 
         testViewModel.users.observe(viewLifecycleOwner, Observer {
@@ -89,9 +86,6 @@ class UserManagementFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (line.isNotEmpty())
-            testViewModel.retrieveList(line.toInt())
-        else
-            testViewModel.retrieveList(0)
+        testViewModel.retrieveList(line)
     }
 }

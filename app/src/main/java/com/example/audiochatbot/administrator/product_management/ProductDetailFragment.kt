@@ -58,7 +58,7 @@ class ProductDetailFragment : Fragment() {
             product.quantity = binding.quantity.text.toString().toInt()
             product.conversion = binding.conversion.text.toString().trim()
             product.price = binding.price.text.toString().toFloat()
-            product.sale = binding.price.text.toString().toInt()
+            product.sale = binding.sale.text.toString().toInt()
             productDetailViewModel.updateProduct(product)
         }
 

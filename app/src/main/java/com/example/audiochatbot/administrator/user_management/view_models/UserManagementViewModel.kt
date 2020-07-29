@@ -43,11 +43,11 @@ class UserManagementViewModel(private val businessId: Int, private val database:
         }
     }
 
-    fun retrieveList(storeId: Int) {
+    fun retrieveList(str: String) {
         uiScope.launch {
-            if (checkStore(storeId, businessId) == 1) {
-                _users.value = getList(storeId)
-            } else
+            if (str.isNotEmpty())
+                _users.value = getListWithString("%$str%", businessId)
+            else
                 _users.value = getAllUsers(businessId)
         }
     }
@@ -67,15 +67,9 @@ class UserManagementViewModel(private val businessId: Int, private val database:
         }
     }
 
-    private suspend fun getList(storeId: Int): List<User> {
+    private suspend fun getListWithString(line: String, businessId: Int): List<User> {
         return withContext(Dispatchers.IO) {
-            database.getAllUsersWithStoreID(storeId)
-        }
-    }
-
-    private suspend fun checkStore(storeId: Int, businessId: Int): Int {
-        return withContext(Dispatchers.IO) {
-            database.ifStoreBelongToBusiness(storeId, businessId)
+            database.getAllUsersWithString(line, businessId)
         }
     }
 

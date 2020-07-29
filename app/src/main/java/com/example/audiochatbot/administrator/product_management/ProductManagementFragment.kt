@@ -37,7 +37,7 @@ class ProductManagementFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
         val args = UserManagementFragmentArgs.fromBundle(requireArguments())
-        //val adminId: Int = args.adminId
+        val adminId: Int = args.adminId
         val businessId: Int = args.businessId
 
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
@@ -73,6 +73,10 @@ class ProductManagementFragment : Fragment() {
                 adapter.submitList(it)
             }
         })
+
+        binding.createNewProduct.setOnClickListener {
+            this.findNavController().navigate(ProductManagementFragmentDirections.actionProductManagementToCreateProduct(adminId))
+        }
 
         return binding.root
     }

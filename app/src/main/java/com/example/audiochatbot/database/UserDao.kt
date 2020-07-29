@@ -134,6 +134,16 @@ interface UserDao {
     @Query("SELECT * FROM PRODUCT WHERE ProductID = :key")
     fun getProductWithId(key: Int): Product
 
+    @Query("SELECT COUNT(*) FROM PRODUCT WHERE ProductID = :key")
+    fun getProductIdWithId(key: Int): Int
+
+    @Query("SELECT * FROM PRODUCT ORDER BY ProductID DESC LIMIT 1")
+    fun getLastProduct(): Product
+
+    @Query("DELETE FROM PRODUCT WHERE ProductID = :productId")
+    fun deleteProductRecord(productId: Int)
+
+
     //Assigned Product
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun assignProduct(newAssignProduct: AssignedProduct)

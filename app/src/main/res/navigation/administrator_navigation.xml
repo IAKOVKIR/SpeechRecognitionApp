@@ -125,6 +125,9 @@
         <action
             android:id="@+id/action_product_management_to_productDetailFragment"
             app:destination="@id/product_detail" />
+        <action
+            android:id="@+id/action_product_management_to_create_product"
+            app:destination="@id/create_product" />
     </fragment>
     <fragment
         android:id="@+id/product_detail"
@@ -133,6 +136,15 @@
         tools:layout="@layout/fragment_product_detail" >
         <argument
             android:name="productKey"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/create_product"
+        android:name="com.example.audiochatbot.administrator.product_management.CreateProductFragment"
+        android:label="fragment_create_product"
+        tools:layout="@layout/fragment_create_product" >
+        <argument
+            android:name="adminId"
             app:argType="integer" />
     </fragment>
 </navigation>

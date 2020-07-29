@@ -1,6 +1,5 @@
 package com.example.audiochatbot.administrator.product_management.view_models
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.administrator.user_management.view_models.CreateUserViewModel
@@ -8,27 +7,13 @@ import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-/**
- * ViewModel for ProductDetailFragment.
- *
- * @param productKey The key of the current product we are working on.
- */
-class ProductDetailViewModel(
-    private val productKey: Int,
-    val dataSource: UserDao
+class CreateProductViewModel(
+    private val database: UserDao
 ) : ViewModel() {
-
-    /**
-     * Hold a reference to SleepDatabase via its SleepDatabaseDao.
-     */
-    private val database = dataSource
-
-    /** Coroutine setup variables */
-
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
-    private val viewModelJob = Job()
+    private var viewModelJob = Job()
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -42,56 +27,42 @@ class ProductDetailViewModel(
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    private var _product = MutableLiveData<Product>()
-    val product: LiveData<Product> get() = _product
-
     private val _isUploaded = MutableLiveData<Boolean>()
     val isUploaded
         get() = _isUploaded
 
-    init {
+    fun submitProduct(product: Product, adminId: Int) {
         uiScope.launch {
-            _product.value = retrieveProduct(productKey)
-        }
-    }
-
-    fun updateProduct(newProduct: Product) {
-        newProduct.productId = product.value!!.productId
-        newProduct.businessId = product.value!!.businessId
-        submitProduct(newProduct)
-    }
-
-    private fun submitProduct(product: Product) {
-        uiScope.launch {
+            val uLast = getLastProduct()
+            product.productId = uLast!!.productId + 1
+            product.businessId = getAdminBusinessId(adminId)
             addProductToDb(product)
-            val u = retrieveProduct(product.productId)
-            _isUploaded.value = u!!.productId == productKey
-        }
-    }
-
-    fun deleteRecord() {
-        uiScope.launch {
-            deleteRecordDb()
-            val u = retrieveProduct(productKey)
-            _isUploaded.value = u == null
+            val u = getProductIdWithId(product.productId)
+            _isUploaded.value = u == 1
         }
     }
 
     private suspend fun addProductToDb(product: Product) {
         withContext(Dispatchers.IO) {
-            database.update(product)
+            database.insertProduct(product)
         }
     }
 
-    private suspend fun retrieveProduct(productId: Int): Product? {
+    private suspend fun getLastProduct(): Product? {
         return withContext(Dispatchers.IO) {
-            database.getProductWithId(productId)
+            database.getLastProduct()
         }
     }
 
-    private suspend fun deleteRecordDb() {
-        withContext(Dispatchers.IO) {
-            database.deleteProductRecord(productKey)
+    private suspend fun getProductIdWithId(productId: Int): Int {
+        return withContext(Dispatchers.IO) {
+            database.getProductIdWithId(productId)
+        }
+    }
+
+    private suspend fun getAdminBusinessId(adminId: Int): Int {
+        return withContext(Dispatchers.IO) {
+            database.getAdminsBusinessId(adminId)
         }
     }
 

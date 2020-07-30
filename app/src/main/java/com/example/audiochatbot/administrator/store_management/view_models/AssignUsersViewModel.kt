@@ -1,10 +1,10 @@
 package com.example.audiochatbot.administrator.store_management.view_models
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.database.AssignedUser
 import com.example.audiochatbot.database.UserDao
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 
 class AssignUsersViewModel(val storeId: Int, val businessId: Int, private val database: UserDao): ViewModel() {
 
@@ -26,6 +26,31 @@ class AssignUsersViewModel(val storeId: Int, val businessId: Int, private val da
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     val users = database.getAllUsersLiveWithoutStoreID(storeId, businessId, 'E')
+
+    private val _navigateToUserDetails = MutableLiveData<Int>()
+    val navigateToUserDetails
+        get() = _navigateToUserDetails
+
+    fun onUserClicked(id: Int) {
+        _navigateToUserDetails.value = id
+    }
+
+    fun onUserNavigated() {
+        _navigateToUserDetails.value = null
+    }
+
+    fun addRecord(userId: Int, adminId: Int) {
+        uiScope.launch {
+            addRecordDb(userId, adminId)
+        }
+    }
+
+    private suspend fun addRecordDb(userId: Int, adminId: Int) {
+        withContext(Dispatchers.IO) {
+            val num = database.getLastAssignedUserId() + 1
+            database.assignUser(AssignedUser(num, userId, adminId, storeId, "30/07/2020", "12:40"))
+        }
+    }
 
     /**
      * Called when the ViewModel is dismantled.

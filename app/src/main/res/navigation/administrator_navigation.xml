@@ -173,5 +173,8 @@
         <argument
             android:name="businessId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_assign_users_to_user_detail"
+            app:destination="@id/user_detail" />
     </fragment>
 </navigation>

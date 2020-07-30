@@ -1,27 +1,22 @@
 package com.example.audiochatbot.administrator.store_management
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.User
-import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentAssignUsersRecyclerViewAdapterBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class AssignUsersRecyclerViewAdapter(private val clickListener: AssignedUserListener,
-                                               private val addUserListener: AddUserListener, private val database: UserDao,
-                                     private val storeId: Int) : ListAdapter<User,
+                                               private val addUserListener: AddUserListener) : ListAdapter<User,
         AssignUsersRecyclerViewAdapter.ViewHolder>(AssignUsersDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(clickListener, addUserListener, item, database, storeId)
+        holder.bind(clickListener, addUserListener, item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,7 +26,7 @@ class AssignUsersRecyclerViewAdapter(private val clickListener: AssignedUserList
     class ViewHolder private constructor(val binding: FragmentAssignUsersRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: AssignedUserListener, addUserListener: AddUserListener, item: User, database: UserDao, storeId: Int) {
+        fun bind(clickListener: AssignedUserListener, addUserListener: AddUserListener, item: User) {
             binding.user = item
             binding.clickListener = clickListener
             binding.addUserListener = addUserListener
@@ -64,10 +59,10 @@ class AssignUsersDiffCallback : DiffUtil.ItemCallback<User>() {
     }
 }
 
-class AssignedUserListener(val clickListener: (userId: Int) -> Unit) {
+class AssignedUserListener(private val clickListener: (userId: Int) -> Unit) {
     fun onClick(user: User) = clickListener(user.userId)
 }
 
-class AddUserListener(val clickListener: (userId: Int) -> Unit) {
+class AddUserListener(private val clickListener: (userId: Int) -> Unit) {
     fun onAddUser(user: User) = clickListener(user.userId)
 }

@@ -7,10 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.databinding.AssignedUsersItemViewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class AssignedUsersFragmentRecyclerViewAdapter(private val clickListener: UserListener,
                                                private val removeUserListener: RemoveUserListener) : ListAdapter<User,

@@ -5,16 +5,16 @@
 
     <data>
         <variable
-            name="user"
-            type="com.example.audiochatbot.database.User" />
+            name="product"
+            type="com.example.audiochatbot.database.Product" />
 
         <variable
             name="clickListener"
-            type="com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignedUserListener" />
+            type="com.example.audiochatbot.administrator.product_management.ProductListener" />
 
         <variable
-            name="addUserListener"
-            type="com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AddUserListener" />
+            name="removeProductListener"
+            type="com.example.audiochatbot.administrator.store_management.recycler_view_adapters.RemoveProductListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,45 +26,45 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/add_button"
+            app:layout_constraintEnd_toStartOf="@+id/remove_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{() -> clickListener.onClick(user)}">
+            android:onClick="@{() -> clickListener.onClick(product)}">
 
             <TextView
-                android:id="@+id/user_name"
+                android:id="@+id/name_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Name" />
+                tools:text="Name - Price" />
 
             <TextView
-                android:id="@+id/user_position"
+                android:id="@+id/quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="@+id/user_name"
+                app:layout_constraintEnd_toEndOf="@+id/name_price"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/user_name"
-                app:layout_constraintTop_toBottomOf="@+id/user_name"
-                tools:text="Position" />
+                app:layout_constraintStart_toStartOf="@+id/name_price"
+                app:layout_constraintTop_toBottomOf="@+id/name_price"
+                tools:text="Quantity" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
-            android:id="@+id/add_button"
+            android:id="@+id/remove_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="remove"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{() -> addUserListener.onAddUser(user)}"
-            android:text="add"/>
+            android:onClick="@{() -> removeProductListener.onRemoveProduct(product)}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

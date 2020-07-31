@@ -137,6 +137,12 @@ interface UserDao {
     @Query("SELECT * FROM PRODUCT WHERE Name LIKE :line AND BusinessID = :businessId ORDER BY ProductID DESC")
     fun getAllProductsWithString(line: String, businessId: Int): List<Product>
 
+    @Query("SELECT PRODUCT.ProductID, BusinessID, Name, SmallUnitName, BigUnitName, Quantity, Conversion, Price, Sale FROM PRODUCT LEFT JOIN ASSIGNED_PRODUCT ON PRODUCT.ProductID = ASSIGNED_PRODUCT.ProductID WHERE ASSIGNED_PRODUCT.StoreID IS NOT :storeId AND PRODUCT.BusinessID = :businessId ORDER BY PRODUCT.ProductID DESC")
+    fun getAllProductsLiveWithoutStoreID(storeId: Int, businessId: Int): LiveData<List<Product>>
+
+    @Query("SELECT * FROM PRODUCT INNER JOIN ASSIGNED_PRODUCT ON PRODUCT.ProductID = ASSIGNED_PRODUCT.ProductID WHERE StoreID = :storeId ORDER BY ProductID DESC")
+    fun getAllProductsLiveWithStoreID(storeId: Int): LiveData<List<Product>>
+
     @Query("SELECT * FROM PRODUCT WHERE ProductID = :key")
     fun getProductWithId(key: Int): Product
 
@@ -153,4 +159,7 @@ interface UserDao {
     //Assigned Product
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun assignProduct(newAssignProduct: AssignedProduct)
+
+    @Query("DELETE FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
+    fun removeProductFromStore(productId: Int, storeId: Int)
 }

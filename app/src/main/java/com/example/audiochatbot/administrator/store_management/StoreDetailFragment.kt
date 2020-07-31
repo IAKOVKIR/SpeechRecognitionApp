@@ -73,7 +73,7 @@ class StoreDetailFragment : Fragment() {
         }
 
         binding.assignedProducts.setOnClickListener {
-
+            this.findNavController().navigate(StoreDetailFragmentDirections.actionStoreDetailToAssignedProductsFragment(storeKey, adminKey, args.businessId))
         }
 
         viewModel.isDone.observe(viewLifecycleOwner, Observer { result ->

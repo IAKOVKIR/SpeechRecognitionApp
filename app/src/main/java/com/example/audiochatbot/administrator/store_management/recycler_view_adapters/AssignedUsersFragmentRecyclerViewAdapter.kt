@@ -1,55 +1,60 @@
-package com.example.audiochatbot.administrator.store_management
+package com.example.audiochatbot.administrator.store_management.recycler_view_adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.User
-import com.example.audiochatbot.databinding.FragmentAssignUsersRecyclerViewAdapterBinding
+import com.example.audiochatbot.databinding.AssignedUsersItemViewBinding
 
-class AssignUsersRecyclerViewAdapter(private val clickListener: AssignedUserListener,
-                                               private val addUserListener: AddUserListener) : ListAdapter<User,
-        AssignUsersRecyclerViewAdapter.ViewHolder>(AssignUsersDiffCallback()) {
+class AssignedUsersFragmentRecyclerViewAdapter(private val clickListener: UserListener,
+                                               private val removeUserListener: RemoveUserListener
+) : ListAdapter<User,
+        AssignedUsersFragmentRecyclerViewAdapter.ViewHolder>(
+    AssignedUsersUserDiffCallback()
+) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(clickListener, addUserListener, item)
+        holder.bind(clickListener, removeUserListener, item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent)
+        return ViewHolder.from(
+            parent
+        )
     }
 
-    class ViewHolder private constructor(val binding: FragmentAssignUsersRecyclerViewAdapterBinding)
+    class ViewHolder private constructor(val binding: AssignedUsersItemViewBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: AssignedUserListener, addUserListener: AddUserListener, item: User) {
+        fun bind(clickListener: UserListener, removeUserListener: RemoveUserListener, item: User) {
             binding.user = item
             binding.clickListener = clickListener
-            binding.addUserListener = addUserListener
+            binding.removeUserListener = removeUserListener
             binding.userName.text = "${item.firstName}   ${item.lastName}"
             if (item.position == 'E')
                 binding.userPosition.text = "Employee"
             else if (item.position == 'A')
                 binding.userPosition.text = "Administrator"
-
         }
 
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = FragmentAssignUsersRecyclerViewAdapterBinding.inflate(layoutInflater, parent, false)
+                val binding = AssignedUsersItemViewBinding.inflate(layoutInflater, parent, false)
 
-                return ViewHolder(binding)
+                return ViewHolder(
+                    binding
+                )
             }
         }
     }
 }
 
-class AssignUsersDiffCallback : DiffUtil.ItemCallback<User>() {
+class AssignedUsersUserDiffCallback : DiffUtil.ItemCallback<User>() {
     override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
         return oldItem.userId == newItem.userId
     }
@@ -59,10 +64,10 @@ class AssignUsersDiffCallback : DiffUtil.ItemCallback<User>() {
     }
 }
 
-class AssignedUserListener(private val clickListener: (userId: Int) -> Unit) {
+class UserListener(val clickListener: (userId: Int) -> Unit) {
     fun onClick(user: User) = clickListener(user.userId)
 }
 
-class AddUserListener(private val clickListener: (userId: Int) -> Unit) {
-    fun onAddUser(user: User) = clickListener(user.userId)
+class RemoveUserListener(val clickListener: (userId: Int) -> Unit) {
+    fun onRemoveUser(user: User) = clickListener(user.userId)
 }

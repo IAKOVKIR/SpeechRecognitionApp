@@ -10,6 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
+import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AddUserListener
+import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignUsersRecyclerViewAdapter
+import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignedUserListener
 import com.example.audiochatbot.administrator.store_management.view_models.AssignUsersViewModel
 import com.example.audiochatbot.administrator.store_management.view_models.AssignUsersViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
@@ -50,7 +53,7 @@ class AssignUsersFragment : Fragment() {
                 AssignedUserListener { userId ->
                     testViewModel.onUserClicked(userId)
                 },
-                AddUserListener {userId ->
+                AddUserListener { userId ->
                     testViewModel.addRecord(userId, adminId)
                 })
         binding.userList.adapter = adapter

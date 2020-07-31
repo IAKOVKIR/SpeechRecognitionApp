@@ -16,6 +16,7 @@
     <string name="user_detail_title">User %1$s Details</string>
     <string name="product_detail_title">Product %1$s Details</string>
     <string name="assigned_users_list_title">Assigned Users - Store %1$s</string>
+    <string name="assigned_products_list_title">Assigned Products - Store %1$s</string>
     <string name="selected_item">Selected position:</string>
     <string-array name="Positions">
         <item>Employee</item>

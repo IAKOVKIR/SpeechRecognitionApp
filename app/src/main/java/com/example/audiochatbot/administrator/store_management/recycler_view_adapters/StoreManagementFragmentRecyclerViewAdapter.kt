@@ -1,4 +1,4 @@
-package com.example.audiochatbot.administrator.store_management
+package com.example.audiochatbot.administrator.store_management.recycler_view_adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

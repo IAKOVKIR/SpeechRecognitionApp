@@ -11,6 +11,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
+import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignedUsersFragmentRecyclerViewAdapter
+import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.RemoveUserListener
+import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.UserListener
 import com.example.audiochatbot.administrator.store_management.view_models.AssignedUsersViewModel
 import com.example.audiochatbot.administrator.store_management.view_models.AssignedUsersViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
@@ -33,7 +36,6 @@ class AssignedUsersFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
         val args = AssignedUsersFragmentArgs.fromBundle(requireArguments())
-        val adminId: Int = args.adminId
         val storeId: Int = args.storeId
 
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
@@ -64,7 +66,7 @@ class AssignedUsersFragment : Fragment() {
                 UserListener { userId ->
                     testViewModel.onUserClicked(userId)
                 },
-                RemoveUserListener {userId ->
+                RemoveUserListener { userId ->
                     testViewModel.deleteRecord(userId)
                 })
         binding.userList.adapter = adapter
@@ -82,7 +84,7 @@ class AssignedUsersFragment : Fragment() {
         })
 
         binding.assignUsers.setOnClickListener {
-            this.findNavController().navigate(AssignedUsersFragmentDirections.actionAssignedUsersToAssignUsers(adminId, storeId, args.businessId))
+            this.findNavController().navigate(AssignedUsersFragmentDirections.actionAssignedUsersToAssignUsers(args.adminId, storeId, args.businessId))
         }
 
         return binding.root

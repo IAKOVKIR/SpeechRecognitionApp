@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): ViewModel() {
+class AssignedProductsViewModel(val storeId: Int, private val database: UserDao): ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -24,36 +24,29 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val users = database.getAllUsersLiveWithStoreID(storeId)
+    val products = database.getAllProductsLiveWithStoreID(storeId)
 
-    private val _navigateToUserDetails = MutableLiveData<Int>()
-    val navigateToUserDetails
-        get() = _navigateToUserDetails
+    private val _navigateToProductDetails = MutableLiveData<Int>()
+    val navigateToProductDetails
+        get() = _navigateToProductDetails
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage get() = _errorMessage
-
-    fun onUserClicked(id: Int) {
-        _navigateToUserDetails.value = id
+    fun onProductClicked(id: Int) {
+        _navigateToProductDetails.value = id
     }
 
-    fun onUserNavigated() {
-        _navigateToUserDetails.value = null
+    fun onProductNavigated() {
+        _navigateToProductDetails.value = null
     }
 
-    fun onMessageCleared() {
-        _errorMessage.value = null
-    }
-
-    fun deleteRecord(userId: Int) {
+    fun deleteRecord(productId: Int) {
         uiScope.launch {
-            deleteRecordDb(userId)
+            deleteRecordDb(productId)
         }
     }
 
-    private suspend fun deleteRecordDb(userId: Int) {
+    private suspend fun deleteRecordDb(productId: Int) {
         withContext(Dispatchers.IO) {
-            database.removeUserFromStore(userId, storeId)
+            database.removeProductFromStore(productId, storeId)
         }
     }
 

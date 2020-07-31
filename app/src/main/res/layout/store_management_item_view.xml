@@ -10,7 +10,7 @@
 
         <variable
             name="clickListener"
-            type="com.example.audiochatbot.administrator.store_management.StoreListener" />
+            type="com.example.audiochatbot.administrator.store_management.recycler_view_adapters.StoreListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

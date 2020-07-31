@@ -11,10 +11,6 @@
         <variable
             name="clickListener"
             type="com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignedUserListener" />
-
-        <variable
-            name="addUserListener"
-            type="com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AddUserListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,7 +59,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{() -> addUserListener.onAddUser(user)}"
             android:text="add"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

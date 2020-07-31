@@ -10,11 +10,7 @@
 
         <variable
             name="clickListener"
-            type="com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignedProductListener" />
-
-        <variable
-            name="removeProductListener"
-            type="com.example.audiochatbot.administrator.store_management.recycler_view_adapters.RemoveProductListener" />
+            type="com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignProductListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/remove_button"
+            app:layout_constraintEnd_toStartOf="@+id/add_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:onClick="@{() -> clickListener.onClick(product)}">
@@ -57,14 +53,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
-            android:id="@+id/remove_button"
+            android:id="@+id/add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="remove"
+            android:text="add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{() -> removeProductListener.onRemoveProduct(product)}"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

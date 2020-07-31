@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AddUserListener
+//import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AddUserListener
 import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignUsersRecyclerViewAdapter
 import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignedUserListener
 import com.example.audiochatbot.administrator.store_management.view_models.AssignUsersViewModel
@@ -52,10 +52,10 @@ class AssignUsersFragment : Fragment() {
             AssignUsersRecyclerViewAdapter(
                 AssignedUserListener { userId ->
                     testViewModel.onUserClicked(userId)
-                },
+                }/*,
                 AddUserListener { userId ->
                     testViewModel.addRecord(userId, adminId)
-                })
+                }*/, userDataSource, storeId, adminId)
         binding.userList.adapter = adapter
 
         testViewModel.users.observe(viewLifecycleOwner, Observer {

@@ -6,14 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.audiochatbot.administrator.product_management.ProductListener
 import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.databinding.FragmentAssignedProductsRecyclerViewAdapterBinding
 
 /**
  * A simple [Fragment] subclass.
  */
-class AssignedProductsRecyclerViewAdapter(private val clickListener: ProductListener,
+class AssignedProductsRecyclerViewAdapter(private val clickListener: AssignedProductListener,
                                           private val removeProductListener: RemoveProductListener
 ) : ListAdapter<Product,
         AssignedProductsRecyclerViewAdapter.ViewHolder>(
@@ -33,7 +32,7 @@ class AssignedProductsRecyclerViewAdapter(private val clickListener: ProductList
     class ViewHolder private constructor(val binding: FragmentAssignedProductsRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: ProductListener, removeProductListener: RemoveProductListener, item: Product) {
+        fun bind(clickListener: AssignedProductListener, removeProductListener: RemoveProductListener, item: Product) {
             binding.product = item
             binding.clickListener = clickListener
             binding.removeProductListener = removeProductListener
@@ -60,6 +59,10 @@ class AssignedProductsDiffCallback : DiffUtil.ItemCallback<Product>() {
     override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
         return oldItem == newItem
     }
+}
+
+class AssignedProductListener(val clickListener: (productId: Int) -> Unit) {
+    fun onClick(product: Product) = clickListener(product.productId)
 }
 
 class RemoveProductListener(val clickListener: (productId: Int) -> Unit) {

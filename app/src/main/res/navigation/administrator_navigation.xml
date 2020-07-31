@@ -197,5 +197,26 @@
         <action
             android:id="@+id/action_assigned_products_to_product_detail"
             app:destination="@id/product_detail" />
+        <action
+            android:id="@+id/action_assigned_products_to_assign_products"
+            app:destination="@id/assign_products" />
+    </fragment>
+    <fragment
+        android:id="@+id/assign_products"
+        android:name="com.example.audiochatbot.administrator.store_management.AssignProductsFragment"
+        android:label="fragment_assign_products"
+        tools:layout="@layout/fragment_assign_products" >
+        <action
+            android:id="@+id/action_assign_products_to_product_detail"
+            app:destination="@id/product_detail" />
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
     </fragment>
 </navigation>

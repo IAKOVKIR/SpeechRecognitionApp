@@ -2,11 +2,10 @@ package com.example.audiochatbot.administrator.store_management.view_models
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.database.AssignedUser
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class AssignUsersViewModel(val storeId: Int, val businessId: Int, private val database: UserDao): ViewModel() {
+class AssignProductsViewModel(val storeId: Int, val businessId: Int, val database: UserDao): ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -23,34 +22,34 @@ class AssignUsersViewModel(val storeId: Int, val businessId: Int, private val da
      * the main thread on Android. This is a sensible default because most coroutines started by
      * a [StoreManagementViewModel] update the UI after performing some processing.
      */
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    //private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val users = database.getAllLiveUsersWithBusinessId(businessId)
+    val products = database.getAllLiveProductsWithBusinessId(businessId)
 
-    private val _navigateToUserDetails = MutableLiveData<Int>()
-    val navigateToUserDetails
-        get() = _navigateToUserDetails
+    private val _navigateToProductDetails = MutableLiveData<Int>()
+    val navigateToProductDetails
+        get() = _navigateToProductDetails
 
-    fun onUserClicked(id: Int) {
-        _navigateToUserDetails.value = id
+    fun onProductClicked(id: Int) {
+        _navigateToProductDetails.value = id
     }
 
-    fun onUserNavigated() {
-        _navigateToUserDetails.value = null
+    fun onProductNavigated() {
+        _navigateToProductDetails.value = null
     }
 
-    fun addRecord(userId: Int, adminId: Int) {
+    /*fun addRecord(userId: Int) {
         uiScope.launch {
-            addRecordDb(userId, adminId)
+            addRecordDb(userId)
         }
     }
 
-    private suspend fun addRecordDb(userId: Int, adminId: Int) {
+    private suspend fun addRecordDb(productId: Int) {
         withContext(Dispatchers.IO) {
-            val num = database.getLastAssignedUserId() + 1
-            database.assignUser(AssignedUser(num, userId, adminId, storeId, "30/07/2020", "12:40"))
+            val num = database.getLastAssignedProductId() + 1
+            database.assignProduct(AssignedProduct(num, productId, storeId, "30/07/2020", "12:40"))
         }
-    }
+    }*/
 
     /**
      * Called when the ViewModel is dismantled.
@@ -62,5 +61,4 @@ class AssignUsersViewModel(val storeId: Int, val businessId: Int, private val da
         super.onCleared()
         viewModelJob.cancel()
     }
-
 }

@@ -33,6 +33,9 @@ interface UserDao {
     @Query("SELECT * FROM USER WHERE BusinessID = :businessId ORDER BY UserID DESC")
     fun getAllUsersWithBusinessId(businessId: Int): List<User>
 
+    @Query("SELECT * FROM USER WHERE BusinessID = :businessId ORDER BY UserID DESC")
+    fun getAllLiveUsersWithBusinessId(businessId: Int): LiveData<List<User>>
+
     @Query("SELECT * FROM USER INNER JOIN ASSIGNED_USER ON USER.UserID = ASSIGNED_USER.UserID WHERE StoreID = :storeId ORDER BY UserID DESC")
     fun getAllUsersLiveWithStoreID(storeId: Int): LiveData<List<User>>
 
@@ -134,6 +137,9 @@ interface UserDao {
     @Query("SELECT * FROM PRODUCT WHERE BusinessID = :businessId ORDER BY ProductID DESC")
     fun getAllProductsWithBusinessId(businessId: Int): List<Product>
 
+    @Query("SELECT * FROM PRODUCT WHERE BusinessID = :businessId ORDER BY ProductID DESC")
+    fun getAllLiveProductsWithBusinessId(businessId: Int): LiveData<List<Product>>
+
     @Query("SELECT * FROM PRODUCT WHERE Name LIKE :line AND BusinessID = :businessId ORDER BY ProductID DESC")
     fun getAllProductsWithString(line: String, businessId: Int): List<Product>
 
@@ -162,4 +168,10 @@ interface UserDao {
 
     @Query("DELETE FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
     fun removeProductFromStore(productId: Int, storeId: Int)
+
+    @Query("SELECT COUNT(*) FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
+    fun ifProductAssigned(productId: Int, storeId: Int): Int
+
+    @Query("SELECT AssignedProductID FROM ASSIGNED_PRODUCT ORDER BY AssignedProductID DESC LIMIT 1")
+    fun getLastAssignedProductId(): Int
 }

@@ -2,13 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".administrator.store_management.AssignedProductsFragment">
-
-    <data>
-        <variable
-            name="viewModel"
-            type="com.example.audiochatbot.administrator.store_management.view_models.AssignedProductsViewModel" />
-    </data>
+    tools:context=".administrator.store_management.AssignProductsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@{@string/assigned_products_list_title(viewModel.storeId)}"
+            android:text="Product List"
             android:textSize="20sp"
             android:textColor="#000"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -57,18 +51,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/home_title" />
 
-        <Button
-            android:id="@+id/assign_products"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Assign Products"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shipper_field" />
-
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/user_list"
+            android:id="@+id/product_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
@@ -77,9 +61,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/assign_products"
+            app:layout_constraintTop_toBottomOf="@id/shipper_field"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/fragment_assigned_products_recycler_view_adapter"/>
+            tools:listitem="@layout/fragment_assign_products_recycler_view_adapter"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -10,18 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.*
-import com.example.audiochatbot.administrator.store_management.view_models.AssignedProductsViewModel
-import com.example.audiochatbot.administrator.store_management.view_models.AssignedProductsViewModelFactory
+//import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AddProductListener
+import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignProductListener
+import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignProductsRecyclerViewAdapter
+import com.example.audiochatbot.administrator.store_management.view_models.AssignProductsViewModel
+import com.example.audiochatbot.administrator.store_management.view_models.AssignProductsViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
-import com.example.audiochatbot.databinding.FragmentAssignedProductsBinding
+import com.example.audiochatbot.databinding.FragmentAssignProductsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 /**
  * A simple [Fragment] subclass.
  */
-class AssignedProductsFragment : Fragment() {
+class AssignProductsFragment : Fragment() {
 
     private var storeId: Int? = null
     private var adminId: Int? = null
@@ -40,35 +42,28 @@ class AssignedProductsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val binding: FragmentAssignedProductsBinding = DataBindingUtil.inflate(inflater,
-            R.layout.fragment_assigned_products, container, false)
+        val binding: FragmentAssignProductsBinding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_assign_products, container, false)
 
         val application = requireNotNull(this.activity).application
-
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val viewModelFactory =
-            AssignedProductsViewModelFactory(storeId!!, userDataSource)
+            AssignProductsViewModelFactory(storeId!!, businessId!!, userDataSource)
 
         val testViewModel =
             ViewModelProvider(
-                this, viewModelFactory).get(AssignedProductsViewModel::class.java)
-
-        // To use the View Model with data binding, you have to explicitly
-        // give the binding object a reference to it.
-        binding.viewModel = testViewModel
-
-        binding.lifecycleOwner = this
+                this, viewModelFactory).get(AssignProductsViewModel::class.java)
 
         val adapter =
-            AssignedProductsRecyclerViewAdapter(
-                AssignedProductListener { productId ->
+            AssignProductsRecyclerViewAdapter(
+                AssignProductListener { productId ->
                     testViewModel.onProductClicked(productId)
-                },
-                RemoveProductListener { productId ->
-                    testViewModel.deleteRecord(productId)
-                })
-        binding.userList.adapter = adapter
+                }/*,
+                AddProductListener { productId ->
+                    testViewModel.addRecord(productId)
+                }*/, userDataSource, storeId!!)
+        binding.productList.adapter = adapter
 
         testViewModel.products.observe(viewLifecycleOwner, Observer {
             it?.let {
@@ -78,14 +73,10 @@ class AssignedProductsFragment : Fragment() {
 
         testViewModel.navigateToProductDetails.observe(viewLifecycleOwner, Observer { productId ->
             productId?.let {
-                this.findNavController().navigate(AssignedProductsFragmentDirections.actionAssignedProductsToProductDetail(productId))
+                this.findNavController().navigate(AssignProductsFragmentDirections.actionAssignProductsToProductDetail(productId))
                 testViewModel.onProductNavigated()
             }
         })
-
-        binding.assignProducts.setOnClickListener {
-            this.findNavController().navigate(AssignedProductsFragmentDirections.actionAssignedProductsToAssignProducts(adminId!!, storeId!!, businessId!!))
-        }
 
         return binding.root
     }

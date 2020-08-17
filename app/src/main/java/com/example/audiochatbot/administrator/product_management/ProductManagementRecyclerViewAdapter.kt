@@ -32,7 +32,20 @@ class ProductManagementRecyclerViewAdapter(private val clickListener: ProductLis
             binding.product = item
             binding.clickListener = clickListener
             binding.namePrice.text = "${item.name}   A$${item.price}"
-            binding.quantity.text = "Quantity: ${item.quantity}"
+
+            /*CoroutineScope(Dispatchers.Default).launch {
+
+                withContext(Dispatchers.Default) {
+                    followerDataSource.deleteRecord(userId, selectedUserId)
+                }
+
+                launch (Dispatchers.Main) {
+                    if (res) {
+                        binding.followUnFollowButton.text = str[0]
+                        bool = -1
+                    }
+                }
+            }*/
         }
 
         companion object {

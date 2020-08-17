@@ -59,25 +59,25 @@ abstract class UniDatabase: RoomDatabase() {
         )
 
         private val products = arrayOf(
-            Product(1, 1, "Coca-Cola", "bottle", "6 pack", 30, "1:6", 1.5F, 0),
-            Product(2, 1, "Snickers", "bar", "box", 23, "1:16", 1F, 5),
-            Product(3, 1, "Bundaberg Ginger Beer", "bottle", "4 pack", 15, "1:4", 2.6F, 0),
-            Product(4, 1, "Schweppes Lemon", "bottle", "4 pack", 20, "1:4", 2F, 10),
-            Product(5, 1, "Kirks Ginger Beer", "bottle", "10 pack", 25, "1:10", 1.85F, 0),
-            Product(6, 1, "Pepsi Max", "can", "10 pack", 40, "1:10", 1F, 0),
-            Product(7, 1, "Tim Tam", "pack", "family box", 50, "1:20", 2.8F, 10),
-            Product(8, 1, "Doritos Supreme", "pack", "box", 25, "1:6", 3.2F, 0)
+            Product(1, 1, "Coca-Cola", "bottle", "6 pack", "1:6", 1.5F),
+            Product(2, 1, "Snickers", "bar", "box", "1:16", 1F),
+            Product(3, 1, "Bundaberg Ginger Beer", "bottle", "4 pack", "1:4", 2.6F),
+            Product(4, 1, "Schweppes Lemon", "bottle", "4 pack", "1:4", 2F),
+            Product(5, 1, "Kirks Ginger Beer", "bottle", "10 pack", "1:10", 1.85F),
+            Product(6, 1, "Pepsi Max", "can", "10 pack", "1:10", 1F),
+            Product(7, 1, "Tim Tam", "pack", "family box", "1:20", 2.8F),
+            Product(8, 1, "Doritos Supreme", "pack", "box", "1:6", 3.2F)
         )
 
         private val assignProducts = arrayOf(
-            AssignedProduct(1, 1, 1, "18/07/2020", "13:00"),
-            AssignedProduct(2, 2, 1, "18/07/2020", "13:00"),
-            AssignedProduct(3, 3, 1, "18/07/2020", "13:00"),
-            AssignedProduct(4, 4, 1, "18/07/2020", "13:00"),
-            AssignedProduct(5, 5, 1, "18/07/2020", "13:00"),
-            AssignedProduct(6, 6, 2, "18/07/2020", "13:00"),
-            AssignedProduct(7, 7, 2, "18/07/2020", "13:00"),
-            AssignedProduct(8, 8, 2, "18/07/2020", "13:00")
+            AssignedProduct(1, 1, 1, 30, 0, "18/07/2020", "13:00"),
+            AssignedProduct(2, 2, 1, 23, 5, "18/07/2020", "13:00"),
+            AssignedProduct(3, 3, 1, 15, 0, "18/07/2020", "13:00"),
+            AssignedProduct(4, 4, 1, 20, 10, "18/07/2020", "13:00"),
+            AssignedProduct(5, 5, 1, 25, 0, "18/07/2020", "13:00"),
+            AssignedProduct(6, 6, 2, 40, 0, "18/07/2020", "13:00"),
+            AssignedProduct(7, 7, 2, 50, 10, "18/07/2020", "13:00"),
+            AssignedProduct(8, 8, 2, 25, 0, "18/07/2020", "13:00")
         )
 
         @Volatile

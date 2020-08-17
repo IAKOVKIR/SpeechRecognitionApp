@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
@@ -49,7 +48,7 @@ class ProductManagementFragment : Fragment() {
             ViewModelProvider(
                 this, viewModelFactory).get(ProductManagementViewModel::class.java)
 
-        testViewModel.navigateToProductDetails.observe(viewLifecycleOwner, Observer { productId ->
+        testViewModel.navigateToProductDetails.observe(viewLifecycleOwner, { productId ->
             productId?.let {
                 this.findNavController().navigate(ProductManagementFragmentDirections.actionProductManagementToProductDetailFragment(productId))
                 testViewModel.onProductNavigated()
@@ -68,7 +67,7 @@ class ProductManagementFragment : Fragment() {
             testViewModel.retrieveList(line)
         }
 
-        testViewModel.products.observe(viewLifecycleOwner, Observer {
+        testViewModel.products.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
             }

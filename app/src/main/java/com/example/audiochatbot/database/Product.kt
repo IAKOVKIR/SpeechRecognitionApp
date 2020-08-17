@@ -23,18 +23,12 @@ data class Product(
     @ColumnInfo(name = "BigUnitName")
     var bigUnitName: String,
 
-    @ColumnInfo(name = "Quantity")
-    var quantity: Int,
-
     @ColumnInfo(name = "Conversion")
     var conversion: String,
 
     @ColumnInfo(name = "Price")
     var price: Float,
-
-    @ColumnInfo(name = "Sale")
-    var sale: Int
 ) {
     constructor() :
-            this(-1, -1, "", "", "", 0, "", 0.0F, 0)
+            this(-1, -1, "", "", "", "", 0.0F)
 }

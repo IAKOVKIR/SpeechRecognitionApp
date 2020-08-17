@@ -20,6 +20,12 @@ data class AssignedProduct(
     @ColumnInfo(name = "StoreID")
     var storeId: Int,
 
+    @ColumnInfo(name = "Quantity")
+    var quantity: Int,
+
+    @ColumnInfo(name = "Sale")
+    var sale: Int,
+
     @ColumnInfo(name = "Date")
     var date: String,
 

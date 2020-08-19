@@ -174,4 +174,7 @@ interface UserDao {
 
     @Query("SELECT AssignedProductID FROM ASSIGNED_PRODUCT ORDER BY AssignedProductID DESC LIMIT 1")
     fun getLastAssignedProductId(): Int
+
+    @Query("SELECT SUM(Quantity) FROM ASSIGNED_PRODUCT WHERE ProductID = :productId")
+    fun totalProductQuantity(productId: Int): Int
 }

@@ -63,17 +63,6 @@
             app:layout_constraintTop_toBottomOf="@+id/small_unit_name" />
 
         <EditText
-            android:id="@+id/quantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@{String.valueOf(productDetailViewModel.product.quantity)}"
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/big_unit_name"/>
-
-        <EditText
             android:id="@+id/conversion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,7 +71,7 @@
             android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/quantity"/>
+            app:layout_constraintTop_toBottomOf="@+id/big_unit_name"/>
 
         <EditText
             android:id="@+id/price"
@@ -96,15 +85,26 @@
             app:layout_constraintTop_toBottomOf="@+id/conversion"/>
 
         <EditText
-            android:id="@+id/sale"
+            android:id="@+id/quantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:layout_marginTop="8dp"
-            android:text="@{String.valueOf(productDetailViewModel.product.sale)}"
             android:inputType="number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/price"/>
+
+        <EditText
+            android:id="@+id/sale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:layout_marginTop="8dp"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/quantity"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"

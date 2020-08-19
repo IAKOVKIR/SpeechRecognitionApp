@@ -59,7 +59,7 @@ class ProductManagementFragment : Fragment() {
             ProductManagementRecyclerViewAdapter(
                 ProductListener { productId ->
                     testViewModel.onProductClicked(productId)
-                })
+                }, userDataSource)
         binding.userList.adapter = adapter
 
         binding.findProduct.setOnClickListener {

@@ -55,10 +55,10 @@ class ProductDetailFragment : Fragment() {
             product.name = binding.name.text.trim().toString()
             product.smallUnitName = binding.smallUnitName.text.toString().trim()
             product.bigUnitName = binding.bigUnitName.text.toString().trim()
-            product.quantity = binding.quantity.text.toString().toInt()
+            val quantity = binding.quantity.text.toString().toInt()
             product.conversion = binding.conversion.text.toString().trim()
             product.price = binding.price.text.toString().toFloat()
-            product.sale = binding.sale.text.toString().toInt()
+            val sale = binding.sale.text.toString().toInt()
             productDetailViewModel.updateProduct(product)
         }
 

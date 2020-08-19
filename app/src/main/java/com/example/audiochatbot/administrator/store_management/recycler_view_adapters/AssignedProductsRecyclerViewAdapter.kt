@@ -37,7 +37,7 @@ class AssignedProductsRecyclerViewAdapter(private val clickListener: AssignedPro
             binding.clickListener = clickListener
             binding.removeProductListener = removeProductListener
             binding.namePrice.text = "${item.name}   A$${item.price}"
-            binding.quantity.text = "Quantity: ${item.quantity}"
+            binding.quantity.text = "Quantity: "
         }
 
         companion object {

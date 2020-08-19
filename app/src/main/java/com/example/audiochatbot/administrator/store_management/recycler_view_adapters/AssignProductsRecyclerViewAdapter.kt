@@ -42,7 +42,7 @@ class AssignProductsRecyclerViewAdapter(private val clickListener: AssignProduct
             binding.clickListener = clickListener
             //binding.addProductListener = addProductListener
             binding.namePrice.text = "${item.name}   A$${item.price}"
-            binding.quantity.text = "Quantity: ${item.quantity}"
+            binding.quantity.text = "Quantity: "
             binding.addButton.isEnabled = false
 
             var bool = false
@@ -60,7 +60,7 @@ class AssignProductsRecyclerViewAdapter(private val clickListener: AssignProduct
                 CoroutineScope(Dispatchers.Default).launch {
                     withContext(Dispatchers.IO) {
                         val num = userDao.getLastAssignedProductId() + 1
-                        userDao.assignProduct(AssignedProduct(num, item.productId, storeId, "30/07/2020", "12:40"))
+                        userDao.assignProduct(AssignedProduct(num, item.productId, storeId, 0, 0,"30/07/2020", "12:40"))
                         bool = userDao.ifProductAssigned(item.productId, storeId) == 0
                     }
                     launch(Dispatchers.Main) {

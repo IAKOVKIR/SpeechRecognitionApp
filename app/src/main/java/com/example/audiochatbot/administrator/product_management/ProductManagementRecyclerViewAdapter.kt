@@ -6,9 +6,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.Product
+import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentProductManagementRecyclerViewAdapterBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class ProductManagementRecyclerViewAdapter(private val clickListener: ProductListener) : ListAdapter<Product,
+class ProductManagementRecyclerViewAdapter(private val clickListener: ProductListener,
+                                           private val database: UserDao) : ListAdapter<Product,
         ProductManagementRecyclerViewAdapter.ViewHolder>(
     ProductDiffCallback()
 ) {
@@ -16,36 +22,33 @@ class ProductManagementRecyclerViewAdapter(private val clickListener: ProductLis
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(clickListener, item)
+        holder.bind(clickListener, item, database)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(
-            parent
-        )
+        return ViewHolder.from(parent)
     }
 
     class ViewHolder private constructor(val binding: FragmentProductManagementRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: ProductListener, item: Product) {
+        fun bind(clickListener: ProductListener, item: Product, database: UserDao) {
             binding.product = item
             binding.clickListener = clickListener
             binding.namePrice.text = "${item.name}   A$${item.price}"
 
-            /*CoroutineScope(Dispatchers.Default).launch {
+            CoroutineScope(Dispatchers.Default).launch {
+
+                var num: Int
 
                 withContext(Dispatchers.Default) {
-                    followerDataSource.deleteRecord(userId, selectedUserId)
+                    num = database.totalProductQuantity(item.productId)
                 }
 
                 launch (Dispatchers.Main) {
-                    if (res) {
-                        binding.followUnFollowButton.text = str[0]
-                        bool = -1
-                    }
+                    binding.quantity.text = "Quantity: $num"
                 }
-            }*/
+            }
         }
 
         companion object {

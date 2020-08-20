@@ -74,7 +74,7 @@ class ProductManagementFragment : Fragment() {
         })
 
         binding.createNewProduct.setOnClickListener {
-            this.findNavController().navigate(ProductManagementFragmentDirections.actionProductManagementToCreateProduct(adminId))
+            this.findNavController().navigate(ProductManagementFragmentDirections.actionProductManagementToCreateProduct(adminId, businessId))
         }
 
         return binding.root

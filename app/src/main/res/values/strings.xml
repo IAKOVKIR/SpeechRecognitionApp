@@ -18,6 +18,26 @@
     <string name="assigned_users_list_title">Assigned Users - Store %1$s</string>
     <string name="assigned_products_list_title">Assigned Products - Store %1$s</string>
     <string name="selected_item">Selected position:</string>
+    <string name="find_product">Find Product</string>
+    <string name="create_new_product">Create New Product</string>
+    <string name="microphone_icon">microphone icon</string>
+    <string name="enter_product_name">enter product name</string>
+    <string name="audio_input">Audio Input</string>
+    <string name="product_management">Product Management</string>
+    <string name="log_out">Log Out</string>
+    <string name="home_administrator">Home - Administrator</string>
+    <string name="view_inventory">View Inventory</string>
+    <string name="view_delivery_list">View Delivery List</string>
+    <string name="discard_items">Discard Items</string>
+    <string name="cash_report">Cash Report</string>
+    <string name="user_management">User Management</string>
+    <string name="store_management">Store Management</string>
+    <string name="price">Price</string>
+    <string name="submit">Submit</string>
+    <string name="conversion">Conversion</string>
+    <string name="big_unit_name">Big Unit Name</string>
+    <string name="small_unit_name">Small Unit Name</string>
+    <string name="product_name">Product Name</string>
     <string-array name="Positions">
         <item>Employee</item>
         <item>Administrator</item>

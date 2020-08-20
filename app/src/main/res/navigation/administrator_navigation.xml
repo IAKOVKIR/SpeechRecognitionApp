@@ -164,6 +164,9 @@
         <argument
             android:name="adminId"
             app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/assign_users"

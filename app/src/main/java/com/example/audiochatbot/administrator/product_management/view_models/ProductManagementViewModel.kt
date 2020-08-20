@@ -48,8 +48,6 @@ class ProductManagementViewModel(private val businessId: Int, private val databa
         uiScope.launch {
             if (str.isNotEmpty())
                 _products.value = getListWithString("%$str%", businessId)
-            else
-                _products.value = getAllProducts(businessId)
         }
     }
 

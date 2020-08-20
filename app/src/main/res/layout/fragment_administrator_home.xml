@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".administrator.AdministratorHomeFragment">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -14,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Home - Administrator"
+            android:text="@string/home_administrator"
             android:textSize="20sp"
             android:textColor="#000"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -29,8 +28,8 @@
             android:layout_marginTop="12dp"
             android:layout_marginStart="8dp"
             android:gravity="top"
-            android:hint="Audio input"
-            android:background="@drawable/edittext_borders"
+            android:hint="@string/audio_input"
+            android:background="@drawable/edit_text_borders"
             android:inputType="textMultiLine"
             android:overScrollMode="always"
             android:padding="15dp"
@@ -38,7 +37,8 @@
             android:scrollbars="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/microphone_image"
-            app:layout_constraintTop_toBottomOf="@+id/home_title"/>
+            app:layout_constraintTop_toBottomOf="@+id/home_title"
+            android:importantForAutofill="no" />
 
         <ImageButton
             android:id="@+id/microphone_image"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="8dp"
-            android:contentDescription="microphone icon"
+            android:contentDescription="@string/microphone_icon"
             android:src="@drawable/ic_baseline_mic_24"
             app:layout_constraintBottom_toBottomOf="@+id/shipper_field"
             app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="View Inventory"
+            android:text="@string/view_inventory"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shipper_field" />
@@ -67,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="View Delivery List"
+            android:text="@string/view_delivery_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_inventory_button" />
@@ -77,7 +77,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Discard Items"
+            android:text="@string/discard_items"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_delivery_list_button" />
@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Cash Report"
+            android:text="@string/cash_report"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/discard_items_button" />
@@ -97,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="User Management"
+            android:text="@string/user_management"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cash_report_button" />
@@ -107,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Store Management"
+            android:text="@string/store_management"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_management_button" />
@@ -117,7 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Product Management"
+            android:text="@string/product_management"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/store_management_button" />
@@ -127,7 +127,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Log Out"
+            android:text="@string/log_out"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/product_management_button" />

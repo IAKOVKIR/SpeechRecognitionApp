@@ -32,7 +32,7 @@ class CreateProductFragment : Fragment() {
         val binding: FragmentCreateProductBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_product, container, false)
         val application = requireNotNull(this.activity).application
         val args = CreateProductFragmentArgs.fromBundle(requireArguments())
-        val adminId: Int = args.adminId
+        val businessId: Int = args.businessId
 
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
@@ -45,12 +45,13 @@ class CreateProductFragment : Fragment() {
 
         binding.submit.setOnClickListener {
             val product = Product()
+            product.businessId = businessId
             product.name = binding.name.text.trim().toString()
             product.smallUnitName = binding.smallUnitName.text.toString().trim()
             product.bigUnitName = binding.bigUnitName.text.toString().trim()
             product.conversion = binding.conversion.text.toString().trim()
             product.price = binding.price.text.toString().toFloat()
-            productDetailViewModel.submitProduct(product, adminId)
+            productDetailViewModel.submitProduct(product)
         }
 
         productDetailViewModel.isUploaded.observe(viewLifecycleOwner, { result ->

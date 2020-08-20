@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Create New Product"
+            android:text="@string/create_new_product"
             android:textSize="20sp"
             android:textColor="#000"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -28,62 +28,67 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Product Name"
+            android:hint="@string/product_name"
             android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/create_product_title"/>
+            app:layout_constraintTop_toBottomOf="@+id/create_product_title"
+            android:importantForAutofill="no" />
 
         <EditText
             android:id="@+id/small_unit_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Small Unit Name"
+            android:hint="@string/small_unit_name"
             android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name"/>
+            app:layout_constraintTop_toBottomOf="@+id/name"
+            android:importantForAutofill="no" />
 
         <EditText
             android:id="@+id/big_unit_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Big Unit Name"
+            android:hint="@string/big_unit_name"
             android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/small_unit_name" />
+            app:layout_constraintTop_toBottomOf="@+id/small_unit_name"
+            android:importantForAutofill="no" />
 
         <EditText
             android:id="@+id/conversion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Conversion"
+            android:hint="@string/conversion"
             android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/big_unit_name"/>
+            app:layout_constraintTop_toBottomOf="@+id/big_unit_name"
+            android:importantForAutofill="no" />
 
         <EditText
             android:id="@+id/price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Price"
+            android:hint="@string/price"
             android:inputType="numberDecimal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/conversion"/>
+            app:layout_constraintTop_toBottomOf="@+id/conversion"
+            android:importantForAutofill="no" />
 
         <Button
             android:id="@+id/submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Submit"
+            android:text="@string/submit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/price" />

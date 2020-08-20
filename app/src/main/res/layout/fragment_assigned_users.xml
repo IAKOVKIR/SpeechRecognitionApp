@@ -35,7 +35,7 @@
             android:layout_marginStart="8dp"
             android:gravity="top"
             android:hint="Audio input"
-            android:background="@drawable/edittext_borders"
+            android:background="@drawable/edit_text_borders"
             android:inputType="textMultiLine"
             android:overScrollMode="always"
             android:padding="15dp"

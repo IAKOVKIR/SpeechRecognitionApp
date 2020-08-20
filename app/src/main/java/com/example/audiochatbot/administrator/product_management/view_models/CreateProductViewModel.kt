@@ -31,14 +31,16 @@ class CreateProductViewModel(
     val isUploaded
         get() = _isUploaded
 
-    fun submitProduct(product: Product, adminId: Int) {
+    fun submitProduct(product: Product) {
         uiScope.launch {
-            val uLast = getLastProduct()
-            product.productId = uLast!!.productId + 1
-            product.businessId = getAdminBusinessId(adminId)
-            addProductToDb(product)
-            val u = getProductIdWithId(product.productId)
-            _isUploaded.value = u == 1
+            val result = validate(product)
+            if (result) {
+                val uLast = getLastProduct()
+                product.productId = uLast!!.productId + 1
+                addProductToDb(product)
+                val u = getProductIdWithId(product.productId)
+                _isUploaded.value = u == 1
+            }
         }
     }
 
@@ -60,10 +62,36 @@ class CreateProductViewModel(
         }
     }
 
-    private suspend fun getAdminBusinessId(adminId: Int): Int {
-        return withContext(Dispatchers.IO) {
-            database.getAdminsBusinessId(adminId)
+    private fun validate(product: Product): Boolean {
+        when {
+            product.name.isEmpty() -> {
+
+            }
+            product.smallUnitName.isEmpty() -> {
+
+            }
+            product.price <= 0 -> {
+
+            }
+            product.bigUnitName.isEmpty() -> {
+
+            }
+            else -> {
+                var fHalf = ""
+                var sHalf = ""
+                for (i in product.conversion.indices) {
+                    if (product.conversion[i] == ':') {
+                        fHalf = product.conversion.substring(0, i)
+                        sHalf = product.conversion.substring(i + 1)
+                        break
+                    }
+                }
+
+                var num1 = 0
+                var num2 = 0
+            }
         }
+        return false
     }
 
     /**

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.administrator.user_management.view_models.CreateUserViewModel
+import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
@@ -15,6 +16,7 @@ import kotlinx.coroutines.*
  */
 class ProductDetailViewModel(
     private val productKey: Int,
+    private val storeKey: Int,
     val dataSource: UserDao
 ) : ViewModel() {
 
@@ -45,6 +47,9 @@ class ProductDetailViewModel(
     private var _product = MutableLiveData<Product>()
     val product: LiveData<Product> get() = _product
 
+    private var _assignedProduct = MutableLiveData<AssignedProduct>()
+    val assignedProduct: LiveData<AssignedProduct> get() = _assignedProduct
+
     private val _isUploaded = MutableLiveData<Boolean>()
     val isUploaded
         get() = _isUploaded
@@ -52,6 +57,7 @@ class ProductDetailViewModel(
     init {
         uiScope.launch {
             _product.value = retrieveProduct(productKey)
+            _assignedProduct.value = retrieveAssignedProduct(productKey, storeKey)
         }
     }
 
@@ -61,11 +67,27 @@ class ProductDetailViewModel(
         submitProduct(newProduct)
     }
 
+    fun updateProduct(newProduct: Product, sale: Int, quantity: Int) {
+        newProduct.productId = product.value!!.productId
+        newProduct.businessId = product.value!!.businessId
+        submitProduct(newProduct)
+        updateAssignedProduct(sale, quantity)
+    }
+
     private fun submitProduct(product: Product) {
         uiScope.launch {
             addProductToDb(product)
             val u = retrieveProduct(product.productId)
             _isUploaded.value = u!!.productId == productKey
+        }
+    }
+
+    private fun updateAssignedProduct(sale: Int, quantity: Int) {
+        uiScope.launch {
+            val newAssignedProduct: AssignedProduct = assignedProduct.value!!
+            newAssignedProduct.sale = sale
+            newAssignedProduct.quantity = quantity
+            updateAProduct(newAssignedProduct)
         }
     }
 
@@ -83,9 +105,21 @@ class ProductDetailViewModel(
         }
     }
 
+    private suspend fun updateAProduct(assignedProduct: AssignedProduct) {
+        withContext(Dispatchers.IO) {
+            database.updateAssignedProduct(assignedProduct)
+        }
+    }
+
     private suspend fun retrieveProduct(productId: Int): Product? {
         return withContext(Dispatchers.IO) {
             database.getProductWithId(productId)
+        }
+    }
+
+    private suspend fun retrieveAssignedProduct(productId: Int, storeId: Int): AssignedProduct? {
+        return withContext(Dispatchers.IO) {
+            database.getAssignedProduct(productId, storeId)
         }
     }
 

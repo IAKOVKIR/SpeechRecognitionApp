@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
@@ -49,14 +48,12 @@ class CreateProductFragment : Fragment() {
             product.name = binding.name.text.trim().toString()
             product.smallUnitName = binding.smallUnitName.text.toString().trim()
             product.bigUnitName = binding.bigUnitName.text.toString().trim()
-            //product.quantity = binding.quantity.text.toString().toInt()
             product.conversion = binding.conversion.text.toString().trim()
             product.price = binding.price.text.toString().toFloat()
-            //product.sale = binding.sale.text.toString().toInt()
             productDetailViewModel.submitProduct(product, adminId)
         }
 
-        productDetailViewModel.isUploaded.observe(viewLifecycleOwner, Observer {result ->
+        productDetailViewModel.isUploaded.observe(viewLifecycleOwner, { result ->
             if (result)
                 this.findNavController().popBackStack()
             else {

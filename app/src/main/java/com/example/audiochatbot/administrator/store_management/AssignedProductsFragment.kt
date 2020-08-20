@@ -70,15 +70,15 @@ class AssignedProductsFragment : Fragment() {
                 })
         binding.userList.adapter = adapter
 
-        testViewModel.products.observe(viewLifecycleOwner, Observer {
+        testViewModel.products.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
             }
         })
 
-        testViewModel.navigateToProductDetails.observe(viewLifecycleOwner, Observer { productId ->
+        testViewModel.navigateToProductDetails.observe(viewLifecycleOwner, { productId ->
             productId?.let {
-                this.findNavController().navigate(AssignedProductsFragmentDirections.actionAssignedProductsToProductDetail(productId))
+                this.findNavController().navigate(AssignedProductsFragmentDirections.actionAssignedProductsToProductDetail(productId, storeId!!))
                 testViewModel.onProductNavigated()
             }
         })

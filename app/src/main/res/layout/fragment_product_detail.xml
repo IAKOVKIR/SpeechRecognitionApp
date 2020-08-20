@@ -36,6 +36,7 @@
             android:layout_marginTop="8dp"
             android:text="@{productDetailViewModel.product.name}"
             android:inputType="text"
+            android:hint="Name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/create_product_title"/>
@@ -47,6 +48,7 @@
             android:layout_marginTop="8dp"
             android:text="@{productDetailViewModel.product.smallUnitName}"
             android:inputType="text"
+            android:hint="Small Unit Name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name"/>
@@ -58,6 +60,7 @@
             android:layout_marginTop="8dp"
             android:text="@{productDetailViewModel.product.bigUnitName}"
             android:inputType="text"
+            android:hint="Big Unit Name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/small_unit_name" />
@@ -69,6 +72,7 @@
             android:layout_marginTop="8dp"
             android:text="@{productDetailViewModel.product.conversion}"
             android:inputType="text"
+            android:hint="Conversion"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/big_unit_name"/>
@@ -80,6 +84,7 @@
             android:layout_marginTop="8dp"
             android:text="@{String.valueOf(productDetailViewModel.product.price)}"
             android:inputType="numberDecimal"
+            android:hint="Price"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/conversion"/>
@@ -88,9 +93,10 @@
             android:id="@+id/quantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:layout_marginTop="8dp"
             android:inputType="number"
+            android:text="@{String.valueOf(productDetailViewModel.assignedProduct.quantity)}"
+            android:hint="Quantity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/price"/>
@@ -99,9 +105,10 @@
             android:id="@+id/sale"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:layout_marginTop="8dp"
             android:inputType="number"
+            android:text="@{String.valueOf(productDetailViewModel.assignedProduct.sale)}"
+            android:hint="Sale"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/quantity"/>

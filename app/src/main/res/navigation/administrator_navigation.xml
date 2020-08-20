@@ -152,6 +152,9 @@
         <argument
             android:name="productKey"
             app:argType="integer" />
+        <argument
+            android:name="storeKey"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/create_product"

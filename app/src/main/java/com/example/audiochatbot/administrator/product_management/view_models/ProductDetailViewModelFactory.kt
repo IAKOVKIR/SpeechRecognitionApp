@@ -11,12 +11,13 @@ import com.example.audiochatbot.database.UserDao
  */
 class ProductDetailViewModelFactory(
     private val productKey: Int,
+    private val storeKey: Int,
     private val dataSource: UserDao
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ProductDetailViewModel::class.java)) {
-            return ProductDetailViewModel(productKey, dataSource) as T
+            return ProductDetailViewModel(productKey, storeKey, dataSource) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

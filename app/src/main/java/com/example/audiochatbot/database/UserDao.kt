@@ -166,6 +166,12 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun assignProduct(newAssignProduct: AssignedProduct)
 
+    @Update
+    fun updateAssignedProduct(newAssignProduct: AssignedProduct)
+
+    @Query("SELECT * FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
+    fun getAssignedProduct(productId: Int, storeId: Int): AssignedProduct?
+
     @Query("DELETE FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
     fun removeProductFromStore(productId: Int, storeId: Int)
 

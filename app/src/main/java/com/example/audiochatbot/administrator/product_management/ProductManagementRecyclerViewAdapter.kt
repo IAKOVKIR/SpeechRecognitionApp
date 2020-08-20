@@ -46,7 +46,7 @@ class ProductManagementRecyclerViewAdapter(private val clickListener: ProductLis
                 }
 
                 launch (Dispatchers.Main) {
-                    binding.quantity.text = "Quantity: $num"
+                    binding.quantity.text = "Total Quantity: $num"
                 }
             }
         }

@@ -57,17 +57,6 @@
             app:layout_constraintTop_toBottomOf="@+id/small_unit_name" />
 
         <EditText
-            android:id="@+id/quantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Quantity"
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/big_unit_name"/>
-
-        <EditText
             android:id="@+id/conversion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,7 +65,7 @@
             android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/quantity"/>
+            app:layout_constraintTop_toBottomOf="@+id/big_unit_name"/>
 
         <EditText
             android:id="@+id/price"
@@ -89,17 +78,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/conversion"/>
 
-        <EditText
-            android:id="@+id/sale"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Sale"
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/price"/>
-
         <Button
             android:id="@+id/submit"
             android:layout_width="wrap_content"
@@ -108,7 +86,7 @@
             android:text="Submit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sale" />
+            app:layout_constraintTop_toBottomOf="@+id/price" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

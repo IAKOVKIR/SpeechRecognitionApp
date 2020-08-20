@@ -50,7 +50,7 @@ class ProductManagementFragment : Fragment() {
 
         testViewModel.navigateToProductDetails.observe(viewLifecycleOwner, { productId ->
             productId?.let {
-                this.findNavController().navigate(ProductManagementFragmentDirections.actionProductManagementToProductDetailFragment(productId))
+                this.findNavController().navigate(ProductManagementFragmentDirections.actionProductManagementToProductDetailFragment(productId, -1))
                 testViewModel.onProductNavigated()
             }
         })

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
@@ -33,11 +32,17 @@ class ProductDetailFragment : Fragment() {
         val binding: FragmentProductDetailBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_detail, container, false)
         val application = requireNotNull(this.activity).application
         val arguments = ProductDetailFragmentArgs.fromBundle(requireArguments())
+        val storeId = arguments.storeKey
+
+        if (storeId == -1) {
+            binding.sale.isEnabled = false
+            binding.quantity.isEnabled = false
+        }
 
         // Create an instance of the ViewModel Factory.
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
         val viewModelFactory =
-            ProductDetailViewModelFactory(arguments.productKey, dataSource)
+            ProductDetailViewModelFactory(arguments.productKey, storeId, dataSource)
 
         // Get a reference to the ViewModel associated with this fragment.
         val productDetailViewModel =
@@ -55,18 +60,30 @@ class ProductDetailFragment : Fragment() {
             product.name = binding.name.text.trim().toString()
             product.smallUnitName = binding.smallUnitName.text.toString().trim()
             product.bigUnitName = binding.bigUnitName.text.toString().trim()
-            val quantity = binding.quantity.text.toString().toInt()
             product.conversion = binding.conversion.text.toString().trim()
             product.price = binding.price.text.toString().toFloat()
-            val sale = binding.sale.text.toString().toInt()
-            productDetailViewModel.updateProduct(product)
+
+            if (storeId != -1) {
+                val sale = binding.sale.text.toString().toInt()
+                val quantity = binding.quantity.text.toString().toInt()
+                productDetailViewModel.updateProduct(product, sale, quantity)
+            } else {
+                productDetailViewModel.updateProduct(product)
+            }
         }
 
         binding.deleteRecord.setOnClickListener {
             productDetailViewModel.deleteRecord()
         }
 
-        productDetailViewModel.isUploaded.observe(viewLifecycleOwner, Observer {result ->
+        productDetailViewModel.assignedProduct.observe(viewLifecycleOwner, {assignedProduct ->
+            if (assignedProduct == null) {
+                binding.sale.isEnabled = false
+                binding.quantity.isEnabled = false
+            }
+        })
+
+        productDetailViewModel.isUploaded.observe(viewLifecycleOwner, {result ->
             if (result)
                 this.findNavController().popBackStack()
             else

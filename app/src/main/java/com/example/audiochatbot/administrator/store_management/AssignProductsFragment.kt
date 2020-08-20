@@ -73,7 +73,7 @@ class AssignProductsFragment : Fragment() {
 
         testViewModel.navigateToProductDetails.observe(viewLifecycleOwner, Observer { productId ->
             productId?.let {
-                this.findNavController().navigate(AssignProductsFragmentDirections.actionAssignProductsToProductDetail(productId))
+                this.findNavController().navigate(AssignProductsFragmentDirections.actionAssignProductsToProductDetail(productId, storeId!!))
                 testViewModel.onProductNavigated()
             }
         })

@@ -34,7 +34,7 @@
     <string name="store_management">Store Management</string>
     <string name="price">Price</string>
     <string name="submit">Submit</string>
-    <string name="conversion">Conversion</string>
+    <string name="conversion">Conversion e.g., 1:6 or 25:16</string>
     <string name="big_unit_name">Big Unit Name</string>
     <string name="small_unit_name">Small Unit Name</string>
     <string name="product_name">Product Name</string>

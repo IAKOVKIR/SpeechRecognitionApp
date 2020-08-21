@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
@@ -67,7 +66,7 @@ class AssignedProductsFragment : Fragment() {
                 },
                 RemoveProductListener { productId ->
                     testViewModel.deleteRecord(productId)
-                })
+                }, storeId!!, userDataSource)
         binding.userList.adapter = adapter
 
         testViewModel.products.observe(viewLifecycleOwner, {

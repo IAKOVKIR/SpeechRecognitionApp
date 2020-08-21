@@ -50,21 +50,35 @@ class CreateProductFragment : Fragment() {
             product.smallUnitName = binding.smallUnitName.text.toString().trim()
             product.bigUnitName = binding.bigUnitName.text.toString().trim()
             product.conversion = binding.conversion.text.toString().trim()
-            product.price = binding.price.text.toString().toFloat()
-            productDetailViewModel.submitProduct(product)
+            val price = binding.price.text.toString()
+            if (price.isEmpty())
+                displayMessage("Empty Price field")
+            else {
+                product.price = binding.price.text.toString().toFloat()
+                productDetailViewModel.submitProduct(product)
+            }
         }
 
         productDetailViewModel.isUploaded.observe(viewLifecycleOwner, { result ->
-            if (result)
+            if (result) {
+                productDetailViewModel.emptyTheMessage()
                 this.findNavController().popBackStack()
-            else {
-                val toast = Toast.makeText(context, "Something went wrong :(", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
-                toast.show()
-            }
+            } else
+                displayMessage("Something went wrong :(")
+        })
+
+        productDetailViewModel.message.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                displayMessage(result)
         })
 
         return binding.root
+    }
+
+    private fun displayMessage(message: String) {
+        val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
+        toast.show()
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.product_management.view_models
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.administrator.user_management.view_models.CreateUserViewModel
@@ -30,6 +31,10 @@ class CreateProductViewModel(
     private val _isUploaded = MutableLiveData<Boolean>()
     val isUploaded
         get() = _isUploaded
+
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String?>
+        get() = _message
 
     fun submitProduct(product: Product) {
         uiScope.launch {
@@ -65,33 +70,56 @@ class CreateProductViewModel(
     private fun validate(product: Product): Boolean {
         when {
             product.name.isEmpty() -> {
-
+                _message.value = "The product name field is empty"
+                return false
             }
             product.smallUnitName.isEmpty() -> {
-
-            }
-            product.price <= 0 -> {
-
+                _message.value = "Small unit name field is empty"
+                return false
             }
             product.bigUnitName.isEmpty() -> {
-
+                _message.value = "Big unit name field is empty"
+                return false
             }
             else -> {
                 var fHalf = ""
                 var sHalf = ""
-                for (i in product.conversion.indices) {
-                    if (product.conversion[i] == ':') {
-                        fHalf = product.conversion.substring(0, i)
-                        sHalf = product.conversion.substring(i + 1)
+                val conversion = product.conversion
+                for (i in conversion.indices) {
+                    if (conversion[i] == ':') {
+                        fHalf = conversion.substring(0, i)
+                        sHalf = conversion.substring(i + 1)
                         break
                     }
                 }
 
-                var num1 = 0
-                var num2 = 0
+                if (conversion == "") {
+                    _message.value = "Conversion field is empty"
+                    return false
+                } else {
+                    val num1: Int
+                    val num2: Int
+                    try {
+                        num1 = fHalf.toInt()
+                        num2 = sHalf.toInt()
+                    } catch (e: NumberFormatException) {
+                        _message.value = "Wrong number format is used in conversion field"
+                        return false
+                    }
+
+                    if (num1 < 1 || num2 < 1) {
+                        _message.value = "Negative numbers were entered in conversion field"
+                        return false
+                    }
+                }
+
             }
         }
-        return false
+        return true
+    }
+
+    fun emptyTheMessage() {
+        _message.value = null
     }
 
     /**

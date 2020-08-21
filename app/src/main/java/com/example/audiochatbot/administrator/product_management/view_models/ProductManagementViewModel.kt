@@ -46,8 +46,7 @@ class ProductManagementViewModel(private val businessId: Int, private val databa
 
     fun retrieveList(str: String) {
         uiScope.launch {
-            if (str.isNotEmpty())
-                _products.value = getListWithString("%$str%", businessId)
+            _products.value = getListWithString("%$str%", businessId)
         }
     }
 

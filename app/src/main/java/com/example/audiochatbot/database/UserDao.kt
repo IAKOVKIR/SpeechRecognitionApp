@@ -183,4 +183,7 @@ interface UserDao {
 
     @Query("SELECT SUM(Quantity) FROM ASSIGNED_PRODUCT WHERE ProductID = :productId")
     fun totalProductQuantity(productId: Int): Int
+
+    @Query("SELECT Quantity FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
+    fun getAssignedProductQuantity(productId: Int, storeId: Int): Int
 }

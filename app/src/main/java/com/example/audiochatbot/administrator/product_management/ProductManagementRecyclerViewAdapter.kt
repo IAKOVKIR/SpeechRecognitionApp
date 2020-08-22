@@ -1,10 +1,12 @@
 package com.example.audiochatbot.administrator.product_management
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.audiochatbot.R
 import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentProductManagementRecyclerViewAdapterBinding
@@ -29,7 +31,7 @@ class ProductManagementRecyclerViewAdapter(private val clickListener: ProductLis
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: FragmentProductManagementRecyclerViewAdapterBinding)
+    class ViewHolder private constructor(val binding: FragmentProductManagementRecyclerViewAdapterBinding, val context: Context)
         : RecyclerView.ViewHolder(binding.root){
 
         fun bind(clickListener: ProductListener, item: Product, database: UserDao) {
@@ -46,7 +48,7 @@ class ProductManagementRecyclerViewAdapter(private val clickListener: ProductLis
                 }
 
                 launch (Dispatchers.Main) {
-                    binding.quantity.text = "Total Quantity: $num"
+                    binding.quantity.text = context.getString(R.string.total_product_quantity, num)
                 }
             }
         }
@@ -56,7 +58,7 @@ class ProductManagementRecyclerViewAdapter(private val clickListener: ProductLis
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = FragmentProductManagementRecyclerViewAdapterBinding.inflate(layoutInflater, parent, false)
 
-                return ViewHolder(binding)
+                return ViewHolder(binding, parent.context)
             }
         }
     }

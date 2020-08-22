@@ -38,6 +38,9 @@
     <string name="big_unit_name">Big Unit Name</string>
     <string name="small_unit_name">Small Unit Name</string>
     <string name="product_name">Product Name</string>
+
+    <string name="total_product_quantity">Quantity: %1$d</string>
+
     <string-array name="Positions">
         <item>Employee</item>
         <item>Administrator</item>

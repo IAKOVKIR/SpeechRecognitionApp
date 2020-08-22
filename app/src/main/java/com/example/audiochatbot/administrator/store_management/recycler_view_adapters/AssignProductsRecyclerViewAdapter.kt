@@ -19,7 +19,6 @@ import kotlinx.coroutines.withContext
  * A simple [Fragment] subclass.
  */
 class AssignProductsRecyclerViewAdapter(private val clickListener: AssignProductListener,
-                                     /*private val addProductListener: AddProductListener,*/
                                         private val userDao: UserDao, private val storeId: Int
 ) : ListAdapter<Product,
         AssignProductsRecyclerViewAdapter.ViewHolder>(AssignProductsDiffCallback()) {
@@ -27,7 +26,7 @@ class AssignProductsRecyclerViewAdapter(private val clickListener: AssignProduct
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(clickListener/*, addProductListener*/, item, userDao, storeId)
+        holder.bind(clickListener, item, userDao, storeId)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,22 +36,26 @@ class AssignProductsRecyclerViewAdapter(private val clickListener: AssignProduct
     class ViewHolder private constructor(val binding: FragmentAssignProductsRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: AssignProductListener/*, addProductListener: AddProductListener*/, item: Product, userDao: UserDao, storeId: Int) {
+        fun bind(clickListener: AssignProductListener, item: Product, userDao: UserDao, storeId: Int) {
             binding.product = item
             binding.clickListener = clickListener
-            //binding.addProductListener = addProductListener
             binding.namePrice.text = "${item.name}   A$${item.price}"
             binding.quantity.text = "Quantity: "
             binding.addButton.isEnabled = false
 
-            var bool = false
+            var bool: Boolean
 
             CoroutineScope(Dispatchers.Default).launch {
+
+                var num: Int
+
                 withContext(Dispatchers.IO) {
                     bool = userDao.ifProductAssigned(item.productId, storeId) == 0
+                    num = userDao.totalProductQuantity(item.productId)
                 }
                 launch(Dispatchers.Main) {
                     binding.addButton.isEnabled = bool
+                    binding.quantity.text = "Total Quantity: $num"
                 }
             }
 
@@ -95,7 +98,3 @@ class AssignProductsDiffCallback : DiffUtil.ItemCallback<Product>() {
 class AssignProductListener(val clickListener: (productId: Int) -> Unit) {
     fun onClick(product: Product) = clickListener(product.productId)
 }
-
-/*class AddProductListener(private val clickListener: (productId: Int) -> Unit) {
-    fun onAddProduct(product: Product) = clickListener(product.productId)
-}*/

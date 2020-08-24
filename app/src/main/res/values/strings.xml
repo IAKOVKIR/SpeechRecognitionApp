@@ -40,6 +40,7 @@
     <string name="product_name">Product Name</string>
 
     <string name="total_product_quantity">Quantity: %1$d</string>
+    <string name="name_price">%1$s    A$%2$.2f</string>
 
     <string-array name="Positions">
         <item>Employee</item>

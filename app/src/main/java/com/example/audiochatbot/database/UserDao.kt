@@ -186,4 +186,9 @@ interface UserDao {
 
     @Query("SELECT Quantity FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
     fun getAssignedProductQuantity(productId: Int, storeId: Int): Int
+
+
+    //Discarded Items
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun discardItem(discardedItem: DiscardedItem)
 }

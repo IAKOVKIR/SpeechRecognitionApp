@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(entities = [User::class, DeliveryUser::class, Business::class, Store::class, AssignedUser::class, Product::class,
-AssignedProduct::class],
+AssignedProduct::class, DiscardedItem::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
 
@@ -80,6 +80,11 @@ abstract class UniDatabase: RoomDatabase() {
             AssignedProduct(8, 8, 2, 25, 0, "18/07/2020", "13:00")
         )
 
+        private val discardedItems = arrayOf(
+            DiscardedItem(1, 1, 1, 2, "broken", "18/07/2020", "13:00"),
+            DiscardedItem(2, 4, 1, 3, "expired", "18/07/2020", "13:00")
+        )
+
         @Volatile
         private var INSTANCE: UniDatabase? = null
 
@@ -116,7 +121,6 @@ abstract class UniDatabase: RoomDatabase() {
         }
 
         fun populateDb(userDao: UserDao) {
-            //userDao.clear()
             for (i in businesses) {
                 userDao.insertBusiness(i)
             }
@@ -141,6 +145,10 @@ abstract class UniDatabase: RoomDatabase() {
 
             for (i in assignProducts) {
                 userDao.assignProduct(i)
+            }
+
+            for (i in discardedItems) {
+                userDao.discardItem(i)
             }
         }
     }

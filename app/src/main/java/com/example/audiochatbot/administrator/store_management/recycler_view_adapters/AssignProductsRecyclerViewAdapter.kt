@@ -6,27 +6,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.Product
-import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentAssignProductsRecyclerViewAdapterBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * A simple [Fragment] subclass.
  */
 class AssignProductsRecyclerViewAdapter(private val clickListener: AssignProductListener,
-                                        private val userDao: UserDao, private val storeId: Int
+                                        private val addProductListener: AddProductListener
 ) : ListAdapter<Product,
         AssignProductsRecyclerViewAdapter.ViewHolder>(AssignProductsDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(clickListener, item, userDao, storeId)
+        holder.bind(clickListener, addProductListener, item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -36,42 +30,19 @@ class AssignProductsRecyclerViewAdapter(private val clickListener: AssignProduct
     class ViewHolder private constructor(val binding: FragmentAssignProductsRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: AssignProductListener, item: Product, userDao: UserDao, storeId: Int) {
+        fun bind(clickListener: AssignProductListener, addProductListener: AddProductListener, item: Product) {
             binding.product = item
             binding.clickListener = clickListener
-            binding.namePrice.text = "${item.name}   A$${item.price}"
-            binding.quantity.text = "Quantity: "
-            binding.addButton.isEnabled = false
-
-            var bool: Boolean
-
-            CoroutineScope(Dispatchers.Default).launch {
-
-                var num: Int
-
-                withContext(Dispatchers.IO) {
-                    bool = userDao.ifProductAssigned(item.productId, storeId) == 0
-                    num = userDao.totalProductQuantity(item.productId)
-                }
-                launch(Dispatchers.Main) {
-                    binding.addButton.isEnabled = bool
-                    binding.quantity.text = "Total Quantity: $num"
+            binding.name.text = item.name
+            binding.price.text = "A$${item.price}"
+            binding.addButton.setOnClickListener {
+                val num = binding.quantity.text.toString()
+                if (num != "") {
+                    addProductListener.onClick(item, num.toInt())
+                } else {
+                    addProductListener.onClick(item, 0)
                 }
             }
-
-            binding.addButton.setOnClickListener{
-                CoroutineScope(Dispatchers.Default).launch {
-                    withContext(Dispatchers.IO) {
-                        val num = userDao.getLastAssignedProductId() + 1
-                        userDao.assignProduct(AssignedProduct(num, item.productId, storeId, 0, 0,"30/07/2020", "12:40"))
-                        bool = userDao.ifProductAssigned(item.productId, storeId) == 0
-                    }
-                    launch(Dispatchers.Main) {
-                        binding.addButton.isEnabled = bool
-                    }
-                }
-            }
-
         }
 
         companion object {
@@ -97,4 +68,8 @@ class AssignProductsDiffCallback : DiffUtil.ItemCallback<Product>() {
 
 class AssignProductListener(val clickListener: (productId: Int) -> Unit) {
     fun onClick(product: Product) = clickListener(product.productId)
+}
+
+class AddProductListener(val clickListener: (productId: Int, quantity: Int) -> Unit) {
+    fun onClick(product: Product, quantity: Int) = clickListener(product.productId, quantity)
 }

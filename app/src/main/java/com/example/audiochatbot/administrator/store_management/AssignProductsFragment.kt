@@ -6,11 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-//import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AddProductListener
+import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AddProductListener
 import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignProductListener
 import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignProductsRecyclerViewAdapter
 import com.example.audiochatbot.administrator.store_management.view_models.AssignProductsViewModel
@@ -59,19 +58,19 @@ class AssignProductsFragment : Fragment() {
             AssignProductsRecyclerViewAdapter(
                 AssignProductListener { productId ->
                     testViewModel.onProductClicked(productId)
-                }/*,
-                AddProductListener { productId ->
-                    testViewModel.addRecord(productId)
-                }*/, userDataSource, storeId!!)
+                },
+                AddProductListener { productId, quantity ->
+                    testViewModel.addRecord(productId, quantity)
+                })
         binding.productList.adapter = adapter
 
-        testViewModel.products.observe(viewLifecycleOwner, Observer {
+        testViewModel.products.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
             }
         })
 
-        testViewModel.navigateToProductDetails.observe(viewLifecycleOwner, Observer { productId ->
+        testViewModel.navigateToProductDetails.observe(viewLifecycleOwner, { productId ->
             productId?.let {
                 this.findNavController().navigate(AssignProductsFragmentDirections.actionAssignProductsToProductDetail(productId, storeId!!))
                 testViewModel.onProductNavigated()

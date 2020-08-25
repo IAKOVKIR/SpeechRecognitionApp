@@ -2,6 +2,7 @@ package com.example.audiochatbot.administrator.store_management.view_models
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
@@ -22,9 +23,9 @@ class AssignProductsViewModel(val storeId: Int, val businessId: Int, val databas
      * the main thread on Android. This is a sensible default because most coroutines started by
      * a [StoreManagementViewModel] update the UI after performing some processing.
      */
-    //private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val products = database.getAllLiveProductsWithBusinessId(businessId)
+    val products = database.getNotAssignedProducts(storeId, businessId)
 
     private val _navigateToProductDetails = MutableLiveData<Int>()
     val navigateToProductDetails
@@ -38,18 +39,18 @@ class AssignProductsViewModel(val storeId: Int, val businessId: Int, val databas
         _navigateToProductDetails.value = null
     }
 
-    /*fun addRecord(userId: Int) {
+    fun addRecord(userId: Int, quantity: Int) {
         uiScope.launch {
-            addRecordDb(userId)
+            addRecordDb(userId, quantity)
         }
     }
 
-    private suspend fun addRecordDb(productId: Int) {
+    private suspend fun addRecordDb(productId: Int, quantity: Int) {
         withContext(Dispatchers.IO) {
             val num = database.getLastAssignedProductId() + 1
-            database.assignProduct(AssignedProduct(num, productId, storeId, "30/07/2020", "12:40"))
+            database.assignProduct(AssignedProduct(num, productId, storeId, quantity, 0, "30/07/2020", "12:40"))
         }
-    }*/
+    }
 
     /**
      * Called when the ViewModel is dismantled.

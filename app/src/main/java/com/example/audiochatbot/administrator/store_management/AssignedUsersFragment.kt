@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
@@ -53,7 +52,7 @@ class AssignedUsersFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
-        testViewModel.navigateToUserDetails.observe(viewLifecycleOwner, Observer { userId ->
+        testViewModel.navigateToUserDetails.observe(viewLifecycleOwner, { userId ->
             userId?.let {
                 this.findNavController().navigate(AssignedUsersFragmentDirections.actionAssignedUsersToUserDetail(userId))
                 testViewModel.onUserNavigated()
@@ -71,13 +70,13 @@ class AssignedUsersFragment : Fragment() {
                 })
         binding.userList.adapter = adapter
 
-        testViewModel.users.observe(viewLifecycleOwner, Observer {
+        testViewModel.users.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
             }
         })
 
-        testViewModel.errorMessage.observe(viewLifecycleOwner, Observer { message ->
+        testViewModel.errorMessage.observe(viewLifecycleOwner, { message ->
             if (!message.isNullOrEmpty()) {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }

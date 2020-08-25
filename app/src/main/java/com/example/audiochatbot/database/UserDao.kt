@@ -69,6 +69,9 @@ interface UserDao {
     @Query("SELECT * FROM USER ORDER BY UserID DESC LIMIT 1")
     fun getLastUser(): User
 
+    @Query("SELECT * FROM USER WHERE BusinessID = :businessId AND UserID NOT IN (SELECT UserID FROM ASSIGNED_USER WHERE StoreID = :storeId)")
+    fun getNotAssignedUsers(storeId: Int, businessId: Int): LiveData<List<User>>
+
 
     //Assigned User
 
@@ -160,6 +163,9 @@ interface UserDao {
 
     @Query("DELETE FROM PRODUCT WHERE ProductID = :productId")
     fun deleteProductRecord(productId: Int)
+
+    @Query("SELECT * FROM PRODUCT WHERE BusinessID = :businessId AND ProductID NOT IN (SELECT ProductID FROM ASSIGNED_PRODUCT WHERE StoreID = :storeId)")
+    fun getNotAssignedProducts(storeId: Int, businessId: Int): LiveData<List<Product>>
 
 
     //Assigned Product

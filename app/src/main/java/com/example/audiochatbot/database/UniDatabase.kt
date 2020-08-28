@@ -81,8 +81,8 @@ abstract class UniDatabase: RoomDatabase() {
         )
 
         private val discardedItems = arrayOf(
-            DiscardedItem(1, 1, 1, 2, "broken", "18/07/2020", "13:00"),
-            DiscardedItem(2, 4, 1, 3, "expired", "18/07/2020", "13:00")
+            DiscardedItem(1, 1, 1, 2, "18/07/2020", "13:00"),
+            DiscardedItem(2, 4, 1, 3, "18/07/2020", "13:00")
         )
 
         @Volatile

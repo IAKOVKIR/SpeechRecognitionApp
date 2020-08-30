@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".administrator.discard_items.DiscardItemFragment">
+    tools:context=".administrator.discard_items.DiscardItemStoreFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Discard Items"
+            android:text="Select Store"
             android:textSize="20sp"
             android:textColor="#000"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -52,18 +52,16 @@
             app:layout_constraintTop_toBottomOf="@+id/home_title" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/product_list"
-            android:layout_width="match_parent"
+            android:id="@+id/store_list"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="4dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/shipper_field"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/fragment_discard_item_recycler_view_adapter"/>
+            tools:listitem="@layout/fragment_discard_item_store_recycler_view_adapter"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -15,7 +15,6 @@ class StoreManagementViewModel(val adminId: Int,val database: UserDao) : ViewMod
     val navigateToStoreDetails
         get() = _navigateToStoreDetails
 
-
     fun onStoreClicked(id: Int) {
         _navigateToStoreDetails.value = id
     }

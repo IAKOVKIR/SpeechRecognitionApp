@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
@@ -47,7 +46,7 @@ class StoreManagementFragment : Fragment() {
             ViewModelProvider(
                 this, viewModelFactory).get(StoreManagementViewModel::class.java)
 
-        testViewModel.navigateToStoreDetails.observe(viewLifecycleOwner, Observer { storeId ->
+        testViewModel.navigateToStoreDetails.observe(viewLifecycleOwner, { storeId ->
             storeId?.let {
                 this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToStoreDetail(storeId, adminId, args.businessId))
                 testViewModel.onStoreNavigated()
@@ -65,7 +64,7 @@ class StoreManagementFragment : Fragment() {
             this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToCreateStoreFragment(adminId))
         }
 
-        testViewModel.stores.observe(viewLifecycleOwner, Observer {
+        testViewModel.stores.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
             }

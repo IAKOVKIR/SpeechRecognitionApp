@@ -25,14 +25,12 @@ import kotlinx.coroutines.Dispatchers
 class AssignProductsFragment : Fragment() {
 
     private var storeId: Int? = null
-    private var adminId: Int? = null
     private var businessId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = AssignedProductsFragmentArgs.fromBundle(requireArguments())
         storeId = args.storeId
-        adminId = args.adminId
         businessId = args.businessId
     }
 

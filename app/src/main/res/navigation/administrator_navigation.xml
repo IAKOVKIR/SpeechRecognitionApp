@@ -239,5 +239,23 @@
         <argument
             android:name="businessId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_discard_item_store_to_discardItemFragment"
+            app:destination="@id/discard_item" />
+    </fragment>
+    <fragment
+        android:id="@+id/discard_item"
+        android:name="com.example.audiochatbot.administrator.discard_items.DiscardItemFragment"
+        android:label="discard_item_fragment"
+        tools:layout="@layout/discard_item_fragment" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
     </fragment>
 </navigation>

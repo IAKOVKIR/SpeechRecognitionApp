@@ -7,21 +7,19 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.Product
-import com.example.audiochatbot.databinding.FragmentAssignProductsRecyclerViewAdapterBinding
 import com.example.audiochatbot.databinding.FragmentDiscardItemRecyclerViewAdapterBinding
 
 /**
  * A simple [Fragment] subclass.
  */
-class DiscardItemRecyclerViewAdapter(private val clickListener: OpenDiscardedProductListener,
-                                        private val discardProductListener: DiscardProductListener
+class DiscardItemRecyclerViewAdapter(private val discardProductListener: DiscardProductListener
 ) : ListAdapter<Product,
         DiscardItemRecyclerViewAdapter.ViewHolder>(DiscardItemsDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(clickListener, discardProductListener, item)
+        holder.bind(discardProductListener, item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,9 +29,7 @@ class DiscardItemRecyclerViewAdapter(private val clickListener: OpenDiscardedPro
     class ViewHolder private constructor(val binding: FragmentDiscardItemRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: OpenDiscardedProductListener, discardProductListener: DiscardProductListener, item: Product) {
-            binding.product = item
-            //binding.clickListener = clickListener
+        fun bind(discardProductListener: DiscardProductListener, item: Product) {
             binding.name.text = item.name
             binding.price.text = "A$${item.price}"
             binding.addButton.setOnClickListener {
@@ -65,10 +61,6 @@ class DiscardItemsDiffCallback : DiffUtil.ItemCallback<Product>() {
     override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
         return oldItem == newItem
     }
-}
-
-class OpenDiscardedProductListener(val clickListener: (productId: Int) -> Unit) {
-    fun onClick(product: Product) = clickListener(product.productId)
 }
 
 class DiscardProductListener(val clickListener: (productId: Int, quantity: Int) -> Unit) {

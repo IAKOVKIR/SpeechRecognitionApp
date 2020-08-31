@@ -178,6 +178,9 @@ interface UserDao {
     @Query("SELECT * FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
     fun getAssignedProduct(productId: Int, storeId: Int): AssignedProduct?
 
+    @Query("SELECT AssignedProductID FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
+    fun getAssignedProductId(productId: Int, storeId: Int): Int
+
     @Query("DELETE FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
     fun removeProductFromStore(productId: Int, storeId: Int)
 
@@ -197,4 +200,7 @@ interface UserDao {
     //Discarded Items
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun discardItem(discardedItem: DiscardedItem)
+
+    @Query("SELECT DiscardedItemID FROM DISCARDED_ITEM ORDER BY DiscardedItemID DESC LIMIT 1")
+    fun getLastDiscardedItemId(): Int
 }

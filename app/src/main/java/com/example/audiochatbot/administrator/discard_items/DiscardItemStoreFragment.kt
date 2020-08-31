@@ -1,6 +1,7 @@
 package com.example.audiochatbot.administrator.discard_items
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.administrator.discard_items.view_models.DiscardItemStoreViewModel
 import com.example.audiochatbot.administrator.discard_items.view_models.DiscardItemStoreViewModelFactory
-import com.example.audiochatbot.administrator.store_management.StoreManagementFragmentDirections
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentDiscardItemStoreBinding
 import kotlinx.coroutines.CoroutineScope
@@ -47,8 +47,9 @@ class DiscardItemStoreFragment : Fragment() {
 
         testViewModel.navigateToDiscardItem.observe(viewLifecycleOwner, { storeId ->
             storeId?.let {
-                this.findNavController().navigate(StoreManagementFragmentDirections
-                    .actionStoreManagementToStoreDetail(storeId, adminId, args.businessId))
+                Log.e("l", "$storeId")
+                this.findNavController().navigate(DiscardItemStoreFragmentDirections
+                    .actionDiscardItemStoreToDiscardItemFragment(adminId, storeId, args.businessId))
                 testViewModel.onStoreNavigated()
             }
         })

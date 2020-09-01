@@ -30,7 +30,10 @@ class DiscardItemViewModel(val storeId: Int, val database: UserDao) : ViewModel(
     fun discardItem(productId: Int, userId: Int, quantity: Int) {
         uiScope.launch {
             if (quantity > 0) {
-                dItem(productId, userId, quantity)
+                val num = getQuantity(productId)
+                if (num >= quantity) {
+                    dItem(productId, userId, quantity)
+                }
             }
         }
     }
@@ -40,6 +43,12 @@ class DiscardItemViewModel(val storeId: Int, val database: UserDao) : ViewModel(
             val num = database.getLastDiscardedItemId() + 1
             val apId = database.getAssignedProductId(productId, storeId)
             database.discardItem(DiscardedItem(num, apId, userId, quantity, "30/07/2020", "12:40"))
+        }
+    }
+
+    private suspend fun getQuantity(productId: Int): Int {
+        return withContext(Dispatchers.IO) {
+            database.getAssignedProductQuantity(productId, storeId)
         }
     }
 

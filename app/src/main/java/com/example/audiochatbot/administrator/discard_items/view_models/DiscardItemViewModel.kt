@@ -2,6 +2,7 @@ package com.example.audiochatbot.administrator.discard_items.view_models
 
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.administrator.store_management.view_models.StoreManagementViewModel
+import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.DiscardedItem
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
@@ -32,23 +33,40 @@ class DiscardItemViewModel(val storeId: Int, val database: UserDao) : ViewModel(
             if (quantity > 0) {
                 val num = getQuantity(productId)
                 if (num >= quantity) {
-                    dItem(productId, userId, quantity)
+                    val aId = dItem(productId, userId, quantity)
+                    val aItem = getAssignedProduct(aId)
+                    aItem!!.quantity -= quantity
+                    updateAssignedItem(aItem!!)
                 }
             }
         }
     }
 
-    private suspend fun dItem(productId: Int, userId: Int, quantity: Int) {
-        withContext(Dispatchers.IO) {
+    private suspend fun dItem(productId: Int, userId: Int, quantity: Int): Int {
+        return withContext(Dispatchers.IO) {
             val num = database.getLastDiscardedItemId() + 1
             val apId = database.getAssignedProductId(productId, storeId)
-            database.discardItem(DiscardedItem(num, apId, userId, quantity, "30/07/2020", "12:40"))
+            val item = DiscardedItem(num, apId, userId, quantity, "30/07/2020", "12:40")
+            database.discardItem(item)
+            apId
         }
     }
 
     private suspend fun getQuantity(productId: Int): Int {
         return withContext(Dispatchers.IO) {
             database.getAssignedProductQuantity(productId, storeId)
+        }
+    }
+
+    private suspend fun getAssignedProduct(id: Int): AssignedProduct? {
+        return withContext(Dispatchers.IO) {
+            database.getAssignedProduct(id)
+        }
+    }
+
+    private suspend fun updateAssignedItem(aItem: AssignedProduct) {
+        withContext(Dispatchers.IO) {
+            database.updateAssignedProduct(aItem)
         }
     }
 

@@ -178,6 +178,9 @@ interface UserDao {
     @Query("SELECT * FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
     fun getAssignedProduct(productId: Int, storeId: Int): AssignedProduct?
 
+    @Query("SELECT * FROM ASSIGNED_PRODUCT WHERE AssignedProductID = :assignedProductId")
+    fun getAssignedProduct(assignedProductId: Int): AssignedProduct?
+
     @Query("SELECT AssignedProductID FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
     fun getAssignedProductId(productId: Int, storeId: Int): Int
 

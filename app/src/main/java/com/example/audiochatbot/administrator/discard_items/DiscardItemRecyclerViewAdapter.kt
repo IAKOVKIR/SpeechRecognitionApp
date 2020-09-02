@@ -39,6 +39,7 @@ class DiscardItemRecyclerViewAdapter(private val discardProductListener: Discard
                 } else {
                     discardProductListener.onClick(item, 0)
                 }
+                binding.quantity.text = null
             }
         }
 

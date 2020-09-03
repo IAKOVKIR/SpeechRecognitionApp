@@ -15,10 +15,8 @@ class LoginViewModel(private val userDatabase: UserDao): ViewModel() {
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     private var _user = MutableLiveData<User?>()
-    private var _deliveryUser = MutableLiveData<DeliveryUser?>()
 
     val user: LiveData<User?> get() = _user
-    val deliveryUser: LiveData<DeliveryUser?> get() = _deliveryUser
 
     init {
         getTotal()
@@ -42,9 +40,7 @@ class LoginViewModel(private val userDatabase: UserDao): ViewModel() {
                 val id: Int = userId.substring(1).toInt()
                 val char: Char = userId[0]
 
-                if (char == 'D')
-                    _deliveryUser.value = getDeliveryUser(id, password)
-                else if (char == 'A' || char == 'E')
+                if (char == 'A' || char == 'E' || char == 'D')
                     _user.value = getUser(id, password, char)
                 else
                     _user.value = null
@@ -56,12 +52,6 @@ class LoginViewModel(private val userDatabase: UserDao): ViewModel() {
     private suspend fun getUser(userId: Int, password: String, char: Char): User? {
         return withContext(Dispatchers.IO) {
             userDatabase.getUser(userId, password, char)
-        }
-    }
-
-    private suspend fun getDeliveryUser(userId: Int, password: String): DeliveryUser? {
-        return withContext(Dispatchers.IO) {
-            userDatabase.getDeliveryUser(userId, password)
         }
     }
 

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.audiochatbot.administrator.AdministratorActivity
 import com.example.audiochatbot.database.UniDatabase
@@ -51,32 +50,33 @@ class LoginActivity : AppCompatActivity() {
             loginViewModel.checkUser(userId, password)
         }
 
-        loginViewModel.user.observe(this, Observer { user ->
+        loginViewModel.user.observe(this, { user ->
             if (user != null) {
-                if (user.position == 'E') {
-                    rememberMe(user)
-                    val intent = Intent(this, EmployeeActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else if (user.position == 'A') {
-                    rememberMe(user)
-                    val intent = Intent(this, AdministratorActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                when (user.position) {
+                    'E' -> {
+                        rememberMe(user)
+                        val intent = Intent(this, EmployeeActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                    'A' -> {
+                        rememberMe(user)
+                        val intent = Intent(this, AdministratorActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                    'D' -> {
+                        rememberMe(user)
+                        val intent = Intent(this, DeliveryUserActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
                 }
             } else if (display) {
                 Toast.makeText(applicationContext, "wrong user id or password", Toast.LENGTH_SHORT)
                     .show()
             }
             display = true
-        })
-
-        loginViewModel.deliveryUser.observe(this, Observer { user ->
-            if (user != null) {
-                val intent = Intent(this, DeliveryUserActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
         })
     }
 

@@ -39,6 +39,9 @@ interface UserDao {
     @Query("SELECT * FROM USER INNER JOIN ASSIGNED_USER ON USER.UserID = ASSIGNED_USER.UserID WHERE StoreID = :storeId ORDER BY UserID DESC")
     fun getAllUsersLiveWithStoreID(storeId: Int): LiveData<List<User>>
 
+    @Query("SELECT * FROM USER INNER JOIN ASSIGNED_USER ON USER.UserID = ASSIGNED_USER.UserID WHERE StoreID = :storeId AND Position != 'A' ORDER BY UserID DESC")
+    fun getAllUsersLiveWithStoreIDNoAdmins(storeId: Int): LiveData<List<User>>
+
     @Query("SELECT USER.UserID, BusinessID, FirstName, LastName, Email, PhoneNumber, Password, Position FROM USER LEFT JOIN ASSIGNED_USER ON USER.UserID = ASSIGNED_USER.UserID WHERE ASSIGNED_USER.StoreID IS NOT :storeId AND USER.BusinessID = :businessId AND USER.Position = :pos ORDER BY USER.UserID DESC")
     fun getAllUsersLiveWithoutStoreID(storeId: Int, businessId: Int, pos: Char): LiveData<List<User>>
 
@@ -69,8 +72,8 @@ interface UserDao {
     @Query("SELECT * FROM USER ORDER BY UserID DESC LIMIT 1")
     fun getLastUser(): User
 
-    @Query("SELECT * FROM USER WHERE BusinessID = :businessId AND UserID NOT IN (SELECT UserID FROM ASSIGNED_USER WHERE StoreID = :storeId)")
-    fun getNotAssignedUsers(storeId: Int, businessId: Int): LiveData<List<User>>
+    @Query("SELECT * FROM USER WHERE BusinessID = :businessId AND Position IS NOT :pos AND UserID NOT IN (SELECT UserID FROM ASSIGNED_USER WHERE StoreID = :storeId)")
+    fun getNotAssignedUsers(storeId: Int, businessId: Int, pos: Char): LiveData<List<User>>
 
 
     //Assigned User
@@ -117,17 +120,6 @@ interface UserDao {
 
     @Query("SELECT BusinessID FROM USER WHERE UserID = :adminId")
     fun getAdminsBusinessId(adminId: Int): Int
-
-
-    //Delivery User
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertDeliveryUser(deliveryUser: DeliveryUser)
-
-    @Query("SELECT * FROM DELIVERY_USER WHERE DeliveryUserID = :key AND Password = :password")
-    fun getDeliveryUser(key: Int, password: String): DeliveryUser?
-
-    @Query("SELECT COUNT(*) FROM DELIVERY_USER")
-    fun getDeliveryUserTotal(): Int
 
 
     //Product

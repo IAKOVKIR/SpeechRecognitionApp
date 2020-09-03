@@ -35,10 +35,11 @@ class AssignUsersRecyclerViewAdapter(private val clickListener: AssignedUserList
             binding.clickListener = clickListener
             binding.addUserListener = addUserListener
             binding.userName.text = "${item.firstName}   ${item.lastName}"
-            if (item.position == 'E')
-                binding.userPosition.text = "Employee"
-            else if (item.position == 'A')
-                binding.userPosition.text = "Administrator"
+            when (item.position) {
+                'E' -> binding.userPosition.text = "Employee"
+                'A' -> binding.userPosition.text = "Administrator"
+                'D' -> binding.userPosition.text = "Delivery User"
+            }
         }
 
         companion object {

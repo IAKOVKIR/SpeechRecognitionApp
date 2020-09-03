@@ -1,10 +1,12 @@
 package com.example.audiochatbot.administrator.discard_items
 
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.audiochatbot.R
@@ -67,7 +69,18 @@ class DiscardItemFragment : Fragment() {
             }
         })
 
+        testViewModel.message.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                displayMessage(result)
+        })
+
         return binding.root
+    }
+
+    private fun displayMessage(message: String) {
+        val toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
+        toast.show()
     }
 
     /*override fun onActivityCreated(savedInstanceState: Bundle?) {

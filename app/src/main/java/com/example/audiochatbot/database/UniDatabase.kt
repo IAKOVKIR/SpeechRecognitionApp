@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [User::class, DeliveryUser::class, Business::class, Store::class, AssignedUser::class, Product::class,
+@Database(entities = [User::class, Business::class, Store::class, AssignedUser::class, Product::class,
 AssignedProduct::class, DiscardedItem::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
@@ -46,11 +46,10 @@ abstract class UniDatabase: RoomDatabase() {
             User(5, 1,   "Mike", "Miller", "mike@gmail.com",
                 "0498629805", "12345678", 'E'),
             User(6, 2,   "Lavar", "Ball", "ball@gmail.com",
-                "0498629806", "12345678", 'E')
+                "0498629806", "12345678", 'E'),
+            User(7, 1,   "Saddam", "Hussein", "saddam@gmail.com",
+                "0492121396", "12345678", 'D'),
         )
-
-        private val deliveryUser = DeliveryUser(1, "Saddam", "Hussein",
-        "saddam@gmail.com", "12345678", "0492121396")
 
         private val assignUsers = arrayOf(
             AssignedUser(1, 2, 1, 1, "18/07/2020", "13:00"),
@@ -128,8 +127,6 @@ abstract class UniDatabase: RoomDatabase() {
             for (i in stores) {
                 userDao.insertStore(i)
             }
-
-            userDao.insertDeliveryUser(deliveryUser)
 
             for (i in users) {
                 userDao.insertUser(i)

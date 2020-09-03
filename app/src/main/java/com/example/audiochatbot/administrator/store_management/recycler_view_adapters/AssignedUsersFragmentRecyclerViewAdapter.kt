@@ -35,10 +35,11 @@ class AssignedUsersFragmentRecyclerViewAdapter(private val clickListener: UserLi
             binding.clickListener = clickListener
             binding.removeUserListener = removeUserListener
             binding.userName.text = "${item.firstName}   ${item.lastName}"
-            if (item.position == 'E')
-                binding.userPosition.text = "Employee"
-            else if (item.position == 'A')
-                binding.userPosition.text = "Administrator"
+            when (item.position) {
+                'E' -> binding.userPosition.text = "Employee"
+                'A' -> binding.userPosition.text = "Administrator"
+                'D' -> binding.userPosition.text = "Delivery User"
+            }
         }
 
         companion object {

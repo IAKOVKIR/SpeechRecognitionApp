@@ -24,7 +24,7 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val users = database.getAllUsersLiveWithStoreID(storeId)
+    val users = database.getAllUsersLiveWithStoreIDNoAdmins(storeId)
 
     private val _navigateToUserDetails = MutableLiveData<Int>()
     val navigateToUserDetails

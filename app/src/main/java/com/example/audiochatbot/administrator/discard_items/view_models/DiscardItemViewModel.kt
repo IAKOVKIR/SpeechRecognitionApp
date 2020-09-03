@@ -1,5 +1,7 @@
 package com.example.audiochatbot.administrator.discard_items.view_models
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.administrator.store_management.view_models.StoreManagementViewModel
 import com.example.audiochatbot.database.AssignedProduct
@@ -28,6 +30,10 @@ class DiscardItemViewModel(val storeId: Int, val database: UserDao) : ViewModel(
 
     val products = database.getAllProductsLiveWithStoreID(storeId)
 
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String?>
+        get() = _message
+
     fun discardItem(productId: Int, userId: Int, quantity: Int) {
         uiScope.launch {
             if (quantity > 0) {
@@ -37,8 +43,14 @@ class DiscardItemViewModel(val storeId: Int, val database: UserDao) : ViewModel(
                     val aItem = getAssignedProduct(aId)
                     aItem!!.quantity -= quantity
                     updateAssignedItem(aItem!!)
-                }
-            }
+                    if (quantity == 1)
+                        _message.value = "item is discarded"
+                    else
+                        _message.value = "Items are discarded"
+                } else
+                    _message.value = "the entered value is bigger then the quantity of the product"
+            } else
+                _message.value = "the value of the item is less than 1"
         }
     }
 

@@ -10,7 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(entities = [User::class, Business::class, Store::class, AssignedUser::class, Product::class,
-AssignedProduct::class, DiscardedItem::class],
+AssignedProduct::class, DiscardedItem::class, Delivery::class, DeliveryUser::class, DeliveryProduct::class,
+DeliveryStatus::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
 
@@ -84,6 +85,14 @@ abstract class UniDatabase: RoomDatabase() {
             DiscardedItem(2, 4, 1, 3, "18/07/2020", "13:00")
         )
 
+        private val delivery = Delivery(1, 1, "Waiting", "18/07/2020", "13:00")
+
+        private val deliveryItems = arrayOf(
+            DeliveryProduct(1, 1, 1, 10, 4),
+            DeliveryProduct(2, 1, 3, 7, 2),
+            DeliveryProduct(3, 1, 4, 14, 3)
+        )
+
         @Volatile
         private var INSTANCE: UniDatabase? = null
 
@@ -147,7 +156,12 @@ abstract class UniDatabase: RoomDatabase() {
             for (i in discardedItems) {
                 userDao.discardItem(i)
             }
+
+            userDao.insertDelivery(delivery)
+
+            for (i in deliveryItems) {
+                userDao.insertDeliveryProduct(i)
+            }
         }
     }
-
 }

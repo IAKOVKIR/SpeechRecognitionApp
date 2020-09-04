@@ -44,9 +44,7 @@ class UserManagementFragmentRecyclerViewAdapter(private val clickListener: UserL
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = TextItemViewBinding.inflate(layoutInflater, parent, false)
 
-                return ViewHolder(
-                    binding
-                )
+                return ViewHolder(binding)
             }
         }
     }

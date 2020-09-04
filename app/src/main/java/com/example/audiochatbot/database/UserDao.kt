@@ -198,4 +198,17 @@ interface UserDao {
 
     @Query("SELECT DiscardedItemID FROM DISCARDED_ITEM ORDER BY DiscardedItemID DESC LIMIT 1")
     fun getLastDiscardedItemId(): Int
+
+
+    //Delivery
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDelivery(delivery: Delivery)
+
+    @Query("SELECT * FROM DELIVERY INNER JOIN STORE ON DELIVERY.StoreID = STORE.StoreID WHERE STORE.BusinessID = :businessId ORDER BY DeliveryID  DESC")
+    fun getAllDeliveries(businessId: Int): LiveData<List<Delivery>>
+
+
+    //Delivery product
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDeliveryProduct(deliveryProduct: DeliveryProduct)
 }

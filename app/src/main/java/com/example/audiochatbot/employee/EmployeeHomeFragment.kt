@@ -1,6 +1,8 @@
 package com.example.audiochatbot.employee
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,7 +17,7 @@ import com.example.audiochatbot.databinding.FragmentEmployeeHomeBinding
  * A simple [Fragment] subclass.
  */
 class EmployeeHomeFragment : Fragment() {
-    //private lateinit var n: SharedPreferences
+    private lateinit var n: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,7 +27,7 @@ class EmployeeHomeFragment : Fragment() {
         val binding: FragmentEmployeeHomeBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_employee_home, container, false)
 
-        //n = requireActivity().getSharedPreferences("UserPreferences", Context.MODE_PRIVATE)
+        n = requireActivity().getSharedPreferences("eaPreferences", Context.MODE_PRIVATE)
 
         binding.logOutButton.setOnClickListener {
             logOut()
@@ -39,9 +41,9 @@ class EmployeeHomeFragment : Fragment() {
      * removing all the activities and fragments that were not destroyed before
      */
     private fun logOut() {
-        /*val editor: SharedPreferences.Editor = n.edit()
+        val editor: SharedPreferences.Editor = n.edit()
         editor.clear()
-        editor.apply()*/
+        editor.apply()
 
         val loginIntent = Intent(requireActivity(), LoginActivity::class.java)
         // set the new task and clear flags

@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_home_administrator_to_discardItemStoreFragment"
             app:destination="@id/discard_item_store" />
+        <action
+            android:id="@+id/action_home_administrator_to_delivery_list"
+            app:destination="@id/delivery_list" />
     </fragment>
 
     <fragment
@@ -254,6 +257,15 @@
         <argument
             android:name="storeId"
             app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/delivery_list"
+        android:name="com.example.audiochatbot.administrator.delivery_list.DeliveryListFragment"
+        android:label="delivery_list_fragment"
+        tools:layout="@layout/delivery_list_fragment" >
         <argument
             android:name="businessId"
             app:argType="integer" />

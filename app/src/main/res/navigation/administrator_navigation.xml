@@ -267,6 +267,27 @@
         android:label="delivery_list_fragment"
         tools:layout="@layout/delivery_list_fragment" >
         <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_delivery_list_to_deliveryDetailsFragment"
+            app:destination="@id/delivery_details" />
+    </fragment>
+    <fragment
+        android:id="@+id/delivery_details"
+        android:name="com.example.audiochatbot.administrator.delivery_list.DeliveryDetailsFragment"
+        android:label="fragment_delivery_details"
+        tools:layout="@layout/fragment_delivery_details" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="deliveryId"
+            app:argType="integer" />
+        <argument
             android:name="businessId"
             app:argType="integer" />
     </fragment>

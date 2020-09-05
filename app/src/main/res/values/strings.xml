@@ -17,6 +17,7 @@
     <string name="product_detail_title">Product %1$s Details</string>
     <string name="assigned_users_list_title">Assigned Users - Store %1$s</string>
     <string name="assigned_products_list_title">Assigned Products - Store %1$s</string>
+    <string name="delivery_detail_title">Delivery %1$s Details</string>
     <string name="selected_item">Selected position:</string>
     <string name="find_product">Find Product</string>
     <string name="create_new_product">Create New Product</string>

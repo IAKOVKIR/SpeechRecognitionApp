@@ -211,4 +211,7 @@ interface UserDao {
     //Delivery product
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDeliveryProduct(deliveryProduct: DeliveryProduct)
+
+    @Query("SELECT * FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId ORDER BY DeliveryProductID  DESC")
+    fun getAllDeliveryProducts(deliveryId: Int): LiveData<List<DeliveryProduct>>
 }

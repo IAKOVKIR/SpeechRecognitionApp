@@ -1,4 +1,4 @@
-package com.example.audiochatbot.administrator.delivery_list
+package com.example.audiochatbot.administrator.delivery_list.view_models
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

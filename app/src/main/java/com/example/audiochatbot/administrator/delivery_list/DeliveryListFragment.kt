@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-import com.example.audiochatbot.administrator.store_management.StoreManagementFragmentArgs
-import com.example.audiochatbot.administrator.store_management.view_models.StoreManagementViewModel
-import com.example.audiochatbot.administrator.store_management.view_models.StoreManagementViewModelFactory
+import com.example.audiochatbot.administrator.delivery_list.view_models.DeliveryListViewModel
+import com.example.audiochatbot.administrator.delivery_list.view_models.DeliveryListViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.DeliveryListFragmentBinding
 import kotlinx.coroutines.CoroutineScope
@@ -42,9 +42,9 @@ class DeliveryListFragment : Fragment() {
 
         val adapter =
             DeliveryListRecyclerViewAdapter(
-                /*StoreListener { storeId ->
-                    testViewModel.onStoreClicked(storeId)
-                }*/)
+                DeliveryListener { deliveryId ->
+                    testViewModel.onDeliveryClicked(deliveryId)
+                })
         binding.deliveryList.adapter = adapter
 
         testViewModel.deliveries.observe(viewLifecycleOwner, {
@@ -52,6 +52,17 @@ class DeliveryListFragment : Fragment() {
                 adapter.submitList(it)
             }
         })
+
+        testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { deliveryId ->
+            deliveryId?.let {
+                this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToDeliveryDetailsFragment(args.adminId, deliveryId, args.businessId))
+                testViewModel.onStoreNavigated()
+            }
+        })
+
+        binding.addNewDelivery.setOnClickListener {
+            //this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToCreateStoreFragment(adminId))
+        }
 
         return binding.root
     }

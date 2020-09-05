@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.Delivery
 import com.example.audiochatbot.databinding.FragmentDeliveryListRecyclerViewAdapterBinding
 
-class DeliveryListRecyclerViewAdapter(/*private val clickListener: StoreListener*/) : ListAdapter<Delivery,
+class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListener) : ListAdapter<Delivery,
         DeliveryListRecyclerViewAdapter.ViewHolder>(
     DeliveryDiffCallback()
 ) {
@@ -16,7 +16,7 @@ class DeliveryListRecyclerViewAdapter(/*private val clickListener: StoreListener
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(/*clickListener,*/ item)
+        holder.bind(clickListener, item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,9 +28,9 @@ class DeliveryListRecyclerViewAdapter(/*private val clickListener: StoreListener
     class ViewHolder private constructor(val binding: FragmentDeliveryListRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(/*clickListener: StoreListener,*/ item: Delivery) {
+        fun bind(clickListener: DeliveryListener, item: Delivery) {
             binding.delivery = item
-            //binding.clickListener = clickListener
+            binding.clickListener = clickListener
             binding.deliveryName.text = "Delivery ${item.deliveryId} / Store ${item.storeId}"
             binding.status.text = "Status: ${item.status}"
         }
@@ -56,6 +56,6 @@ class DeliveryDiffCallback : DiffUtil.ItemCallback<Delivery>() {
     }
 }
 
-//class StoreListener(val clickListener: (storeId: Int) -> Unit) {
-  //  fun onClick(store: Store) = clickListener(store.storeId)
-//}
+class DeliveryListener(val clickListener: (deliveryId: Int) -> Unit) {
+    fun onClick(delivery: Delivery) = clickListener(delivery.deliveryId)
+}

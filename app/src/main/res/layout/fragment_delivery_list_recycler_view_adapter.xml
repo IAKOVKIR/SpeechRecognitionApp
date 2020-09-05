@@ -8,13 +8,16 @@
             name="delivery"
             type="com.example.audiochatbot.database.Delivery" />
 
+        <variable
+            name="clickListener"
+            type="com.example.audiochatbot.administrator.delivery_list.DeliveryListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:onClick="@{() -> clickListener.onClick(delivery)}">
 
         <TextView
             android:id="@+id/delivery_name"

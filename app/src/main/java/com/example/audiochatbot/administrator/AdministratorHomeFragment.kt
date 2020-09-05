@@ -37,7 +37,7 @@ class AdministratorHomeFragment : Fragment() {
         val businessId: Int = pref.getInt("businessId", -1)
 
         binding.viewDeliveryListButton.setOnClickListener {
-            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeAdministratorToDeliveryList(businessId))
+            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeAdministratorToDeliveryList(adminId, businessId))
         }
 
         binding.discardItemsButton.setOnClickListener {

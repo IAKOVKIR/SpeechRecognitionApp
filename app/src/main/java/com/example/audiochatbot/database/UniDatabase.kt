@@ -85,12 +85,17 @@ abstract class UniDatabase: RoomDatabase() {
             DiscardedItem(2, 4, 1, 3, "18/07/2020", "13:00")
         )
 
-        private val delivery = Delivery(1, 1, "Waiting", "18/07/2020", "13:00")
+        private val deliveries = arrayOf(
+            Delivery(1, 1, "Waiting", "18/07/2020", "13:00"),
+            Delivery(2, 1, "Delivered", "19/07/2020", "12:00"))
 
         private val deliveryItems = arrayOf(
             DeliveryProduct(1, 1, 1, 10, 4),
             DeliveryProduct(2, 1, 3, 7, 2),
-            DeliveryProduct(3, 1, 4, 14, 3)
+            DeliveryProduct(3, 1, 4, 14, 3),
+            DeliveryProduct(4, 2, 1, 10, 4),
+            DeliveryProduct(5, 2, 2, 7, 2),
+            DeliveryProduct(6, 2, 5, 14, 3)
         )
 
         @Volatile
@@ -157,7 +162,9 @@ abstract class UniDatabase: RoomDatabase() {
                 userDao.discardItem(i)
             }
 
-            userDao.insertDelivery(delivery)
+            for (i in deliveries) {
+                userDao.insertDelivery(i)
+            }
 
             for (i in deliveryItems) {
                 userDao.insertDeliveryProduct(i)

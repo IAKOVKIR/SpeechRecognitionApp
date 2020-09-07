@@ -31,13 +31,13 @@ class DeliveryDetailsFragment : Fragment() {
             R.layout.fragment_delivery_details, container, false)
 
         val application = requireNotNull(this.activity).application
-        val args = DeliveryListFragmentArgs.fromBundle(requireArguments())
-        val businessId: Int = args.businessId
+        val args = DeliveryDetailsFragmentArgs.fromBundle(requireArguments())
+        val deliveryId: Int = args.deliveryId
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val viewModelFactory =
-            DeliveryDetailsViewModelFactory(businessId, dataSource)
+            DeliveryDetailsViewModelFactory(deliveryId, dataSource)
 
         val testViewModel =
             ViewModelProvider(
@@ -50,12 +50,12 @@ class DeliveryDetailsFragment : Fragment() {
         binding.lifecycleOwner = this
 
         val adapter =
-            DeliveryDetailsRecyclerViewAdapter(
-                AcceptDeliveryProductsListener { deliveryId ->
+            DeliveryDetailsRecyclerViewAdapter(args.deliveryId
+                , AcceptDeliveryProductsListener { acceptedDeliveryId ->
                     //testViewModel.onDeliveryClicked(deliveryId)
-                }, DeclineDeliveryProductsListener {deliveryId ->
+                }, DeclineDeliveryProductsListener {declinedDeliveryId ->
 
-                })
+                }, dataSource)
         binding.deliveryList.adapter = adapter
 
         testViewModel.deliveryProducts.observe(viewLifecycleOwner, {

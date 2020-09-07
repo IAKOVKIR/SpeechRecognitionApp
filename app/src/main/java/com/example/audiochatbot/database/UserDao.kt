@@ -207,6 +207,9 @@ interface UserDao {
     @Query("SELECT * FROM DELIVERY INNER JOIN STORE ON DELIVERY.StoreID = STORE.StoreID WHERE STORE.BusinessID = :businessId ORDER BY DeliveryID  DESC")
     fun getAllDeliveries(businessId: Int): LiveData<List<Delivery>>
 
+    @Query("SELECT Status FROM DELIVERY WHERE DeliveryID = :deliveryId")
+    fun getDeliveryStatus(deliveryId: Int): String
+
 
     //Delivery product
     @Insert(onConflict = OnConflictStrategy.REPLACE)

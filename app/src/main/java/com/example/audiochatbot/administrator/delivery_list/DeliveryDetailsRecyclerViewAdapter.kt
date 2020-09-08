@@ -1,6 +1,7 @@
 package com.example.audiochatbot.administrator.delivery_list
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -38,11 +39,13 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
         fun bind(deliveryId: Int, acceptClickListener: AcceptDeliveryProductsListener,
                  declineClickListener: DeclineDeliveryProductsListener, item: DeliveryProduct,
                  userDao: UserDao) {
-            binding.deliveryProduct = item
-            binding.acceptClickListener = acceptClickListener
-            binding.declineClickListener = declineClickListener
-            binding.acceptButton.isEnabled = false
-            binding.declineButton.isEnabled = false
+            if (item.status != "not available") {
+                binding.status.text = item.status
+                binding.status.visibility = View.VISIBLE
+            } else {
+                binding.acceptButton.visibility = View.VISIBLE
+                binding.declineButton.visibility = View.VISIBLE
+            }
 
             CoroutineScope(Dispatchers.Default).launch {
 
@@ -68,6 +71,24 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
                         binding.declineButton.isEnabled = true
                     }
                 }
+            }
+
+            binding.acceptButton.setOnClickListener {
+                acceptClickListener.onClick(item)
+                binding.acceptButton.visibility = View.GONE
+                binding.declineButton.visibility = View.GONE
+
+                binding.status.text = "accepted"
+                binding.status.visibility = View.VISIBLE
+            }
+
+            binding.declineButton.setOnClickListener {
+                declineClickListener.onClick(item)
+                binding.acceptButton.visibility = View.GONE
+                binding.declineButton.visibility = View.GONE
+
+                binding.status.text = "declined"
+                binding.status.visibility = View.VISIBLE
             }
         }
 

@@ -51,9 +51,9 @@ class DeliveryDetailsFragment : Fragment() {
 
         val adapter =
             DeliveryDetailsRecyclerViewAdapter(args.deliveryId
-                , AcceptDeliveryProductsListener { productId ->
-                    //testViewModel.onDeliveryClicked(deliveryId)
-                }, DeclineDeliveryProductsListener { productId ->
+                , AcceptDeliveryProductsListener { product ->
+                    testViewModel.acceptItems(product)
+                }, DeclineDeliveryProductsListener { product ->
 
                 }, dataSource)
         binding.deliveryList.adapter = adapter

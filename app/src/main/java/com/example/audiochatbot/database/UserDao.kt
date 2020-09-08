@@ -150,6 +150,9 @@ interface UserDao {
     @Query("SELECT COUNT(*) FROM PRODUCT WHERE ProductID = :key")
     fun getProductIdWithId(key: Int): Int
 
+    @Query("SELECT * FROM PRODUCT INNER JOIN ASSIGNED_PRODUCT ON PRODUCT.ProductID = ASSIGNED_PRODUCT.ProductID WHERE AssignedProductID = :key")
+    fun getProductIdWithAssignedProductId(key: Int): Product
+
     @Query("SELECT * FROM PRODUCT ORDER BY ProductID DESC LIMIT 1")
     fun getLastProduct(): Product
 
@@ -158,6 +161,9 @@ interface UserDao {
 
     @Query("SELECT * FROM PRODUCT WHERE BusinessID = :businessId AND ProductID NOT IN (SELECT ProductID FROM ASSIGNED_PRODUCT WHERE StoreID = :storeId)")
     fun getNotAssignedProducts(storeId: Int, businessId: Int): LiveData<List<Product>>
+
+    @Query("SELECT Conversion FROM PRODUCT INNER JOIN ASSIGNED_PRODUCT ON PRODUCT.ProductID = ASSIGNED_PRODUCT.ProductID WHERE AssignedProductID = :key")
+    fun getProductConversionWithAssignedProductId(key: Int): String
 
 
     //Assigned Product
@@ -215,7 +221,10 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDeliveryProduct(deliveryProduct: DeliveryProduct)
 
-    @Query("SELECT * FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId ORDER BY ProductID  DESC")
+    @Update
+    fun updateDeliveryProduct(deliveryProduct: DeliveryProduct)
+
+    @Query("SELECT * FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId ORDER BY AssignedProductID  DESC")
     fun getAllDeliveryProducts(deliveryId: Int): LiveData<List<DeliveryProduct>>
 
 }

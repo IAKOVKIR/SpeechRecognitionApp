@@ -3,18 +3,18 @@ package com.example.audiochatbot.database
 import androidx.room.*
 
 @Entity(tableName = "DELIVERY_PRODUCT",
-    primaryKeys = ["DeliveryID", "ProductID"],
+    primaryKeys = ["DeliveryID", "AssignedProductID"],
     foreignKeys = [
         ForeignKey(entity = Delivery::class, parentColumns = ["DeliveryID"],
             childColumns = ["DeliveryID"], onDelete = ForeignKey.CASCADE),
-        ForeignKey(entity = Product::class, parentColumns = ["ProductID"],
-            childColumns = ["ProductID"], onDelete = ForeignKey.CASCADE)])
+        ForeignKey(entity = AssignedProduct::class, parentColumns = ["AssignedProductID"],
+            childColumns = ["AssignedProductID"], onDelete = ForeignKey.CASCADE)])
 data class DeliveryProduct (
     @ColumnInfo(name = "DeliveryID")
     var deliveryId: Int,
 
-    @ColumnInfo(name = "ProductID")
-    var productId: Int,
+    @ColumnInfo(name = "AssignedProductID")
+    var assignedProductId: Int,
 
     @ColumnInfo(name = "SmallUnitQuantity")
     var smallUnitQuantity: Int,

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.DeliveryProduct
+import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentDeliveryDetailsRecyclerViewAdapterBinding
 import kotlinx.coroutines.CoroutineScope
@@ -28,9 +29,7 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(
-            parent
-        )
+        return ViewHolder.from(parent)
     }
 
     class ViewHolder private constructor(val binding: FragmentDeliveryDetailsRecyclerViewAdapterBinding)
@@ -55,7 +54,7 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
                 var status: String
 
                 withContext(Dispatchers.IO) {
-                    val obj = userDao.getProductWithId(item.productId)
+                    val obj = userDao.getProductIdWithAssignedProductId(item.assignedProductId)
                     productName = obj.name
                     smallUnitName = obj.smallUnitName
                     bigUnitName = obj.bigUnitName
@@ -105,7 +104,7 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
 
 class DeliveryProductDiffCallback : DiffUtil.ItemCallback<DeliveryProduct>() {
     override fun areItemsTheSame(oldItem: DeliveryProduct, newItem: DeliveryProduct): Boolean {
-        return oldItem.deliveryId == newItem.deliveryId && oldItem.productId == newItem.productId
+        return oldItem.deliveryId == newItem.deliveryId && oldItem.assignedProductId == newItem.assignedProductId
     }
 
     override fun areContentsTheSame(oldItem: DeliveryProduct, newItem: DeliveryProduct): Boolean {
@@ -113,10 +112,10 @@ class DeliveryProductDiffCallback : DiffUtil.ItemCallback<DeliveryProduct>() {
     }
 }
 
-class AcceptDeliveryProductsListener(val clickListener: (productId: Int) -> Unit) {
-    fun onClick(deliveryProduct: DeliveryProduct) = clickListener(deliveryProduct.productId)
+class AcceptDeliveryProductsListener(val clickListener: (deliveryProduct: DeliveryProduct) -> Unit) {
+    fun onClick(deliveryProduct: DeliveryProduct) = clickListener(deliveryProduct)
 }
 
-class DeclineDeliveryProductsListener(val clickListener: (productId: Int) -> Unit) {
-    fun onClick(deliveryProduct: DeliveryProduct) = clickListener(deliveryProduct.productId)
+class DeclineDeliveryProductsListener(val clickListener: (deliveryProduct: DeliveryProduct) -> Unit) {
+    fun onClick(deliveryProduct: DeliveryProduct) = clickListener(deliveryProduct)
 }

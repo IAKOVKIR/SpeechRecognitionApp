@@ -84,7 +84,7 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
 
 class DeliveryProductDiffCallback : DiffUtil.ItemCallback<DeliveryProduct>() {
     override fun areItemsTheSame(oldItem: DeliveryProduct, newItem: DeliveryProduct): Boolean {
-        return oldItem.deliveryId == newItem.deliveryId
+        return oldItem.deliveryId == newItem.deliveryId && oldItem.productId == newItem.productId
     }
 
     override fun areContentsTheSame(oldItem: DeliveryProduct, newItem: DeliveryProduct): Boolean {
@@ -92,10 +92,10 @@ class DeliveryProductDiffCallback : DiffUtil.ItemCallback<DeliveryProduct>() {
     }
 }
 
-class AcceptDeliveryProductsListener(val clickListener: (deliveryId: Int) -> Unit) {
-    fun onClick(deliveryProduct: DeliveryProduct) = clickListener(deliveryProduct.deliveryProductId)
+class AcceptDeliveryProductsListener(val clickListener: (productId: Int) -> Unit) {
+    fun onClick(deliveryProduct: DeliveryProduct) = clickListener(deliveryProduct.productId)
 }
 
-class DeclineDeliveryProductsListener(val clickListener: (deliveryId: Int) -> Unit) {
-    fun onClick(deliveryProduct: DeliveryProduct) = clickListener(deliveryProduct.deliveryProductId)
+class DeclineDeliveryProductsListener(val clickListener: (productId: Int) -> Unit) {
+    fun onClick(deliveryProduct: DeliveryProduct) = clickListener(deliveryProduct.productId)
 }

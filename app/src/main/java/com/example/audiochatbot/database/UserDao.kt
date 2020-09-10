@@ -210,6 +210,9 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDelivery(delivery: Delivery)
 
+    @Update
+    fun updateDelivery(delivery: Delivery)
+
     @Query("SELECT * FROM DELIVERY INNER JOIN STORE ON DELIVERY.StoreID = STORE.StoreID WHERE STORE.BusinessID = :businessId ORDER BY DeliveryID  DESC")
     fun getAllDeliveries(businessId: Int): LiveData<List<Delivery>>
 

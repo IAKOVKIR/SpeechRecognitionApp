@@ -54,7 +54,7 @@ class DeliveryDetailsFragment : Fragment() {
                 , AcceptDeliveryProductsListener { product ->
                     testViewModel.acceptItems(product)
                 }, DeclineDeliveryProductsListener { product ->
-
+                    testViewModel.declineItems(product)
                 }, dataSource)
         binding.deliveryList.adapter = adapter
 

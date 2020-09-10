@@ -54,6 +54,13 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
         }
     }
 
+    fun declineItems(deliveryProduct: DeliveryProduct) {
+        uiScope.launch {
+            deliveryProduct.status = "cancelled"
+            updateDeliveryProduct(deliveryProduct)
+        }
+    }
+
     private suspend fun updateDeliveryProduct(deliveryProduct: DeliveryProduct) {
         withContext(Dispatchers.IO) {
             database.updateDeliveryProduct(deliveryProduct)

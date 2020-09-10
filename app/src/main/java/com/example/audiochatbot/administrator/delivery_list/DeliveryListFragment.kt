@@ -44,6 +44,8 @@ class DeliveryListFragment : Fragment() {
             DeliveryListRecyclerViewAdapter(
                 DeliveryListener { deliveryId ->
                     testViewModel.onDeliveryClicked(deliveryId)
+                }, CancelDeliveryListener { delivery ->
+                    testViewModel.cancelDelivery(delivery)
                 })
         binding.deliveryList.adapter = adapter
 

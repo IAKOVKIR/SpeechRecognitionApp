@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.Delivery
 import com.example.audiochatbot.databinding.FragmentDeliveryListRecyclerViewAdapterBinding
 
-class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListener) : ListAdapter<Delivery,
+class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListener,
+                                      private val cancelDeliveryListener: CancelDeliveryListener) : ListAdapter<Delivery,
         DeliveryListRecyclerViewAdapter.ViewHolder>(
     DeliveryDiffCallback()
 ) {
@@ -16,23 +17,31 @@ class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListene
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(clickListener, item)
+        holder.bind(clickListener, cancelDeliveryListener, item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(
-            parent
-        )
+        return ViewHolder.from(parent)
     }
 
     class ViewHolder private constructor(val binding: FragmentDeliveryListRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: DeliveryListener, item: Delivery) {
+        fun bind(clickListener: DeliveryListener, cancelDeliveryListener: CancelDeliveryListener, item: Delivery) {
             binding.delivery = item
             binding.clickListener = clickListener
             binding.deliveryName.text = "Delivery ${item.deliveryId} / Store ${item.storeId}"
             binding.status.text = "Status: ${item.status}"
+
+            if (item.status == "Delivered" || item.status == "Canceled") {
+                binding.cancelButton.isEnabled = false
+            }
+
+            binding.cancelButton.setOnClickListener {
+                cancelDeliveryListener.onClick(item)
+                binding.cancelButton.isEnabled = false
+            }
+
         }
 
         companion object {
@@ -48,7 +57,7 @@ class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListene
 
 class DeliveryDiffCallback : DiffUtil.ItemCallback<Delivery>() {
     override fun areItemsTheSame(oldItem: Delivery, newItem: Delivery): Boolean {
-        return oldItem.deliveryId == newItem.deliveryId
+        return oldItem.deliveryId == newItem.deliveryId && oldItem.status == newItem.status
     }
 
     override fun areContentsTheSame(oldItem: Delivery, newItem: Delivery): Boolean {
@@ -58,4 +67,8 @@ class DeliveryDiffCallback : DiffUtil.ItemCallback<Delivery>() {
 
 class DeliveryListener(val clickListener: (deliveryId: Int) -> Unit) {
     fun onClick(delivery: Delivery) = clickListener(delivery.deliveryId)
+}
+
+class CancelDeliveryListener(val clickListener: (delivery: Delivery) -> Unit) {
+    fun onClick(delivery: Delivery) = clickListener(delivery)
 }

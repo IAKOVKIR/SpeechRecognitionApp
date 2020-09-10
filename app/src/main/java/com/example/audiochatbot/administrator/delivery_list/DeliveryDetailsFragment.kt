@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.audiochatbot.R
+import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.AcceptDeliveryProductsListener
+import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.DeclineDeliveryProductsListener
+import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.DeliveryDetailsRecyclerViewAdapter
 import com.example.audiochatbot.administrator.delivery_list.view_models.DeliveryDetailsViewModel
 import com.example.audiochatbot.administrator.delivery_list.view_models.DeliveryDetailsViewModelFactory
 import com.example.audiochatbot.database.UniDatabase

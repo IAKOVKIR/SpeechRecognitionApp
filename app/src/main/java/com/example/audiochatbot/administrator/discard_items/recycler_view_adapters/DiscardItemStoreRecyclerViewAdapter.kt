@@ -1,4 +1,4 @@
-package com.example.audiochatbot.administrator.discard_items
+package com.example.audiochatbot.administrator.discard_items.recycler_view_adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,8 @@ import com.example.audiochatbot.database.Store
 import com.example.audiochatbot.databinding.FragmentDiscardItemStoreRecyclerViewAdapterBinding
 
 class DiscardItemStoreRecyclerViewAdapter(private val clickListener: ItemStoreListener) : ListAdapter<Store,
-        DiscardItemStoreRecyclerViewAdapter.ViewHolder>(ItemStoreDiffCallback()
+        DiscardItemStoreRecyclerViewAdapter.ViewHolder>(
+    ItemStoreDiffCallback()
 ) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

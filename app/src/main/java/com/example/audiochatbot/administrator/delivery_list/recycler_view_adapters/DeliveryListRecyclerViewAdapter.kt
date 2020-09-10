@@ -1,4 +1,4 @@
-package com.example.audiochatbot.administrator.delivery_list
+package com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,8 @@ import com.example.audiochatbot.database.Delivery
 import com.example.audiochatbot.databinding.FragmentDeliveryListRecyclerViewAdapterBinding
 
 class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListener,
-                                      private val cancelDeliveryListener: CancelDeliveryListener) : ListAdapter<Delivery,
+                                      private val cancelDeliveryListener: CancelDeliveryListener
+) : ListAdapter<Delivery,
         DeliveryListRecyclerViewAdapter.ViewHolder>(
     DeliveryDiffCallback()
 ) {

@@ -1,4 +1,4 @@
-package com.example.audiochatbot.administrator.discard_items
+package com.example.audiochatbot.administrator.discard_items.recycler_view_adapters
 
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater

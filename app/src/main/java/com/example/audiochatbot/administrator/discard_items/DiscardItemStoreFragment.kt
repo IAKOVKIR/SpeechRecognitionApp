@@ -10,6 +10,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
+import com.example.audiochatbot.administrator.discard_items.recycler_view_adapters.DiscardItemStoreRecyclerViewAdapter
+import com.example.audiochatbot.administrator.discard_items.recycler_view_adapters.ItemStoreListener
 import com.example.audiochatbot.administrator.discard_items.view_models.DiscardItemStoreViewModel
 import com.example.audiochatbot.administrator.discard_items.view_models.DiscardItemStoreViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
@@ -35,6 +37,7 @@ class DiscardItemStoreFragment : Fragment() {
         val application = requireNotNull(this.activity).application
         val args = DiscardItemStoreFragmentArgs.fromBundle(requireArguments())
         val adminId: Int = args.adminId
+        val businessId: Int = args.businessId
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
@@ -48,8 +51,25 @@ class DiscardItemStoreFragment : Fragment() {
         testViewModel.navigateToDiscardItem.observe(viewLifecycleOwner, { storeId ->
             storeId?.let {
                 Log.e("l", "$storeId")
-                this.findNavController().navigate(DiscardItemStoreFragmentDirections
-                    .actionDiscardItemStoreToDiscardItemFragment(adminId, storeId, args.businessId))
+                if (args.directionId == 0) {
+                    this.findNavController().navigate(
+                        DiscardItemStoreFragmentDirections
+                            .actionDiscardItemStoreToDiscardItemFragment(
+                                adminId,
+                                storeId,
+                                businessId
+                            )
+                    )
+                } else {
+                    this.findNavController().navigate(
+                        DiscardItemStoreFragmentDirections
+                            .actionDiscardItemStoreToCreateDelivery(
+                                adminId,
+                                storeId,
+                                businessId
+                            )
+                    )
+                }
                 testViewModel.onStoreNavigated()
             }
         })

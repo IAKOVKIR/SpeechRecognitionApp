@@ -41,7 +41,7 @@ class AdministratorHomeFragment : Fragment() {
         }
 
         binding.discardItemsButton.setOnClickListener {
-            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(adminId, businessId))
+            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(adminId, businessId, 0))
         }
 
         binding.userManagementButton.setOnClickListener {

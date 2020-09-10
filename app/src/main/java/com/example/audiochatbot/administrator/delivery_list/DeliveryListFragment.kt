@@ -9,6 +9,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
+import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.CancelDeliveryListener
+import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.DeliveryListRecyclerViewAdapter
+import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.DeliveryListener
 import com.example.audiochatbot.administrator.delivery_list.view_models.DeliveryListViewModel
 import com.example.audiochatbot.administrator.delivery_list.view_models.DeliveryListViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
@@ -63,7 +66,7 @@ class DeliveryListFragment : Fragment() {
         })
 
         binding.addNewDelivery.setOnClickListener {
-            //this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToCreateStoreFragment(adminId))
+            this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToDiscardItemStore(args.adminId, args.businessId, 1))
         }
 
         return binding.root

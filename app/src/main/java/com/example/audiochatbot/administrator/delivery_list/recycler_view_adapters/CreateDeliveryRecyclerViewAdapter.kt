@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,7 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.databinding.FragmentCreateDeliveryRecyclerViewAdapterBinding
 
-class CreateDeliveryRecyclerViewAdapter(private val addDeliveryProductListener: AddDeliveryProductListener
+class CreateDeliveryRecyclerViewAdapter(private val addDeliveryProductListener: AddDeliveryProductListener,
+                                        private val removeDeliveryProductListener: RemoveDeliveryProductListener
 ) : ListAdapter<Product, CreateDeliveryRecyclerViewAdapter.ViewHolder>(
     CreateDeliveryDiffCallback()
 ) {
@@ -16,7 +18,7 @@ class CreateDeliveryRecyclerViewAdapter(private val addDeliveryProductListener: 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(addDeliveryProductListener, item)
+        holder.bind(addDeliveryProductListener, removeDeliveryProductListener, item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,10 +29,53 @@ class CreateDeliveryRecyclerViewAdapter(private val addDeliveryProductListener: 
         : RecyclerView.ViewHolder(binding.root){
 
         fun bind(addDeliveryProductListener: AddDeliveryProductListener,
+                 removeDeliveryProductListener: RemoveDeliveryProductListener,
                  item: Product) {
+            var option = true
             binding.productName.text = item.name
             binding.smallUnitName.text = item.smallUnitName
             binding.bigUnitName.text = item.bigUnitName
+
+            binding.addRemoveButton.setOnClickListener {
+                if (option) {
+                    val smallNum = binding.smallQuantity.text.toString()
+                    val bigNum = binding.bigQuantity.text.toString()
+
+                    if (smallNum != "") {
+                        if (bigNum == "") {
+                            addDeliveryProductListener.onClick(item, smallNum.toInt(), 0)
+
+                            if (smallNum.toInt() != 0)
+                                option = false
+                        } else {
+                            addDeliveryProductListener.onClick(
+                                item,
+                                smallNum.toInt(),
+                                bigNum.toInt()
+                            )
+
+                            if (bigNum.toInt() != 0 || smallNum.toInt() != 0)
+                                option = false
+                        }
+                    } else if (bigNum != "") {
+                        addDeliveryProductListener.onClick(item, 0, bigNum.toInt())
+
+                        if (bigNum.toInt() != 0)
+                            option = false
+                    } else {
+                        addDeliveryProductListener.onClick(item, 0, 0)
+                    }
+
+                    if (!option)
+                        binding.addRemoveButton.text = "remove"
+                } else {
+                    removeDeliveryProductListener.onClick(item)
+                    binding.smallQuantity.text = null
+                    binding.bigQuantity.text = null
+                    binding.addRemoveButton.text = "add"
+                    option = true
+                }
+            }
         }
 
         companion object {
@@ -54,6 +99,10 @@ class CreateDeliveryDiffCallback : DiffUtil.ItemCallback<Product>() {
     }
 }
 
-class AddDeliveryProductListener(val clickListener: (product: Product) -> Unit) {
+class AddDeliveryProductListener(val clickListener: (product: Product, smallQuantity: Int, bigQuantity: Int) -> Unit) {
+    fun onClick(product: Product, smallQuantity: Int, bigQuantity: Int) = clickListener(product, smallQuantity, bigQuantity)
+}
+
+class RemoveDeliveryProductListener(val clickListener: (product: Product) -> Unit) {
     fun onClick(product: Product) = clickListener(product)
 }

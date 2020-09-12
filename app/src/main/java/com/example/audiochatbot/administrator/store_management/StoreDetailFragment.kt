@@ -76,7 +76,7 @@ class StoreDetailFragment : Fragment() {
             this.findNavController().navigate(StoreDetailFragmentDirections.actionStoreDetailToAssignedProductsFragment(storeKey, adminKey, args.businessId))
         }
 
-        viewModel.isDone.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.isDone.observe(viewLifecycleOwner, { result ->
             if (result)
                 this.findNavController().popBackStack()
             else

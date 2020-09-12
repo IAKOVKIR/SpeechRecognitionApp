@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.*
 import com.example.audiochatbot.administrator.delivery_list.view_models.CreateDeliveryViewModel
@@ -44,8 +45,11 @@ class CreateDeliveryFragment : Fragment() {
 
         val adapter =
             CreateDeliveryRecyclerViewAdapter(
-                AddDeliveryProductListener {
-
+                AddDeliveryProductListener { product, smallQuantity, bigQuantity ->
+                    testViewModel.addItem(product.productId, smallQuantity, bigQuantity)
+                },
+                RemoveDeliveryProductListener {
+                    testViewModel.removeItem(it.productId)
                 }
             )
         binding.deliveryList.adapter = adapter
@@ -53,6 +57,17 @@ class CreateDeliveryFragment : Fragment() {
         testViewModel.products.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
+            }
+        })
+
+        binding.submitTheDelivery.setOnClickListener {
+            testViewModel.submitDelivery()
+        }
+
+        testViewModel.isDone.observe(viewLifecycleOwner, { result ->
+            if (result) {
+                this.findNavController().popBackStack()
+                this.findNavController().popBackStack()
             }
         })
 

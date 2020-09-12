@@ -176,6 +176,9 @@ interface UserDao {
     @Query("SELECT * FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
     fun getAssignedProduct(productId: Int, storeId: Int): AssignedProduct?
 
+    @Query("SELECT * FROM ASSIGNED_PRODUCT WHERE StoreID = :storeId ORDER BY StoreID DESC")
+    fun getAssignedProductsList(storeId: Int): List<AssignedProduct>
+
     @Query("SELECT * FROM ASSIGNED_PRODUCT WHERE AssignedProductID = :assignedProductId")
     fun getAssignedProduct(assignedProductId: Int): AssignedProduct?
 
@@ -219,10 +222,16 @@ interface UserDao {
     @Query("SELECT Status FROM DELIVERY WHERE DeliveryID = :deliveryId")
     fun getDeliveryStatus(deliveryId: Int): String
 
+    @Query("SELECT DeliveryID FROM DELIVERY ORDER BY DeliveryID DESC LIMIT 1")
+    fun getLastDeliveryId(): Int
+
 
     //Delivery product
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDeliveryProduct(deliveryProduct: DeliveryProduct)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDeliveryProducts(list: List<DeliveryProduct>)
 
     @Update
     fun updateDeliveryProduct(deliveryProduct: DeliveryProduct)

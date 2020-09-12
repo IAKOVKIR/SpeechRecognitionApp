@@ -1,7 +1,12 @@
 package com.example.audiochatbot.administrator.delivery_list.view_models
 
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.administrator.store_management.view_models.StoreManagementViewModel
+import com.example.audiochatbot.database.AssignedProduct
+import com.example.audiochatbot.database.Delivery
+import com.example.audiochatbot.database.DeliveryProduct
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
@@ -26,15 +31,87 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
 
     val products = database.getAllProductsLiveWithStoreID(storeId)
 
-    fun deleteRecord(productId: Int) {
+    private var productIds: MutableList<Int> = arrayListOf()
+    private var smallQuantities: MutableList<Int> = arrayListOf()
+    private var bigQuantities: MutableList<Int> = arrayListOf()
+
+    private val _isDone = MutableLiveData<Boolean>()
+    val isDone
+        get() = _isDone
+
+    fun addItem(productId: Int, smallQuantity: Int, bigQuantity: Int) {
         uiScope.launch {
-            deleteRecordDb(productId)
+            if (smallQuantity != 0 || bigQuantity != 0) {
+                productIds.add(productId)
+                smallQuantities.add(smallQuantity)
+                bigQuantities.add(bigQuantity)
+            }
+
+            Log.e("size", "${productIds.size}")
         }
     }
 
-    private suspend fun deleteRecordDb(productId: Int) {
+    fun removeItem(productId: Int) {
+        uiScope.launch {
+            val num = productIds.indexOf(productId)
+
+            productIds.removeAt(num)
+            smallQuantities.removeAt(num)
+            bigQuantities.removeAt(num)
+
+            Log.e("size", "${productIds.size}")
+        }
+    }
+
+    fun submitDelivery() {
+        uiScope.launch {
+            val deliveryId = getLastDeliveryId() + 1
+            val delivery = Delivery(deliveryId, storeId, "Waiting", "18/07/2020", "13:00")
+            addNewDelivery(delivery)
+
+            val itemList: MutableList<DeliveryProduct> = arrayListOf()
+            val list = getAssignedItems()
+
+            for (element in list) {
+                for (j in 0 until productIds.size) {
+                    if (element.productId == productIds[j]) {
+                        itemList.add(DeliveryProduct(deliveryId, productIds[j], smallQuantities[j], bigQuantities[j], "not available"))
+                        break
+                    }
+                }
+            }
+
+            val newList = itemList.toList()
+            addNewItems(newList)
+
+            val checkId = getLastDeliveryId()
+            if (checkId == deliveryId) {
+                _isDone.value = true
+            }
+        }
+    }
+
+    private suspend fun getLastDeliveryId(): Int {
+        return withContext(Dispatchers.IO) {
+            database.getLastDeliveryId()
+        }
+    }
+
+    private suspend fun addNewDelivery(delivery: Delivery) {
         withContext(Dispatchers.IO) {
-            database.removeProductFromStore(productId, storeId)
+            database.insertDelivery(delivery)
+        }
+    }
+
+    private suspend fun addNewItems(itemList: List<DeliveryProduct>) {
+        withContext(Dispatchers.IO) {
+            database.insertDeliveryProducts(itemList)
+        }
+    }
+
+    private suspend fun getAssignedItems(): List<AssignedProduct> {
+        return withContext(Dispatchers.IO) {
+            database.getAssignedProductsList(storeId)
         }
     }
 

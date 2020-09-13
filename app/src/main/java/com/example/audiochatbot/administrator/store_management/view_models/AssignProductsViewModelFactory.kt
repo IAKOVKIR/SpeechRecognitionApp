@@ -7,7 +7,7 @@ import com.example.audiochatbot.database.UserDao
 /**
  * This is pretty much boiler plate code for a ViewModel Factory.
  *
- * Provides the UserDao to the ViewModel.
+ * Provides Store ID, Business ID and the UserDao to the ViewModel.
  */
 class AssignProductsViewModelFactory(private val storeId: Int, private val businessId: Int, private val dataSource: UserDao
 ) : ViewModelProvider.Factory {

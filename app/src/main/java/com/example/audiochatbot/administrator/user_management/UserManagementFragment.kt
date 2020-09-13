@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
@@ -48,7 +47,7 @@ class UserManagementFragment : Fragment() {
             ViewModelProvider(
                 this, viewModelFactory).get(UserManagementViewModel::class.java)
 
-        testViewModel.navigateToUserDetails.observe(viewLifecycleOwner, Observer { userId ->
+        testViewModel.navigateToUserDetails.observe(viewLifecycleOwner, { userId ->
             userId?.let {
                 this.findNavController().navigate(
                     UserManagementFragmentDirections.actionSleepTrackerFragmentToSleepDetailFragment(
@@ -75,7 +74,7 @@ class UserManagementFragment : Fragment() {
             testViewModel.retrieveList(line)
         }
 
-        testViewModel.users.observe(viewLifecycleOwner, Observer {
+        testViewModel.users.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
             }

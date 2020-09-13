@@ -21,7 +21,7 @@ class AssignUsersViewModel(val storeId: Int, val businessId: Int, private val da
      *
      * By default, all coroutines started in uiScope will launch in [Dispatchers.Main] which is
      * the main thread on Android. This is a sensible default because most coroutines started by
-     * a [StoreManagementViewModel] update the UI after performing some processing.
+     * a [AssignUsersViewModel] update the UI after performing some processing.
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 

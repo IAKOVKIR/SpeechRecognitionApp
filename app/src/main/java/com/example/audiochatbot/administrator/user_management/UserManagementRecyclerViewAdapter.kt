@@ -1,10 +1,12 @@
 package com.example.audiochatbot.administrator.user_management
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.audiochatbot.R
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.databinding.TextItemViewBinding
 
@@ -25,17 +27,17 @@ class UserManagementFragmentRecyclerViewAdapter(private val clickListener: UserL
         )
     }
 
-    class ViewHolder private constructor(val binding: TextItemViewBinding)
+    class ViewHolder private constructor(val binding: TextItemViewBinding, val context: Context)
         : RecyclerView.ViewHolder(binding.root){
 
         fun bind(clickListener: UserListener, item: User) {
             binding.user = item
             binding.clickListener = clickListener
-            binding.userName.text = "${item.firstName}   ${item.lastName}"
+            binding.userName.text = context.getString(R.string.first_last_names, item.firstName, item.lastName)
             when (item.position) {
-                'E' -> binding.userPosition.text = "Employee"
-                'A' -> binding.userPosition.text = "Administrator"
-                'D' -> binding.userPosition.text = "Delivery User"
+                'E' -> binding.userPosition.text = context.getString(R.string.employee)
+                'A' -> binding.userPosition.text = context.getString(R.string.administrator)
+                'D' -> binding.userPosition.text = context.getString(R.string.delivery_user)
             }
         }
 
@@ -44,7 +46,7 @@ class UserManagementFragmentRecyclerViewAdapter(private val clickListener: UserL
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = TextItemViewBinding.inflate(layoutInflater, parent, false)
 
-                return ViewHolder(binding)
+                return ViewHolder(binding, parent.context)
             }
         }
     }

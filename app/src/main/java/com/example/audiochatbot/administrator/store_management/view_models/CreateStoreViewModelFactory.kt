@@ -3,7 +3,11 @@ package com.example.audiochatbot.administrator.store_management.view_models
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.audiochatbot.database.UserDao
-
+/**
+ * This is pretty much boiler plate code for a ViewModel Factory.
+ *
+ * Provides the UserDao to the ViewModel.
+ */
 class CreateStoreViewModelFactory(private val dataSource: UserDao
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")

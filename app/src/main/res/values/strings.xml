@@ -39,9 +39,16 @@
     <string name="big_unit_name">Big Unit Name</string>
     <string name="small_unit_name">Small Unit Name</string>
     <string name="product_name">Product Name</string>
+    <string name="employee">Employee</string>
+    <string name="administrator">Administrator</string>
+    <string name="delivery_user">Delivery User</string>
 
     <string name="total_product_quantity">Quantity: %1$d</string>
     <string name="name_price">%1$s    A$%2$.2f</string>
+    <string name="first_last_names">%1$s    %2$s</string>
+    <string name="price_number">A$%1$.2f</string>
+    <string name="comma">%1$s, %2$s</string>
+    <string name="store_business">Store %1$d / Business %2$d</string>
 
     <string-array name="Positions">
         <item>Employee</item>

@@ -1,11 +1,13 @@
 package com.example.audiochatbot.administrator.store_management.recycler_view_adapters
 
+import android.content.Context
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.audiochatbot.R
 import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentAssignedProductsRecyclerViewAdapterBinding
@@ -36,14 +38,14 @@ class AssignedProductsRecyclerViewAdapter(private val clickListener: AssignedPro
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: FragmentAssignedProductsRecyclerViewAdapterBinding)
+    class ViewHolder private constructor(val binding: FragmentAssignedProductsRecyclerViewAdapterBinding, val context: Context)
         : RecyclerView.ViewHolder(binding.root){
 
         fun bind(clickListener: AssignedProductListener, removeProductListener: RemoveProductListener, item: Product, database: UserDao, storeId: Int) {
             binding.product = item
             binding.clickListener = clickListener
             binding.removeProductListener = removeProductListener
-            binding.namePrice.text = "${item.name}   A$${item.price}"
+            binding.namePrice.text = context.getString(R.string.name_price, item.name, item.price)
             CoroutineScope(Dispatchers.Default).launch {
 
                 var num: Int
@@ -53,7 +55,7 @@ class AssignedProductsRecyclerViewAdapter(private val clickListener: AssignedPro
                 }
 
                 launch (Dispatchers.Main) {
-                    binding.quantity.text = "Quantity: $num"
+                    binding.quantity.text = context.getString(R.string.total_product_quantity, num)
                 }
             }
         }
@@ -63,7 +65,7 @@ class AssignedProductsRecyclerViewAdapter(private val clickListener: AssignedPro
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = FragmentAssignedProductsRecyclerViewAdapterBinding.inflate(layoutInflater, parent, false)
 
-                return ViewHolder(binding)
+                return ViewHolder(binding, parent.context)
             }
         }
     }

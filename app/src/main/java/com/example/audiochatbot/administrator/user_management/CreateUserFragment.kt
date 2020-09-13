@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
@@ -72,7 +71,7 @@ class CreateUserFragment : Fragment() {
             viewModel.submitUser(user, adminId)
         }
 
-        viewModel.isUploaded.observe(viewLifecycleOwner, Observer {result ->
+        viewModel.isUploaded.observe(viewLifecycleOwner, {result ->
             if (result)
                 this.findNavController().popBackStack()
             else {

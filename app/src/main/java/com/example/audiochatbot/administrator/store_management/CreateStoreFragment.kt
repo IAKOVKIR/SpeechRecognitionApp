@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
@@ -54,11 +53,11 @@ class CreateStoreFragment : Fragment() {
             viewModel.submitStore(store, adminId)
         }
 
-        viewModel.isUploaded.observe(viewLifecycleOwner, Observer {result ->
+        viewModel.isUploaded.observe(viewLifecycleOwner, {result ->
             if (result)
                 this.findNavController().popBackStack()
             else
-                Toast.makeText(context, "Something went wrong :(", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show()
         })
 
         return binding.root

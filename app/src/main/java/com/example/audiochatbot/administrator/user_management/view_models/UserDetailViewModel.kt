@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 
 /**
  * ViewModel for SleepQualityFragment.
@@ -51,6 +54,9 @@ class UserDetailViewModel(
     val isUploaded
         get() = _isUploaded
 
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage get() = _errorMessage
+
     init {
         uiScope.launch {
             _user.value = retrieveUser(userKey)
@@ -61,10 +67,37 @@ class UserDetailViewModel(
         position = positionCharArray[pos]
     }
 
-    fun updateUser(newUser: User) {
-        newUser.position = position
-        newUser.userId = user.value!!.userId
-        submitUser(newUser)
+    fun updateUser(
+        firstName: String,
+        lastName: String,
+        email: String,
+        phoneNumber: String,
+        password: String,
+        repeatPassword: String
+    ) {
+        if (password == repeatPassword) {
+            if (firstName.isNotEmpty()) {
+                if (lastName.isNotEmpty()) {
+                    if (email.isNotEmpty()) {
+                        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                            if (checkPhone(phoneNumber)) {
+                                if (password.length > 7) {
+                                    val updatedUser = User(userKey, user.value!!.businessId, firstName, lastName, email, phoneNumber, password, position)
+                                    submitUser(updatedUser)
+                                } else
+                                    _errorMessage.value = "password's length is less than 8 symbols"
+                            } else
+                                _errorMessage.value = "wrong phone format"
+                        } else
+                            _errorMessage.value = "wrong email format"
+                    } else
+                        _errorMessage.value = "email field is empty"
+                } else
+                    _errorMessage.value = "Last name field is empty"
+            } else
+                _errorMessage.value = "First name field is empty"
+        } else
+            _errorMessage.value = "Passwords do not match"
     }
 
     private fun submitUser(user: User) {
@@ -99,6 +132,12 @@ class UserDetailViewModel(
         withContext(Dispatchers.IO) {
             database.deleteUserRecord(userKey)
         }
+    }
+
+    fun checkPhone(d: String): Boolean {
+        val pattern: Pattern = Pattern.compile("^\\d{10}$")
+        val matcher: Matcher = pattern.matcher(d)
+        return matcher.matches()
     }
 
     /**

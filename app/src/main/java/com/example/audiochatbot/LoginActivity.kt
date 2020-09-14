@@ -3,10 +3,10 @@ package com.example.audiochatbot
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.audiochatbot.administrator.AdministratorActivity
@@ -18,12 +18,14 @@ import com.example.audiochatbot.delivery_user.DeliveryUserActivity
 import com.example.audiochatbot.employee.EmployeeActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.util.*
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var userDataSource: UserDao
     private lateinit var loginViewModel: LoginViewModel
     private var display = false
+    private var textToSpeech: TextToSpeech? = null
 
     override fun onStart() {
         super.onStart()
@@ -32,7 +34,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding: ActivityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        val binding: ActivityLoginBinding = DataBindingUtil.setContentView(
+            this,
+            R.layout.activity_login
+        )
 
         val application = requireNotNull(this).application
 
@@ -40,9 +45,12 @@ class LoginActivity : AppCompatActivity() {
 
         val viewModelFactory = LoginViewModelFactory(userDataSource)
 
+        textToSpeech = TextToSpeech(applicationContext, this)
+
         loginViewModel =
             ViewModelProvider(
-                this, viewModelFactory).get(LoginViewModel::class.java)
+                this, viewModelFactory
+            ).get(LoginViewModel::class.java)
 
         binding.button.setOnClickListener {
             val userId: String = binding.userId.text.toString().trim()
@@ -73,11 +81,30 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             } else if (display) {
-                Toast.makeText(applicationContext, "wrong user id or password", Toast.LENGTH_SHORT)
-                    .show()
+                textToSpeech!!.speak(
+                    "wrong user id or password",
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    null
+                )
+                //Toast.makeText(applicationContext, "wrong user id or password", Toast.LENGTH_SHORT).show()
             }
             display = true
         })
+    }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            // set UK English as language for tts
+            val result = textToSpeech!!.setLanguage(Locale.UK)
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
+                Log.e("TTS", "The Language specified is not supported!")
+            else {
+                textToSpeech!!.speak("Hello user", TextToSpeech.QUEUE_FLUSH, null, null)
+            }
+        } else
+            Log.e("TTS", "Initialization Failed!")
     }
 
     private fun getUser() {
@@ -97,5 +124,22 @@ class LoginActivity : AppCompatActivity() {
             .putString("password", user.password)
             .putString("position", "${user.position}")
             .apply()
+    }
+
+    override fun onStop() {
+        if (textToSpeech != null) {
+            textToSpeech!!.stop()
+        }
+
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        // Shut down TTS
+        if (textToSpeech != null) {
+            textToSpeech!!.shutdown()
+        }
+
+        super.onDestroy()
     }
 }

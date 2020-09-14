@@ -37,6 +37,9 @@ class UserManagementViewModel(private val businessId: Int, private val database:
     val navigateToUserDetails
         get() = _navigateToUserDetails
 
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage get() = _errorMessage
+
     init {
         uiScope.launch {
             _users.value = getAllUsers(businessId)
@@ -45,7 +48,7 @@ class UserManagementViewModel(private val businessId: Int, private val database:
 
     fun retrieveList(str: String) {
         uiScope.launch {
-            if (str.isNotEmpty())
+            if (str != "")
                 _users.value = getListWithString("%$str%", businessId)
             else
                 _users.value = getAllUsers(businessId)

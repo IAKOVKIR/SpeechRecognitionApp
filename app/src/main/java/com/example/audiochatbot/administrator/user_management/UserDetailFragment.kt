@@ -1,6 +1,8 @@
 package com.example.audiochatbot.administrator.user_management
 
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,17 +15,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.database.UniDatabase
-import com.example.audiochatbot.database.User
 import com.example.audiochatbot.databinding.UserDetailBinding
 import com.example.audiochatbot.administrator.user_management.view_models.UserDetailViewModel
 import com.example.audiochatbot.administrator.user_management.view_models.UserDetailViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
  */
-class UserDetailFragment : Fragment() {
+class UserDetailFragment : Fragment(), TextToSpeech.OnInitListener {
+
+    private var textToSpeech: TextToSpeech? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -40,6 +44,8 @@ class UserDetailFragment : Fragment() {
             UserDetailFragmentArgs.fromBundle(
                 requireArguments()
             )
+
+        textToSpeech = TextToSpeech(requireActivity(), this)
 
         // Create an instance of the ViewModel Factory.
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
@@ -95,13 +101,13 @@ class UserDetailFragment : Fragment() {
          * and calls updateUser() passing the values as a User object
          */
         binding.updateRecord.setOnClickListener {
-            val user = User()
-            user.firstName = binding.firstName.text.trim().toString()
-            user.lastName = binding.lastName.text.trim().toString()
-            user.email = binding.email.text.trim().toString()
-            user.phoneNumber = binding.phoneNumber.text.trim().toString()
-            user.password = binding.password.text.trim().toString()
-            userDetailViewModel.updateUser(user)
+            val firstName = binding.firstName.text.trim().toString()
+            val lastName = binding.lastName.text.trim().toString()
+            val email = binding.email.text.trim().toString()
+            val phoneNumber = binding.phoneNumber.text.trim().toString()
+            val password = binding.password.text.trim().toString()
+            val repeatPassword = binding.repeatPassword.text.trim().toString()
+            userDetailViewModel.updateUser(firstName, lastName, email, phoneNumber, password, repeatPassword)
         }
 
         /**
@@ -112,17 +118,59 @@ class UserDetailFragment : Fragment() {
         }
 
         /**
+         * Calls observe() every time LiveData errorMessage value is changed and passes result parameter
+         */
+        userDetailViewModel.errorMessage.observe(viewLifecycleOwner, {result ->
+            if (result != null) {
+                textToSpeech!!.speak(
+                    result,
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    null
+                )
+            }
+        })
+
+        /**
          * Calls observe() every time LiveData isUploaded value is changed and passes result parameter
          */
         userDetailViewModel.isUploaded.observe(viewLifecycleOwner, {result ->
-            if (result)
+            if (result) {
                 //returns to the previous fragment
                 this.findNavController().popBackStack()
-            else
+            } else
                 //send a toast message
                 Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show()
         })
 
         return binding.root
+    }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            // set UK English as language for tts
+            val result = textToSpeech!!.setLanguage(Locale.UK)
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
+                Log.e("TTS", "The Language specified is not supported!")
+        } else
+            Log.e("TTS", "Initialization Failed!")
+    }
+
+    override fun onStop() {
+        if (textToSpeech != null) {
+            textToSpeech!!.stop()
+        }
+
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        // Shut down TTS
+        if (textToSpeech != null) {
+            textToSpeech!!.shutdown()
+        }
+
+        super.onDestroy()
     }
 }

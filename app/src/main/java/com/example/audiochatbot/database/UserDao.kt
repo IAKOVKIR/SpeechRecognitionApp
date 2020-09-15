@@ -72,6 +72,9 @@ interface UserDao {
     @Query("SELECT * FROM USER ORDER BY UserID DESC LIMIT 1")
     fun getLastUser(): User
 
+    @Query("SELECT UserID FROM USER ORDER BY UserID DESC LIMIT 1")
+    fun getLastUserId(): Int
+
     @Query("SELECT * FROM USER WHERE BusinessID = :businessId AND Position IS NOT :pos AND UserID NOT IN (SELECT UserID FROM ASSIGNED_USER WHERE StoreID = :storeId)")
     fun getNotAssignedUsers(storeId: Int, businessId: Int, pos: Char): LiveData<List<User>>
 

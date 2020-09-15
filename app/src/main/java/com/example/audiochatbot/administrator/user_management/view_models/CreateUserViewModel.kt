@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.User
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class CreateUserViewModel(
     private val database: UserDao
@@ -34,19 +36,46 @@ class CreateUserViewModel(
     val isUploaded
         get() = _isUploaded
 
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage get() = _errorMessage
+
     fun setPos(pos: Int) {
         position = positionCharArray[pos]
     }
 
-    fun submitUser(user: User, adminId: Int) {
+    fun submitUser(firstName: String, lastName: String, email: String, phoneNumber: String,
+                   password: String, adminId: Int) {
         uiScope.launch {
-            val uLast = getLastUser()
-            user.userId = uLast!!.userId + 1
-            user.businessId = getAdminBusinessId(adminId)
-            user.position = position
-            addUserToDb(user)
-            val u = getLastUser()
-            _isUploaded.value = u != null
+            val userId = getLastUserId()
+            val businessId = getAdminBusinessId(adminId)
+
+            if (firstName.isNotEmpty()) {
+                if (lastName.isNotEmpty()) {
+                    if (email.isNotEmpty()) {
+                        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                            if (checkPhone(phoneNumber)) {
+                                if (password.length > 7) {
+                                    val newUser = User(
+                                        userId, businessId,
+                                        firstName, lastName,
+                                        email, phoneNumber,
+                                        password, position)
+
+                                    addUserToDb(newUser)
+
+                                    _isUploaded.value = getUser(userId) != null
+                                } else
+                                    _errorMessage.value = "password's length is less than 8 symbols"
+                            } else
+                                _errorMessage.value = "wrong phone format"
+                        } else
+                            _errorMessage.value = "wrong email format"
+                    } else
+                        _errorMessage.value = "email field is empty"
+                } else
+                    _errorMessage.value = "Last name field is empty"
+            } else
+                _errorMessage.value = "First name field is empty"
         }
     }
 
@@ -56,9 +85,15 @@ class CreateUserViewModel(
         }
     }
 
-    private suspend fun getLastUser(): User? {
+    private suspend fun getLastUserId(): Int {
         return withContext(Dispatchers.IO) {
-            database.getLastUser()
+            database.getLastUserId()
+        }
+    }
+
+    private suspend fun getUser(userId: Int): User? {
+        return withContext(Dispatchers.IO) {
+            database.getUserWithId(userId)
         }
     }
 
@@ -66,6 +101,12 @@ class CreateUserViewModel(
         return withContext(Dispatchers.IO) {
             database.getAdminsBusinessId(adminId)
         }
+    }
+
+    private fun checkPhone(d: String): Boolean {
+        val pattern: Pattern = Pattern.compile("^\\d{10}$")
+        val matcher: Matcher = pattern.matcher(d)
+        return matcher.matches()
     }
 
     /**

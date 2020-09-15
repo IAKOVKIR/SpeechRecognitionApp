@@ -54,38 +54,54 @@ class ProductDetailViewModel(
     val isUploaded
         get() = _isUploaded
 
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage get() = _errorMessage
+
     init {
         uiScope.launch {
             _product.value = retrieveProduct(productKey)
-            _assignedProduct.value = retrieveAssignedProduct(productKey, storeKey)
         }
     }
 
-    fun updateProduct(newProduct: Product) {
-        newProduct.productId = product.value!!.productId
-        newProduct.businessId = product.value!!.businessId
-        submitProduct(newProduct)
+    fun setMessage(message: String) {
+        _errorMessage.value = message
     }
 
-    fun updateProduct(newProduct: Product, sale: Int, quantity: Int) {
-        newProduct.productId = product.value!!.productId
-        newProduct.businessId = product.value!!.businessId
-        submitProduct(newProduct)
-        updateAssignedProduct(sale, quantity)
-    }
-
-    private fun submitProduct(product: Product) {
+     fun submitProduct(name: String, smallUnitName: String, bigUnitName: String, conversion: String, price: Float) {
         uiScope.launch {
-            addProductToDb(product)
-            val u = retrieveProduct(product.productId)
-            _isUploaded.value = u!!.productId == productKey
+            if (name.isNotEmpty()) {
+                if (smallUnitName.isNotEmpty()) {
+                    if (bigUnitName.isNotEmpty()) {
+                        if (conversion.isNotEmpty()) {
+                            if (price > 0) {
+                                val newProduct = Product(productKey, product.value!!.businessId,
+                                    name, smallUnitName, bigUnitName, conversion, price)
+                                addProductToDb(newProduct)
+                                val u = retrieveProduct(productKey)
+                                _isUploaded.value = u == newProduct
+                            } else
+                                _errorMessage.value = "price value has to be higher than zero"
+                        } else
+                            _errorMessage.value = "conversion field is empty"
+                    } else
+                        _errorMessage.value = "big unit name is empty"
+                } else
+                    _errorMessage.value = "small unit name is empty"
+            } else
+                _errorMessage.value = "Name field is empty"
         }
+    }
+
+    fun updateProduct(name: String, smallUnitName: String, bigUnitName: String, conversion: String,
+                      price: Float, sale: Int, quantity: Int) {
+        submitProduct(name, smallUnitName, bigUnitName, conversion, price)
+        updateAssignedProduct(sale, quantity)
     }
 
     private fun updateAssignedProduct(sale: Int, quantity: Int) {
         uiScope.launch {
-            val newAssignedProduct: AssignedProduct = assignedProduct.value!!
-            newAssignedProduct.sale = sale
+            val newAssignedProduct = retrieveAssignedProduct(productKey, storeKey)
+            newAssignedProduct!!.sale = sale
             newAssignedProduct.quantity = quantity
             updateAProduct(newAssignedProduct)
         }

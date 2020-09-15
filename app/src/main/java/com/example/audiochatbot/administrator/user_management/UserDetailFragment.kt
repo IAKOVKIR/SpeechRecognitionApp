@@ -1,5 +1,7 @@
 package com.example.audiochatbot.administrator.user_management
 
+import android.content.Context.AUDIO_SERVICE
+import android.media.AudioManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
@@ -39,13 +41,17 @@ class UserDetailFragment : Fragment(), TextToSpeech.OnInitListener {
 
         // Create an instance of the Application
         val application = requireNotNull(this.activity).application
+
+        // Get the AudioManager service
+        val audio = activity?.getSystemService(AUDIO_SERVICE) as AudioManager
+
+        textToSpeech = TextToSpeech(requireActivity(), this)
+
         // Create an instance of the UserDetailFragmentArgs
         val arguments =
             UserDetailFragmentArgs.fromBundle(
                 requireArguments()
             )
-
-        textToSpeech = TextToSpeech(requireActivity(), this)
 
         // Create an instance of the ViewModel Factory.
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
@@ -122,12 +128,14 @@ class UserDetailFragment : Fragment(), TextToSpeech.OnInitListener {
          */
         userDetailViewModel.errorMessage.observe(viewLifecycleOwner, {result ->
             if (result != null) {
-                textToSpeech!!.speak(
-                    result,
-                    TextToSpeech.QUEUE_FLUSH,
-                    null,
-                    null
-                )
+                // 0 - 15 are usually available on any device
+                val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
+
+                if (musicVolume == 0)
+                    Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
+                else
+                    textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH,
+                        null, null)
             }
         })
 
@@ -135,12 +143,12 @@ class UserDetailFragment : Fragment(), TextToSpeech.OnInitListener {
          * Calls observe() every time LiveData isUploaded value is changed and passes result parameter
          */
         userDetailViewModel.isUploaded.observe(viewLifecycleOwner, {result ->
-            if (result) {
+            if (result)
                 //returns to the previous fragment
                 this.findNavController().popBackStack()
-            } else
-                //send a toast message
-                Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show()
+            else
+                //update the message
+                userDetailViewModel.setMessage("Something went wrong!")
         })
 
         return binding.root

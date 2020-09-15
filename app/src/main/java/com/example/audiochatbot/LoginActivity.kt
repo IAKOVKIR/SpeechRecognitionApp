@@ -3,9 +3,11 @@ package com.example.audiochatbot
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.media.AudioManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +21,7 @@ import com.example.audiochatbot.employee.EmployeeActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.*
+
 
 class LoginActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
@@ -38,6 +41,9 @@ class LoginActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             this,
             R.layout.activity_login
         )
+
+        // Get the AudioManager service
+        val audio = getSystemService(AUDIO_SERVICE) as AudioManager
 
         val application = requireNotNull(this).application
 
@@ -81,13 +87,15 @@ class LoginActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     }
                 }
             } else if (display) {
-                textToSpeech!!.speak(
-                    "wrong user id or password",
-                    TextToSpeech.QUEUE_FLUSH,
-                    null,
-                    null
-                )
-                //Toast.makeText(applicationContext, "wrong user id or password", Toast.LENGTH_SHORT).show()
+                // 0 - 15 are usually available on any device
+                val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
+
+                if (musicVolume == 0)
+                    Toast.makeText(applicationContext, "wrong user id or password", Toast.LENGTH_SHORT).show()
+                else
+                    textToSpeech!!.speak(
+                        "wrong user id or password",
+                        TextToSpeech.QUEUE_FLUSH, null, null)
             }
             display = true
         })

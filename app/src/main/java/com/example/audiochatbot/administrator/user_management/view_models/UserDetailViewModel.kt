@@ -41,7 +41,7 @@ class UserDetailViewModel(
      *
      * By default, all coroutines started in uiScope will launch in [Dispatchers.Main] which is
      * the main thread on Android. This is a sensible default because most coroutines started by
-     * a [CreateUserViewModel] update the UI after performing some processing.
+     * a [UserDetailViewModel] update the UI after performing some processing.
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
@@ -65,6 +65,10 @@ class UserDetailViewModel(
 
     fun setPos(pos: Int) {
         position = positionCharArray[pos]
+    }
+
+    fun setMessage(message: String) {
+        _errorMessage.value = message
     }
 
     fun updateUser(
@@ -134,7 +138,7 @@ class UserDetailViewModel(
         }
     }
 
-    fun checkPhone(d: String): Boolean {
+    private fun checkPhone(d: String): Boolean {
         val pattern: Pattern = Pattern.compile("^\\d{10}$")
         val matcher: Matcher = pattern.matcher(d)
         return matcher.matches()

@@ -7,17 +7,17 @@ import com.example.audiochatbot.database.UserDao
 /**
  * This is pretty much boiler plate code for a ViewModel Factory.
  *
- * Provides the key for the product and the UserDao to the ViewModel.
+ * Provides the Product ID, Store ID and the UserDao to the ViewModel.
  */
 class ProductDetailViewModelFactory(
-    private val productKey: Int,
-    private val storeKey: Int,
+    private val productId: Int,
+    private val storeId: Int,
     private val dataSource: UserDao
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ProductDetailViewModel::class.java)) {
-            return ProductDetailViewModel(productKey, storeKey, dataSource) as T
+            return ProductDetailViewModel(productId, storeId, dataSource) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

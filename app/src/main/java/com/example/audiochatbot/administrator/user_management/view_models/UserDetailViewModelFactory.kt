@@ -7,7 +7,7 @@ import com.example.audiochatbot.database.UserDao
 /**
  * This is pretty much boiler plate code for a ViewModel Factory.
  *
- * Provides the key for the night and the SleepDatabaseDao to the ViewModel.
+ * Provides the key for the user and the UserDao to the ViewModel.
  */
 class UserDetailViewModelFactory(
     private val userKey: Int,

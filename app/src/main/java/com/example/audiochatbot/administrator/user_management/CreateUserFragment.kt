@@ -44,7 +44,7 @@ class CreateUserFragment : Fragment(), TextToSpeech.OnInitListener {
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         // Get the AudioManager service
-        val audio = activity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val audio = requireActivity().getSystemService(Context.AUDIO_SERVICE) as AudioManager
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
@@ -68,12 +68,15 @@ class CreateUserFragment : Fragment(), TextToSpeech.OnInitListener {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
         binding.submit.setOnClickListener {
-            val firstName = binding.firstName.text.trim().toString()
-            val lastName = binding.lastName.text.trim().toString()
-            val email = binding.email.text.trim().toString()
-            val phoneNumber = binding.phoneNumber.text.trim().toString()
-            val password = binding.password.text.trim().toString()
-            viewModel.submitUser(firstName, lastName, email, phoneNumber, password, adminId)
+            binding.apply {
+                val firstName = firstName.text.trim().toString()
+                val lastName = lastName.text.trim().toString()
+                val email = email.text.trim().toString()
+                val phoneNumber = phoneNumber.text.trim().toString()
+                val password = password.text.trim().toString()
+
+                viewModel.submitUser(firstName, lastName, email, phoneNumber, password, adminId)
+            }
         }
 
         /**

@@ -10,8 +10,10 @@ import kotlinx.coroutines.*
 
 /**
  * ViewModel for ProductManagementFragment.
+ * @param businessId - the key of the current business we are working on.
+ * @param dataSource -
  */
-class ProductManagementViewModel(private val businessId: Int, private val database: UserDao): ViewModel() {
+class ProductManagementViewModel(private val businessId: Int, private val dataSource: UserDao): ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -60,13 +62,13 @@ class ProductManagementViewModel(private val businessId: Int, private val databa
 
     private suspend fun getAllProducts(businessId: Int): List<Product> {
         return withContext(Dispatchers.IO) {
-            database.getAllProductsWithBusinessId(businessId)
+            dataSource.getAllProductsWithBusinessId(businessId)
         }
     }
 
     private suspend fun getListWithString(line: String, businessId: Int): List<Product> {
         return withContext(Dispatchers.IO) {
-            database.getAllProductsWithString(line, businessId)
+            dataSource.getAllProductsWithString(line, businessId)
         }
     }
     

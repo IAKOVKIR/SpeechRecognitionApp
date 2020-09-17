@@ -11,12 +11,12 @@ import java.util.regex.Pattern
 
 
 /**
- * ViewModel for SleepQualityFragment.
+ * ViewModel for UserDetailFragment.
  *
- * @param userKey The key of the current user we are working on.
+ * @param userId The key of the current user we are working on.
  */
 class UserDetailViewModel(
-    private val userKey: Int,
+    private val userId: Int,
     val dataSource: UserDao
 ) : ViewModel() {
     private val positionCharArray = arrayOf('E', 'A', 'D')
@@ -59,7 +59,7 @@ class UserDetailViewModel(
 
     init {
         uiScope.launch {
-            _user.value = retrieveUser(userKey)
+            _user.value = retrieveUser(userId)
         }
     }
 
@@ -86,7 +86,7 @@ class UserDetailViewModel(
                         if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                             if (checkPhone(phoneNumber)) {
                                 if (password.length > 7) {
-                                    val updatedUser = User(userKey, user.value!!.businessId, firstName, lastName, email, phoneNumber, password, position)
+                                    val updatedUser = User(userId, user.value!!.businessId, firstName, lastName, email, phoneNumber, password, position)
                                     submitUser(updatedUser)
                                 } else
                                     _errorMessage.value = "password's length is less than 8 symbols"
@@ -115,7 +115,7 @@ class UserDetailViewModel(
     fun deleteRecord() {
         uiScope.launch {
             deleteRecordDb()
-            val u = retrieveUser(userKey)
+            val u = retrieveUser(userId)
             _isUploaded.value = u == null
         }
     }
@@ -134,7 +134,7 @@ class UserDetailViewModel(
 
     private suspend fun deleteRecordDb() {
         withContext(Dispatchers.IO) {
-            database.deleteUserRecord(userKey)
+            database.deleteUserRecord(userId)
         }
     }
 

@@ -8,10 +8,15 @@ import kotlinx.coroutines.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-class CreateUserViewModel(
-    private val database: UserDao
-) : ViewModel() {
+class CreateUserViewModel(val dataSource: UserDao) : ViewModel() {
     private val positionCharArray = arrayOf('E', 'A', 'D')
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.

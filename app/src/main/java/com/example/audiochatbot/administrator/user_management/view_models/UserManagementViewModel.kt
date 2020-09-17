@@ -10,7 +10,14 @@ import kotlinx.coroutines.*
 /**
  * ViewModel for UserManagementFragment.
  */
-class UserManagementViewModel(private val businessId: Int, private val database: UserDao) : ViewModel() {
+class UserManagementViewModel(private val businessId: Int, val dataSource: UserDao) : ViewModel() {
+
+    /**
+     * Hold a reference to SleepDatabase via its SleepDatabaseDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.

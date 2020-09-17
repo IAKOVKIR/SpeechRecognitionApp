@@ -3,7 +3,6 @@ package com.example.audiochatbot.administrator.product_management.view_models
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.administrator.user_management.view_models.CreateUserViewModel
 import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
@@ -12,16 +11,18 @@ import kotlinx.coroutines.*
 /**
  * ViewModel for ProductDetailFragment.
  *
- * @param productKey The key of the current product we are working on.
+ * @param productId - the key of the current product we are working on.
+ * @param storeId - the key of the current store we are working on.
+ * @param dataSource -
  */
 class ProductDetailViewModel(
-    private val productKey: Int,
-    private val storeKey: Int,
+    private val productId: Int,
+    private val storeId: Int,
     val dataSource: UserDao
 ) : ViewModel() {
 
     /**
-     * Hold a reference to SleepDatabase via its SleepDatabaseDao.
+     * Hold a reference to UniDatabase via its UserDao.
      */
     private val database = dataSource
 
@@ -40,7 +41,7 @@ class ProductDetailViewModel(
      *
      * By default, all coroutines started in uiScope will launch in [Dispatchers.Main] which is
      * the main thread on Android. This is a sensible default because most coroutines started by
-     * a [CreateUserViewModel] update the UI after performing some processing.
+     * a [ProductDetailViewModel] update the UI after performing some processing.
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
@@ -59,7 +60,7 @@ class ProductDetailViewModel(
 
     init {
         uiScope.launch {
-            _product.value = retrieveProduct(productKey)
+            _product.value = retrieveProduct(productId)
         }
     }
 
@@ -74,10 +75,10 @@ class ProductDetailViewModel(
                     if (bigUnitName.isNotEmpty()) {
                         if (conversion.isNotEmpty()) {
                             if (price > 0) {
-                                val newProduct = Product(productKey, product.value!!.businessId,
+                                val newProduct = Product(productId, product.value!!.businessId,
                                     name, smallUnitName, bigUnitName, conversion, price)
                                 addProductToDb(newProduct)
-                                val u = retrieveProduct(productKey)
+                                val u = retrieveProduct(productId)
                                 _isUploaded.value = u == newProduct
                             } else
                                 _errorMessage.value = "price value has to be higher than zero"
@@ -100,7 +101,7 @@ class ProductDetailViewModel(
 
     private fun updateAssignedProduct(sale: Int, quantity: Int) {
         uiScope.launch {
-            val newAssignedProduct = retrieveAssignedProduct(productKey, storeKey)
+            val newAssignedProduct = retrieveAssignedProduct(productId, storeId)
             newAssignedProduct!!.sale = sale
             newAssignedProduct.quantity = quantity
             updateAProduct(newAssignedProduct)
@@ -110,7 +111,7 @@ class ProductDetailViewModel(
     fun deleteRecord() {
         uiScope.launch {
             deleteRecordDb()
-            val u = retrieveProduct(productKey)
+            val u = retrieveProduct(productId)
             _isUploaded.value = u == null
         }
     }
@@ -141,7 +142,7 @@ class ProductDetailViewModel(
 
     private suspend fun deleteRecordDb() {
         withContext(Dispatchers.IO) {
-            database.deleteProductRecord(productKey)
+            database.deleteProductRecord(productId)
         }
     }
 

@@ -242,4 +242,12 @@ interface UserDao {
     @Query("SELECT * FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId ORDER BY AssignedProductID  DESC")
     fun getAllDeliveryProducts(deliveryId: Int): LiveData<List<DeliveryProduct>>
 
+
+    //Inventory Count
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertInventoryCount(inventoryCount: InventoryCount)
+
+    @Query("SELECT * FROM INVENTORY_COUNT INNER JOIN STORE ON INVENTORY_COUNT.StoreID = STORE.StoreID WHERE STORE.BusinessID = :businessId ORDER BY Date DESC")
+    fun getAllInventoryCounts(businessId: Int): LiveData<List<InventoryCount>>
+
 }

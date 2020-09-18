@@ -1,26 +1,55 @@
 package com.example.audiochatbot.administrator.inventories
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import com.example.audiochatbot.R
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.audiochatbot.database.InventoryCount
+import com.example.audiochatbot.databinding.FragmentInventoryListRecyclerViewAdapterBinding
 
-/**
- * A simple [Fragment] subclass.
- */
-class InventoryListRecyclerViewAdapter : Fragment() {
+class InventoryListRecyclerViewAdapter : ListAdapter<InventoryCount,
+        InventoryListRecyclerViewAdapter.ViewHolder>(
+    InventoryCountDiffCallback()
+) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(
-            R.layout.fragment_inventory_list_recycler_view_adapter,
-            container,
-            false
-        )
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = getItem(position)
+
+        holder.bind(item)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder.from(parent)
+    }
+
+    class ViewHolder private constructor(val binding: FragmentInventoryListRecyclerViewAdapterBinding)
+        : RecyclerView.ViewHolder(binding.root){
+
+        fun bind(item: InventoryCount) {
+            binding.deliveryName.text = "Store: ${item.storeId}"
+            binding.earnings.text = "Expected: ${item.expectedEarnings} / Earned: ${item.totalEarnings}"
+            binding.countedBy.text = "Counted by: User ${item.userId}"
+            binding.dateTime.text = "${item.date} / ${item.time}"
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = FragmentInventoryListRecyclerViewAdapterBinding.inflate(layoutInflater, parent, false)
+
+                return ViewHolder(binding)
+            }
+        }
+    }
+}
+
+class InventoryCountDiffCallback : DiffUtil.ItemCallback<InventoryCount>() {
+    override fun areItemsTheSame(oldItem: InventoryCount, newItem: InventoryCount): Boolean {
+        return oldItem.userId == newItem.userId && oldItem.storeId == newItem.storeId
+    }
+
+    override fun areContentsTheSame(oldItem: InventoryCount, newItem: InventoryCount): Boolean {
+        return oldItem == newItem
     }
 }

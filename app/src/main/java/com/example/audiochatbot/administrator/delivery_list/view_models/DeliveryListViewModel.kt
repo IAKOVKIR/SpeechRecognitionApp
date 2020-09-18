@@ -7,7 +7,7 @@ import com.example.audiochatbot.database.Delivery
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class DeliveryListViewModel(val businessId: Int,val database: UserDao) : ViewModel() {
+class DeliveryListViewModel(val businessId: Int, val database: UserDao) : ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.

@@ -89,7 +89,7 @@ abstract class UniDatabase: RoomDatabase() {
             Delivery(1, 1, "Waiting", "18/07/2020", "13:00"),
             Delivery(2, 1, "Delivered", "19/07/2020", "12:00"))
 
-        private val deliveryItems = arrayOf(
+        private val deliveryItems = listOf(
             DeliveryProduct(1, 1, 10, 4, "not available"),
             DeliveryProduct(1, 3, 7, 2, "not available"),
             DeliveryProduct(1, 4, 14, 3, "not available"),
@@ -171,8 +171,13 @@ abstract class UniDatabase: RoomDatabase() {
                 userDao.insertDelivery(i)
             }
 
-            for (i in deliveryItems) {
-                userDao.insertDeliveryProduct(i)
+            //for (i in deliveryItems) {
+              //  userDao.insertDeliveryProduct(i)
+            //}
+            userDao.insertDeliveryProducts(deliveryItems)
+
+            for (i in inventories) {
+                userDao.insertInventoryCount(i)
             }
         }
     }

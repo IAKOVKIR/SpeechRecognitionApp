@@ -40,6 +40,10 @@ class AdministratorHomeFragment : Fragment() {
         if (adminId == -1)
             logOut()
 
+        binding.viewInventoryButton.setOnClickListener {
+            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeAdministratorToInventoryListFragment(adminId, businessId))
+        }
+
         binding.viewDeliveryListButton.setOnClickListener {
             this.findNavController().navigate(
                 AdministratorHomeFragmentDirections.actionHomeAdministratorToDeliveryList(

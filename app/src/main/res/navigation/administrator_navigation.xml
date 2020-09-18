@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_home_administrator_to_delivery_list"
             app:destination="@id/delivery_list" />
+        <action
+            android:id="@+id/action_home_administrator_to_inventoryListFragment"
+            app:destination="@id/inventory_list" />
     </fragment>
 
     <fragment
@@ -310,6 +313,18 @@
             app:argType="integer" />
         <argument
             android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/inventory_list"
+        android:name="com.example.audiochatbot.administrator.inventories.InventoryListFragment"
+        android:label="fragment_inventory_list"
+        tools:layout="@layout/fragment_inventory_list" >
+        <argument
+            android:name="adminId"
             app:argType="integer" />
         <argument
             android:name="businessId"

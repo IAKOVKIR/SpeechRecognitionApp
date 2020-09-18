@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 @Database(entities = [User::class, Business::class, Store::class, AssignedUser::class, Product::class,
 AssignedProduct::class, DiscardedItem::class, Delivery::class, DeliveryUser::class, DeliveryProduct::class,
-InventoryCount::class, Item::class],
+InventoryCount::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
 
@@ -96,6 +96,11 @@ abstract class UniDatabase: RoomDatabase() {
             DeliveryProduct(2, 1, 10, 4, "not available"),
             DeliveryProduct(2, 2, 7, 2, "not available"),
             DeliveryProduct(2, 5, 14, 3, "not available")
+        )
+
+        private val inventories = arrayOf(
+            InventoryCount(1, 1, 700F, 700F, "18/07/2020", "12:00"),
+            InventoryCount(1, 1, 860F, 850F, "19/07/2020", "12:00"),
         )
 
         @Volatile

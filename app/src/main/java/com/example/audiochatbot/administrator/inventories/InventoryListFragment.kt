@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-import com.example.audiochatbot.administrator.delivery_list.DeliveryListFragmentArgs
 import com.example.audiochatbot.administrator.inventories.view_models.InventoryListViewModel
 import com.example.audiochatbot.administrator.inventories.view_models.InventoryListViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
@@ -31,7 +31,7 @@ class InventoryListFragment : Fragment() {
             R.layout.fragment_inventory_list, container, false)
 
         val application = requireNotNull(this.activity).application
-        val args = DeliveryListFragmentArgs.fromBundle(requireArguments())
+        val args = InventoryListFragmentArgs.fromBundle(requireArguments())
         val businessId: Int = args.businessId
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
@@ -51,6 +51,10 @@ class InventoryListFragment : Fragment() {
                 adapter.submitList(it)
             }
         })
+
+        binding.addNewDelivery.setOnClickListener {
+            this.findNavController().navigate(InventoryListFragmentDirections.actionInventoryListToDiscardItemStore(args.adminId, businessId, 2))
+        }
 
         return binding.root
     }

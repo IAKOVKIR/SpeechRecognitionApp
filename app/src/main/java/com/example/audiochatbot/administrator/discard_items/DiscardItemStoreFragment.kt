@@ -51,24 +51,30 @@ class DiscardItemStoreFragment : Fragment() {
         testViewModel.navigateToDiscardItem.observe(viewLifecycleOwner, { storeId ->
             storeId?.let {
                 Log.e("l", "$storeId")
-                if (args.directionId == 0) {
-                    this.findNavController().navigate(
-                        DiscardItemStoreFragmentDirections
-                            .actionDiscardItemStoreToDiscardItemFragment(
-                                adminId,
-                                storeId,
-                                businessId
-                            )
-                    )
-                } else {
-                    this.findNavController().navigate(
-                        DiscardItemStoreFragmentDirections
-                            .actionDiscardItemStoreToCreateDelivery(
-                                adminId,
-                                storeId,
-                                businessId
-                            )
-                    )
+                when (args.directionId) {
+                    0 -> {
+                        this.findNavController().navigate(
+                            DiscardItemStoreFragmentDirections
+                                .actionDiscardItemStoreToDiscardItemFragment(
+                                    adminId,
+                                    storeId,
+                                    businessId
+                                )
+                        )
+                    }
+                    1 -> {
+                        this.findNavController().navigate(
+                            DiscardItemStoreFragmentDirections
+                                .actionDiscardItemStoreToCreateDelivery(
+                                    adminId,
+                                    storeId,
+                                    businessId
+                                )
+                        )
+                    }
+                    else -> {
+
+                    }
                 }
                 testViewModel.onStoreNavigated()
             }

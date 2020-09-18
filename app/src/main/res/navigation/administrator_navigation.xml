@@ -329,5 +329,8 @@
         <argument
             android:name="businessId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_inventory_list_to_discard_item_store"
+            app:destination="@id/discard_item_store" />
     </fragment>
 </navigation>

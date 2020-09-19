@@ -83,13 +83,8 @@ class CreateDeliveryRecyclerViewAdapter(private val addDeliveryProductListener: 
                         addDeliveryProductListener.onClick(item, 0, 0)
                     }
 
-                } else {
+                } else
                     removeDeliveryProductListener.onClick(item)
-                    binding.smallQuantity.text = null
-                    binding.bigQuantity.text = null
-                    binding.addRemoveButton.text = "add"
-                    option = true
-                }
             }
         }
 

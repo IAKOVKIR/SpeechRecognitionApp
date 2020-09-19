@@ -72,9 +72,11 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
         uiScope.launch {
             val num = productIds.indexOf(productId)
 
-            productIds.removeAt(num)
-            smallBigQuantities.removeAt(num * 2)
-            smallBigQuantities.removeAt(num * 2)
+            smallBigQuantities[num * 2] = 0
+            smallBigQuantities[num * 2 + 1] = 0
+
+            _l.value = smallBigQuantities.toList()
+            _products.value = getItems()
 
             Log.e("size", "${productIds.size}")
         }
@@ -91,8 +93,8 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
 
             for (element in list) {
                 for (j in 0 until productIds.size) {
-                    if (element.productId == productIds[j]) {
-                        itemList.add(DeliveryProduct(deliveryId, productIds[j], smallBigQuantities[j * 2], smallBigQuantities[j * 2 - 1], "not available"))
+                    if (element.productId == productIds[j] && (smallBigQuantities[j * 2] != 0 || smallBigQuantities[j * 2 + 1] != 0)) {
+                        itemList.add(DeliveryProduct(deliveryId, productIds[j], smallBigQuantities[j * 2], smallBigQuantities[j * 2 + 1], "not available"))
                         break
                     }
                 }

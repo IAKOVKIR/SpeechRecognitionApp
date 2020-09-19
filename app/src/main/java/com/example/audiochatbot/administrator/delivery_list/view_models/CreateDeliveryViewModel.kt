@@ -1,13 +1,10 @@
 package com.example.audiochatbot.administrator.delivery_list.view_models
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.administrator.store_management.view_models.StoreManagementViewModel
-import com.example.audiochatbot.database.AssignedProduct
-import com.example.audiochatbot.database.Delivery
-import com.example.audiochatbot.database.DeliveryProduct
-import com.example.audiochatbot.database.UserDao
+import com.example.audiochatbot.database.*
 import kotlinx.coroutines.*
 
 class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): ViewModel() {
@@ -25,15 +22,29 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
      *
      * By default, all coroutines started in uiScope will launch in [Dispatchers.Main] which is
      * the main thread on Android. This is a sensible default because most coroutines started by
-     * a [StoreManagementViewModel] update the UI after performing some processing.
+     * a [CreateDeliveryViewModel] update the UI after performing some processing.
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val products = database.getAllProductsLiveWithStoreID(storeId)
+    private var _products = MutableLiveData<List<Product>>()
+    val products: LiveData<List<Product>> get() = _products
+
+    private var _l = MutableLiveData<List<Int>>()
+    val l: LiveData<List<Int>> get() = _l
 
     private var productIds: MutableList<Int> = arrayListOf()
-    private var smallQuantities: MutableList<Int> = arrayListOf()
-    private var bigQuantities: MutableList<Int> = arrayListOf()
+    private var smallBigQuantities: MutableList<Int> = arrayListOf()
+
+    init {
+        uiScope.launch {
+            _products.value = getItems()
+            for (element in products.value!!) {
+                productIds.add(element.productId)
+            }
+
+            smallBigQuantities = List(productIds.size * 2) { 0 } as MutableList<Int>
+        }
+    }
 
     private val _isDone = MutableLiveData<Boolean>()
     val isDone
@@ -42,10 +53,16 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
     fun addItem(productId: Int, smallQuantity: Int, bigQuantity: Int) {
         uiScope.launch {
             if (smallQuantity != 0 || bigQuantity != 0) {
-                productIds.add(productId)
-                smallQuantities.add(smallQuantity)
-                bigQuantities.add(bigQuantity)
+                for (i in 0 until productIds.size) {
+                    if (productId == productIds[i]) {
+                        smallBigQuantities[i * 2] = smallQuantity
+                        smallBigQuantities[i * 2 + 1] = bigQuantity
+                    }
+                }
             }
+
+            _l.value = smallBigQuantities.toList()
+            _products.value = getItems()
 
             Log.e("size", "${productIds.size}")
         }
@@ -56,8 +73,8 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
             val num = productIds.indexOf(productId)
 
             productIds.removeAt(num)
-            smallQuantities.removeAt(num)
-            bigQuantities.removeAt(num)
+            smallBigQuantities.removeAt(num * 2)
+            smallBigQuantities.removeAt(num * 2)
 
             Log.e("size", "${productIds.size}")
         }
@@ -75,7 +92,7 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
             for (element in list) {
                 for (j in 0 until productIds.size) {
                     if (element.productId == productIds[j]) {
-                        itemList.add(DeliveryProduct(deliveryId, productIds[j], smallQuantities[j], bigQuantities[j], "not available"))
+                        itemList.add(DeliveryProduct(deliveryId, productIds[j], smallBigQuantities[j * 2], smallBigQuantities[j * 2 - 1], "not available"))
                         break
                     }
                 }
@@ -112,6 +129,12 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
     private suspend fun getAssignedItems(): List<AssignedProduct> {
         return withContext(Dispatchers.IO) {
             database.getAssignedProductsList(storeId)
+        }
+    }
+
+    private suspend fun getItems(): List<Product> {
+        return withContext(Dispatchers.IO) {
+            database.getAllProductsWithStoreID(storeId)
         }
     }
 

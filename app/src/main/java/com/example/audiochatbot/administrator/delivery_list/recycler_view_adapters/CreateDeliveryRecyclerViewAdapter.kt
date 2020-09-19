@@ -2,6 +2,7 @@ package com.example.audiochatbot.administrator.delivery_list.recycler_view_adapt
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +10,8 @@ import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.databinding.FragmentCreateDeliveryRecyclerViewAdapterBinding
 
 class CreateDeliveryRecyclerViewAdapter(private val addDeliveryProductListener: AddDeliveryProductListener,
-                                        private val removeDeliveryProductListener: RemoveDeliveryProductListener
+                                        private val removeDeliveryProductListener: RemoveDeliveryProductListener,
+                                        private val list: List<Int>
 ) : ListAdapter<Product, CreateDeliveryRecyclerViewAdapter.ViewHolder>(
     CreateDeliveryDiffCallback()
 ) {
@@ -17,7 +19,7 @@ class CreateDeliveryRecyclerViewAdapter(private val addDeliveryProductListener: 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(addDeliveryProductListener, removeDeliveryProductListener, item)
+        holder.bind(addDeliveryProductListener, removeDeliveryProductListener, item, list[position * 2], list[position * 2 + 1])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,11 +31,27 @@ class CreateDeliveryRecyclerViewAdapter(private val addDeliveryProductListener: 
 
         fun bind(addDeliveryProductListener: AddDeliveryProductListener,
                  removeDeliveryProductListener: RemoveDeliveryProductListener,
-                 item: Product) {
+                 item: Product, small: Int, big: Int) {
             var option = true
             binding.productName.text = item.name
             binding.smallUnitName.text = item.smallUnitName
             binding.bigUnitName.text = item.bigUnitName
+
+            if (small != 0) {
+                if (big != 0)
+                    binding.bigQuantity.setText("$big", TextView.BufferType.EDITABLE)
+
+                binding.smallQuantity.setText("$small", TextView.BufferType.EDITABLE)
+                option = false
+                binding.addRemoveButton.text = "remove"
+
+            } else {
+                if (big != 0) {
+                    binding.bigQuantity.setText("$big", TextView.BufferType.EDITABLE)
+                    option = false
+                    binding.addRemoveButton.text = "remove"
+                }
+            }
 
             binding.addRemoveButton.setOnClickListener {
                 if (option) {
@@ -65,8 +83,6 @@ class CreateDeliveryRecyclerViewAdapter(private val addDeliveryProductListener: 
                         addDeliveryProductListener.onClick(item, 0, 0)
                     }
 
-                    if (!option)
-                        binding.addRemoveButton.text = "remove"
                 } else {
                     removeDeliveryProductListener.onClick(item)
                     binding.smallQuantity.text = null

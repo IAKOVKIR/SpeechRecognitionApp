@@ -147,6 +147,9 @@ interface UserDao {
     @Query("SELECT * FROM PRODUCT INNER JOIN ASSIGNED_PRODUCT ON PRODUCT.ProductID = ASSIGNED_PRODUCT.ProductID WHERE StoreID = :storeId ORDER BY ProductID DESC")
     fun getAllProductsLiveWithStoreID(storeId: Int): LiveData<List<Product>>
 
+    @Query("SELECT * FROM PRODUCT INNER JOIN ASSIGNED_PRODUCT ON PRODUCT.ProductID = ASSIGNED_PRODUCT.ProductID WHERE StoreID = :storeId ORDER BY ProductID DESC")
+    fun getAllProductsWithStoreID(storeId: Int): List<Product>
+
     @Query("SELECT * FROM PRODUCT WHERE ProductID = :key")
     fun getProductWithId(key: Int): Product
 

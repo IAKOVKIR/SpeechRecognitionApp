@@ -43,14 +43,14 @@ class CreateDeliveryFragment : Fragment() {
             ViewModelProvider(
                 this, viewModelFactory).get(CreateDeliveryViewModel::class.java)
 
-        val adapter =
+        var adapter =
             CreateDeliveryRecyclerViewAdapter(
                 AddDeliveryProductListener { product, smallQuantity, bigQuantity ->
                     testViewModel.addItem(product.productId, smallQuantity, bigQuantity)
                 },
                 RemoveDeliveryProductListener {
                     testViewModel.removeItem(it.productId)
-                }
+                }, List(100) { 0 }
             )
         binding.deliveryList.adapter = adapter
 
@@ -58,6 +58,19 @@ class CreateDeliveryFragment : Fragment() {
             it?.let {
                 adapter.submitList(it)
             }
+        })
+
+        testViewModel.l.observe(viewLifecycleOwner, { l ->
+            adapter =
+                CreateDeliveryRecyclerViewAdapter(
+                    AddDeliveryProductListener { product, smallQuantity, bigQuantity ->
+                        testViewModel.addItem(product.productId, smallQuantity, bigQuantity)
+                    },
+                    RemoveDeliveryProductListener {
+                        testViewModel.removeItem(it.productId)
+                    }, l
+                )
+            binding.deliveryList.adapter = adapter
         })
 
         binding.submitTheDelivery.setOnClickListener {

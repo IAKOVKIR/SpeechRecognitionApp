@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
+import com.example.audiochatbot.administrator.inventories.recycler_view_adapters.InventoryListRecyclerViewAdapter
 import com.example.audiochatbot.administrator.inventories.view_models.InventoryListViewModel
 import com.example.audiochatbot.administrator.inventories.view_models.InventoryListViewModelFactory
 import com.example.audiochatbot.database.UniDatabase

@@ -9,6 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
+import com.example.audiochatbot.administrator.product_management.recycler_view_adapters.ProductListener
+import com.example.audiochatbot.administrator.product_management.recycler_view_adapters.ProductManagementRecyclerViewAdapter
 import com.example.audiochatbot.administrator.product_management.view_models.ProductManagementViewModel
 import com.example.audiochatbot.administrator.product_management.view_models.ProductManagementViewModelFactory
 import com.example.audiochatbot.administrator.user_management.UserManagementFragmentArgs

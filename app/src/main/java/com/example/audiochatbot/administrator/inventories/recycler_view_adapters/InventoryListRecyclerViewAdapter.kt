@@ -1,4 +1,4 @@
-package com.example.audiochatbot.administrator.inventories
+package com.example.audiochatbot.administrator.inventories.recycler_view_adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -50,6 +50,6 @@ class InventoryCountDiffCallback : DiffUtil.ItemCallback<InventoryCount>() {
     }
 
     override fun areContentsTheSame(oldItem: InventoryCount, newItem: InventoryCount): Boolean {
-        return oldItem == newItem
+        return oldItem.equals(newItem)
     }
 }

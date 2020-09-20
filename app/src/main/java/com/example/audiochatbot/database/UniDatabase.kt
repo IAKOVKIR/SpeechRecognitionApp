@@ -19,7 +19,7 @@ abstract class UniDatabase: RoomDatabase() {
 
     companion object {
 
-        private val businesses = arrayOf(
+        private val businesses = listOf(
             Business(1, "Walmart", "King St",
             "Melbourne", "Victoria", "0493959766", "Walmart@gmail.com",
             3096),
@@ -28,14 +28,14 @@ abstract class UniDatabase: RoomDatabase() {
                 3093)
         )
 
-        private val stores = arrayOf(
+        private val stores = listOf(
             Store(1, 1, "Chapel St", "Melbourne",
             "Victoria", "0495673253", 3183, 3000F),
             Store(2, 1, "Greeves St", "Melbourne",
                 "Victoria", "0498745535", 3182, 3000F)
         )
 
-        private val users = arrayOf(
+        private val users = listOf(
             User(1, 1, "Jay", "Calingacion", "jay@gmail.com",
                 "0498629801", "12345678", 'A'),
             User(2, 1,  "Jamie", "Simon", "jamie@gmail.com",
@@ -52,13 +52,13 @@ abstract class UniDatabase: RoomDatabase() {
                 "0492121396", "12345678", 'D'),
         )
 
-        private val assignUsers = arrayOf(
+        private val assignUsers = listOf(
             AssignedUser(1, 2, 1, 1, "18/07/2020", "13:00"),
             AssignedUser(2, 3, 1, 1, "18/07/2020", "13:00"),
             AssignedUser(3, 4, 1, 1, "18/07/2020", "13:00")
         )
 
-        private val products = arrayOf(
+        private val products = listOf(
             Product(1, 1, "Coca-Cola", "bottle", "6 pack", "1:6", 1.5F),
             Product(2, 1, "Snickers", "bar", "box", "1:16", 1F),
             Product(3, 1, "Bundaberg Ginger Beer", "bottle", "4 pack", "1:4", 2.6F),
@@ -69,7 +69,7 @@ abstract class UniDatabase: RoomDatabase() {
             Product(8, 1, "Doritos Supreme", "pack", "box", "1:6", 3.2F)
         )
 
-        private val assignProducts = arrayOf(
+        private val assignProducts = listOf(
             AssignedProduct(1, 1, 1, 30, 0, "18/07/2020", "13:00"),
             AssignedProduct(2, 2, 1, 23, 5, "18/07/2020", "13:00"),
             AssignedProduct(3, 3, 1, 15, 0, "18/07/2020", "13:00"),
@@ -80,12 +80,12 @@ abstract class UniDatabase: RoomDatabase() {
             AssignedProduct(8, 8, 2, 25, 0, "18/07/2020", "13:00")
         )
 
-        private val discardedItems = arrayOf(
+        private val discardedItems = listOf(
             DiscardedItem(1, 1, 1, 2, "18/07/2020", "13:00"),
             DiscardedItem(2, 4, 1, 3, "18/07/2020", "13:00")
         )
 
-        private val deliveries = arrayOf(
+        private val deliveries = listOf(
             Delivery(1, 1, "Waiting", "18/07/2020", "13:00"),
             Delivery(2, 1, "Delivered", "19/07/2020", "12:00"))
 
@@ -98,7 +98,7 @@ abstract class UniDatabase: RoomDatabase() {
             DeliveryProduct(2, 5, 14, 3, "not available")
         )
 
-        private val inventories = arrayOf(
+        private val inventories = listOf(
             InventoryCount(1, 1, 700F, 700F, "18/07/2020", "12:00"),
             InventoryCount(1, 1, 860F, 850F, "19/07/2020", "12:00"),
         )
@@ -138,47 +138,17 @@ abstract class UniDatabase: RoomDatabase() {
             }
         }
 
-        fun populateDb(userDao: UserDao) {
-            for (i in businesses) {
-                userDao.insertBusiness(i)
-            }
-
-            for (i in stores) {
-                userDao.insertStore(i)
-            }
-
-            for (i in users) {
-                userDao.insertUser(i)
-            }
-
-            for(i in assignUsers) {
-                userDao.assignUser(i)
-            }
-
-            for (i in products) {
-                userDao.insertProduct(i)
-            }
-
-            for (i in assignProducts) {
-                userDao.assignProduct(i)
-            }
-
-            for (i in discardedItems) {
-                userDao.discardItem(i)
-            }
-
-            for (i in deliveries) {
-                userDao.insertDelivery(i)
-            }
-
-            //for (i in deliveryItems) {
-              //  userDao.insertDeliveryProduct(i)
-            //}
+        private fun populateDb(userDao: UserDao) {
+            userDao.insertBusinesses(businesses)
+            userDao.insertStores(stores)
+            userDao.insertUsers(users)
+            userDao.assignUsers(assignUsers)
+            userDao.insertProducts(products)
+            userDao.assignProducts(assignProducts)
+            userDao.discardItems(discardedItems)
+            userDao.insertDeliveries(deliveries)
             userDao.insertDeliveryProducts(deliveryItems)
-
-            for (i in inventories) {
-                userDao.insertInventoryCount(i)
-            }
+            userDao.insertInventoryCount(inventories)
         }
     }
 }

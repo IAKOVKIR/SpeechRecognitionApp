@@ -9,6 +9,9 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(user: User)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUsers(list: List<User>)
+
     @Update
     fun update(user: User)
 
@@ -84,6 +87,9 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun assignUser(newAssignUser: AssignedUser)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun assignUsers(list: List<AssignedUser>)
+
     @Query("SELECT AssignedUserID FROM ASSIGNED_USER ORDER BY AssignedUserID DESC LIMIT 1")
     fun getLastAssignedUserId(): Int
 
@@ -97,6 +103,9 @@ interface UserDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertStore(store: Store)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertStores(list: List<Store>)
 
     @Update
     fun updateStore(store: Store)
@@ -121,6 +130,9 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertBusiness(business: Business)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertBusinesses(list: List<Business>)
+
     @Query("SELECT BusinessID FROM USER WHERE UserID = :adminId")
     fun getAdminsBusinessId(adminId: Int): Int
 
@@ -128,6 +140,9 @@ interface UserDao {
     //Product
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProduct(product: Product)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertProducts(list: List<Product>)
 
     @Update
     fun update(product: Product)
@@ -176,6 +191,9 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun assignProduct(newAssignProduct: AssignedProduct)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun assignProducts(list: List<AssignedProduct>)
+
     @Update
     fun updateAssignedProduct(newAssignProduct: AssignedProduct)
 
@@ -211,6 +229,9 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun discardItem(discardedItem: DiscardedItem)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun discardItems(list: List<DiscardedItem>)
+
     @Query("SELECT DiscardedItemID FROM DISCARDED_ITEM ORDER BY DiscardedItemID DESC LIMIT 1")
     fun getLastDiscardedItemId(): Int
 
@@ -218,6 +239,9 @@ interface UserDao {
     //Delivery
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDelivery(delivery: Delivery)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDeliveries(list: List<Delivery>)
 
     @Update
     fun updateDelivery(delivery: Delivery)
@@ -249,6 +273,9 @@ interface UserDao {
     //Inventory Count
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertInventoryCount(inventoryCount: InventoryCount)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertInventoryCount(list: List<InventoryCount>)
 
     @Query("SELECT * FROM INVENTORY_COUNT INNER JOIN STORE ON INVENTORY_COUNT.StoreID = STORE.StoreID WHERE STORE.BusinessID = :businessId ORDER BY Date DESC")
     fun getAllInventoryCounts(businessId: Int): LiveData<List<InventoryCount>>

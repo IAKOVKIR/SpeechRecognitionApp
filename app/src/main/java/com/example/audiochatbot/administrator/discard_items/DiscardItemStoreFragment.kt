@@ -65,15 +65,15 @@ class DiscardItemStoreFragment : Fragment() {
                     1 -> {
                         this.findNavController().navigate(
                             DiscardItemStoreFragmentDirections
-                                .actionDiscardItemStoreToCreateDelivery(
-                                    adminId,
-                                    storeId,
-                                    businessId
-                                )
+                                .actionDiscardItemStoreToCreateDelivery(adminId, storeId,
+                                    businessId)
                         )
                     }
                     else -> {
-
+                        this.findNavController().navigate(
+                            DiscardItemStoreFragmentDirections
+                                .actionDiscardItemStoreToInventoryCount(adminId, storeId,
+                                    businessId))
                     }
                 }
                 testViewModel.onStoreNavigated()

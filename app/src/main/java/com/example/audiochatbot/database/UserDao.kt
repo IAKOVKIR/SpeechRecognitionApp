@@ -280,4 +280,7 @@ interface UserDao {
     @Query("SELECT * FROM INVENTORY_COUNT INNER JOIN STORE ON INVENTORY_COUNT.StoreID = STORE.StoreID WHERE STORE.BusinessID = :businessId ORDER BY Date DESC")
     fun getAllInventoryCounts(businessId: Int): LiveData<List<InventoryCount>>
 
+    @Query("SELECT InventoryCountID FROM INVENTORY_COUNT ORDER BY InventoryCountID DESC LIMIT 1")
+    fun getLastInventoryCountId(): Int
+
 }

@@ -37,7 +37,7 @@ class CreateDeliveryFragment : Fragment() {
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val viewModelFactory =
-            CreateDeliveryViewModelFactory(args.adminId, dataSource)
+            CreateDeliveryViewModelFactory(args.storeId, dataSource)
 
         val testViewModel =
             ViewModelProvider(

@@ -254,6 +254,9 @@
         <action
             android:id="@+id/action_discard_item_store_to_create_delivery"
             app:destination="@id/create_delivery" />
+        <action
+            android:id="@+id/action_discard_item_store_to_inventory_count"
+            app:destination="@id/inventory_count" />
     </fragment>
     <fragment
         android:id="@+id/discard_item"
@@ -332,5 +335,20 @@
         <action
             android:id="@+id/action_inventory_list_to_discard_item_store"
             app:destination="@id/discard_item_store" />
+    </fragment>
+    <fragment
+        android:id="@+id/inventory_count"
+        android:name="com.example.audiochatbot.administrator.inventories.InventoryCountFragment"
+        android:label="fragment_inventory_count"
+        tools:layout="@layout/fragment_inventory_count" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
     </fragment>
 </navigation>

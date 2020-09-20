@@ -10,7 +10,7 @@ import com.example.audiochatbot.databinding.FragmentInventoryListRecyclerViewAda
 
 class InventoryListRecyclerViewAdapter : ListAdapter<InventoryCount,
         InventoryListRecyclerViewAdapter.ViewHolder>(
-    InventoryCountDiffCallback()
+    InventoryListDiffCallback()
 ) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -44,12 +44,12 @@ class InventoryListRecyclerViewAdapter : ListAdapter<InventoryCount,
     }
 }
 
-class InventoryCountDiffCallback : DiffUtil.ItemCallback<InventoryCount>() {
+class InventoryListDiffCallback : DiffUtil.ItemCallback<InventoryCount>() {
     override fun areItemsTheSame(oldItem: InventoryCount, newItem: InventoryCount): Boolean {
-        return oldItem.userId == newItem.userId && oldItem.storeId == newItem.storeId
+        return false
     }
 
     override fun areContentsTheSame(oldItem: InventoryCount, newItem: InventoryCount): Boolean {
-        return oldItem.equals(newItem)
+        return false
     }
 }

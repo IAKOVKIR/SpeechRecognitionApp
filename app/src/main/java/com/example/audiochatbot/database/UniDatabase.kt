@@ -99,8 +99,8 @@ abstract class UniDatabase: RoomDatabase() {
         )
 
         private val inventories = listOf(
-            InventoryCount(1, 1, 700F, 700F, "18/07/2020", "12:00"),
-            InventoryCount(1, 1, 860F, 850F, "19/07/2020", "12:00"),
+            InventoryCount(1, 1, 1, 700F, 700F, "18/07/2020", "12:00"),
+            InventoryCount(2, 1, 1, 860F, 850F, "19/07/2020", "12:00"),
         )
 
         @Volatile

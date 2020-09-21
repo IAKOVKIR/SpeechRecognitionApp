@@ -41,25 +41,23 @@ class AdministratorHomeFragment : Fragment() {
             logOut()
 
         binding.viewInventoryButton.setOnClickListener {
-            this.findNavController().navigate(AdministratorHomeFragmentDirections.actionHomeAdministratorToInventoryListFragment(adminId, businessId))
+            this.findNavController().navigate(
+                AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
+                    adminId, businessId, 2)
+            )
         }
 
         binding.viewDeliveryListButton.setOnClickListener {
             this.findNavController().navigate(
-                AdministratorHomeFragmentDirections.actionHomeAdministratorToDeliveryList(
-                    adminId,
-                    businessId
-                )
+                AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
+                    adminId, businessId, 1)
             )
         }
 
         binding.discardItemsButton.setOnClickListener {
             this.findNavController().navigate(
                 AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
-                    adminId,
-                    businessId,
-                    0
-                )
+                    adminId, businessId, 0)
             )
         }
 

@@ -33,12 +33,11 @@ class InventoryListFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
         val args = InventoryListFragmentArgs.fromBundle(requireArguments())
-        val businessId: Int = args.businessId
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val viewModelFactory =
-            InventoryListViewModelFactory(businessId, dataSource)
+            InventoryListViewModelFactory(args.businessId, dataSource)
 
         val testViewModel =
             ViewModelProvider(
@@ -54,7 +53,7 @@ class InventoryListFragment : Fragment() {
         })
 
         binding.addNewDelivery.setOnClickListener {
-            this.findNavController().navigate(InventoryListFragmentDirections.actionInventoryListToDiscardItemStore(args.adminId, businessId, 2))
+            this.findNavController().navigate(InventoryListFragmentDirections.actionInventoryListToInventoryCount(args.adminId, args.storeId))
         }
 
         return binding.root

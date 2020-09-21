@@ -33,6 +33,7 @@ class DeliveryListFragment : Fragment() {
         val application = requireNotNull(this.activity).application
         val args = DeliveryListFragmentArgs.fromBundle(requireArguments())
         val adminId: Int = args.adminId
+        val storeId: Int = args.storeId
         val businessId: Int = args.businessId
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
@@ -61,13 +62,13 @@ class DeliveryListFragment : Fragment() {
 
         testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { deliveryId ->
             deliveryId?.let {
-                this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToDeliveryDetailsFragment(adminId, deliveryId, businessId))
+                this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToDeliveryDetailsFragment(deliveryId))
                 testViewModel.onStoreNavigated()
             }
         })
 
         binding.addNewDelivery.setOnClickListener {
-            this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToDiscardItemStore(adminId, businessId, 1))
+            this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId))
         }
 
         return binding.root

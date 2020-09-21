@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-import com.example.audiochatbot.administrator.delivery_list.CreateDeliveryFragmentArgs
 import com.example.audiochatbot.administrator.inventories.recycler_view_adapters.AddInventoryListener
 import com.example.audiochatbot.administrator.inventories.recycler_view_adapters.InventoryCountRecyclerViewAdapter
 import com.example.audiochatbot.administrator.inventories.recycler_view_adapters.RemoveInventoryListener
@@ -35,7 +34,7 @@ class InventoryCountFragment : Fragment() {
             R.layout.fragment_inventory_count, container, false)
 
         val application = requireNotNull(this.activity).application
-        val args = CreateDeliveryFragmentArgs.fromBundle(requireArguments())
+        val args = InventoryCountFragmentArgs.fromBundle(requireArguments())
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 

@@ -1,7 +1,6 @@
 package com.example.audiochatbot.administrator.discard_items
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -50,30 +49,27 @@ class DiscardItemStoreFragment : Fragment() {
 
         testViewModel.navigateToDiscardItem.observe(viewLifecycleOwner, { storeId ->
             storeId?.let {
-                Log.e("l", "$storeId")
                 when (args.directionId) {
                     0 -> {
                         this.findNavController().navigate(
                             DiscardItemStoreFragmentDirections
                                 .actionDiscardItemStoreToDiscardItemFragment(
-                                    adminId,
-                                    storeId,
-                                    businessId
-                                )
+                                    adminId, storeId, businessId)
                         )
                     }
                     1 -> {
                         this.findNavController().navigate(
                             DiscardItemStoreFragmentDirections
-                                .actionDiscardItemStoreToCreateDelivery(adminId, storeId,
-                                    businessId)
+                                .actionDiscardItemStoreToDeliveryList(
+                                    adminId, storeId, businessId)
                         )
                     }
                     else -> {
                         this.findNavController().navigate(
                             DiscardItemStoreFragmentDirections
-                                .actionDiscardItemStoreToInventoryCount(adminId, storeId,
-                                    businessId))
+                                .actionDiscardItemStoreToInventoryList(
+                                    adminId, storeId, businessId)
+                        )
                     }
                 }
                 testViewModel.onStoreNavigated()

@@ -35,12 +35,11 @@ class DeliveryDetailsFragment : Fragment() {
 
         val application = requireNotNull(this.activity).application
         val args = DeliveryDetailsFragmentArgs.fromBundle(requireArguments())
-        val deliveryId: Int = args.deliveryId
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         val viewModelFactory =
-            DeliveryDetailsViewModelFactory(deliveryId, dataSource)
+            DeliveryDetailsViewModelFactory(args.deliveryId, dataSource)
 
         val testViewModel =
             ViewModelProvider(

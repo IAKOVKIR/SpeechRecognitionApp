@@ -2,7 +2,6 @@ package com.example.audiochatbot.administrator.delivery_list.view_models
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.administrator.store_management.view_models.StoreManagementViewModel
 import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.DeliveryProduct
 import com.example.audiochatbot.database.UserDao
@@ -23,7 +22,7 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
      *
      * By default, all coroutines started in uiScope will launch in [Dispatchers.Main] which is
      * the main thread on Android. This is a sensible default because most coroutines started by
-     * a [StoreManagementViewModel] update the UI after performing some processing.
+     * a [DeliveryDetailsViewModel] update the UI after performing some processing.
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 

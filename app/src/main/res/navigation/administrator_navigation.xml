@@ -22,12 +22,6 @@
         <action
             android:id="@+id/action_home_administrator_to_discardItemStoreFragment"
             app:destination="@id/discard_item_store" />
-        <action
-            android:id="@+id/action_home_administrator_to_delivery_list"
-            app:destination="@id/delivery_list" />
-        <action
-            android:id="@+id/action_home_administrator_to_inventoryListFragment"
-            app:destination="@id/inventory_list" />
     </fragment>
 
     <fragment
@@ -252,11 +246,11 @@
             android:name="directionId"
             app:argType="integer" />
         <action
-            android:id="@+id/action_discard_item_store_to_create_delivery"
-            app:destination="@id/create_delivery" />
+            android:id="@+id/action_discard_item_store_to_inventory_list"
+            app:destination="@id/inventory_list" />
         <action
-            android:id="@+id/action_discard_item_store_to_inventory_count"
-            app:destination="@id/inventory_count" />
+            android:id="@+id/action_discard_item_store_to_delivery_list"
+            app:destination="@id/delivery_list" />
     </fragment>
     <fragment
         android:id="@+id/discard_item"
@@ -281,15 +275,18 @@
         <argument
             android:name="adminId"
             app:argType="integer" />
-        <argument
-            android:name="businessId"
-            app:argType="integer" />
         <action
             android:id="@+id/action_delivery_list_to_deliveryDetailsFragment"
             app:destination="@id/delivery_details" />
         <action
-            android:id="@+id/action_delivery_list_to_discard_item_store"
-            app:destination="@id/discard_item_store" />
+            android:id="@+id/action_delivery_list_to_create_delivery"
+            app:destination="@id/create_delivery" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/delivery_details"
@@ -297,13 +294,7 @@
         android:label="fragment_delivery_details"
         tools:layout="@layout/fragment_delivery_details" >
         <argument
-            android:name="adminId"
-            app:argType="integer" />
-        <argument
             android:name="deliveryId"
-            app:argType="integer" />
-        <argument
-            android:name="businessId"
             app:argType="integer" />
     </fragment>
     <fragment
@@ -312,13 +303,7 @@
         android:label="fragment_create_delivery"
         tools:layout="@layout/fragment_create_delivery" >
         <argument
-            android:name="adminId"
-            app:argType="integer" />
-        <argument
             android:name="storeId"
-            app:argType="integer" />
-        <argument
-            android:name="businessId"
             app:argType="integer" />
     </fragment>
     <fragment
@@ -329,12 +314,15 @@
         <argument
             android:name="adminId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_inventory_list_to_inventory_count"
+            app:destination="@id/inventory_count" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
         <argument
             android:name="businessId"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_inventory_list_to_discard_item_store"
-            app:destination="@id/discard_item_store" />
     </fragment>
     <fragment
         android:id="@+id/inventory_count"
@@ -346,9 +334,6 @@
             app:argType="integer" />
         <argument
             android:name="storeId"
-            app:argType="integer" />
-        <argument
-            android:name="businessId"
             app:argType="integer" />
     </fragment>
 </navigation>

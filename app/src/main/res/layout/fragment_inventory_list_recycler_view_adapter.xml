@@ -6,14 +6,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp">
+        android:layout_marginTop="8dp">
 
         <TextView
             android:id="@+id/delivery_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:textColor="#000"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -25,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:textColor="#000"
             app:layout_constraintStart_toStartOf="@+id/delivery_name"
             app:layout_constraintTop_toBottomOf="@+id/delivery_name"
             tools:text="Expected / Earned" />
@@ -34,6 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:textColor="#000"
             app:layout_constraintStart_toStartOf="@+id/earnings"
             app:layout_constraintTop_toBottomOf="@+id/earnings"
             tools:text="Counted by: User " />
@@ -43,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:textColor="#000"
             app:layout_constraintStart_toStartOf="@+id/counted_by"
             app:layout_constraintTop_toBottomOf="@+id/counted_by"
             tools:text="date / time" />

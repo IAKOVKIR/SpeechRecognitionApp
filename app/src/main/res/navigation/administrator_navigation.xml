@@ -251,6 +251,9 @@
         <action
             android:id="@+id/action_discard_item_store_to_delivery_list"
             app:destination="@id/delivery_list" />
+        <action
+            android:id="@+id/action_discard_item_store_to_cashReportFragment"
+            app:destination="@id/cash_report" />
     </fragment>
     <fragment
         android:id="@+id/discard_item"
@@ -334,6 +337,20 @@
             app:argType="integer" />
         <argument
             android:name="storeId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/cash_report"
+        android:name="com.example.audiochatbot.administrator.cash_report.CashReportFragment"
+        android:label="CashReportFragment" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
             app:argType="integer" />
     </fragment>
 </navigation>

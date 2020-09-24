@@ -266,7 +266,7 @@ interface UserDao {
     @Update
     fun updateDeliveryProduct(deliveryProduct: DeliveryProduct)
 
-    @Query("SELECT * FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId ORDER BY AssignedProductID  DESC")
+    @Query("SELECT * FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId ORDER BY AssignedProductID DESC")
     fun getAllDeliveryProducts(deliveryId: Int): LiveData<List<DeliveryProduct>>
 
 
@@ -289,4 +289,10 @@ interface UserDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCashOperations(list: List<CashOperation>)
+
+    @Query("SELECT * FROM CASH_OPERATION WHERE StoreID = :storeId ORDER BY CashOperationID DESC")
+    fun getAllCashReports(storeId: Int): LiveData<List<CashOperation>>
+
+    @Query("SELECT CashOperationID FROM CASH_OPERATION ORDER BY CashOperationID DESC LIMIT 1")
+    fun getLastCashReportId(): Int
 }

@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import com.example.audiochatbot.LoginActivity
 import com.example.audiochatbot.R
 import com.example.audiochatbot.databinding.FragmentAdministratorHomeBinding
@@ -40,63 +40,69 @@ class AdministratorHomeFragment : Fragment() {
         if (adminId == -1)
             logOut()
 
-        binding.viewInventoryButton.setOnClickListener {
-            this.findNavController().navigate(
-                AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
-                    adminId, businessId, 3)
-            )
-        }
-
-        binding.viewInventoryButton.setOnClickListener {
-            this.findNavController().navigate(
-                AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
-                    adminId, businessId, 2)
-            )
-        }
-
-        binding.viewDeliveryListButton.setOnClickListener {
-            this.findNavController().navigate(
-                AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
-                    adminId, businessId, 1)
-            )
-        }
-
-        binding.discardItemsButton.setOnClickListener {
-            this.findNavController().navigate(
-                AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
-                    adminId, businessId, 0)
-            )
-        }
-
-        binding.userManagementButton.setOnClickListener {
-            this.findNavController().navigate(
-                AdministratorHomeFragmentDirections.actionHomeDestinationToTestFragment(
-                    adminId,
-                    businessId
+        binding.apply {
+            cashReportButton.setOnClickListener {
+                it.findNavController().navigate(
+                    AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
+                        adminId, businessId, 3
+                    )
                 )
-            )
-        }
+            }
 
-        binding.storeManagementButton.setOnClickListener {
-            this.findNavController().navigate(
-                AdministratorHomeFragmentDirections.actionHomeDestinationToStoreManagementFragment(
-                    adminId,
-                    businessId
+            viewInventoryButton.setOnClickListener {
+                it.findNavController().navigate(
+                    AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
+                        adminId, businessId, 2
+                    )
                 )
-            )
-        }
+            }
 
-        binding.productManagementButton.setOnClickListener {
-            this.findNavController().navigate(
-                AdministratorHomeFragmentDirections.actionHomeAdministratorToProductManagementFragment(
-                    adminId,
-                    businessId
+            viewDeliveryListButton.setOnClickListener {
+                it.findNavController().navigate(
+                    AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
+                        adminId, businessId, 1
+                    )
                 )
-            )
-        }
+            }
 
-        binding.logOutButton.setOnClickListener {
-            logOut()
+            discardItemsButton.setOnClickListener {
+                it.findNavController().navigate(
+                    AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
+                        adminId, businessId, 0
+                    )
+                )
+            }
+
+            userManagementButton.setOnClickListener {
+                it.findNavController().navigate(
+                    AdministratorHomeFragmentDirections.actionHomeDestinationToTestFragment(
+                        adminId,
+                        businessId
+                    )
+                )
+            }
+
+            storeManagementButton.setOnClickListener {
+                it.findNavController().navigate(
+                    AdministratorHomeFragmentDirections.actionHomeDestinationToStoreManagementFragment(
+                        adminId,
+                        businessId
+                    )
+                )
+            }
+
+            productManagementButton.setOnClickListener {
+                it.findNavController().navigate(
+                    AdministratorHomeFragmentDirections.actionHomeAdministratorToProductManagementFragment(
+                        adminId,
+                        businessId
+                    )
+                )
+            }
+
+            logOutButton.setOnClickListener {
+                logOut()
+            }
         }
 
         return binding.root

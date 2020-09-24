@@ -72,7 +72,7 @@ class DiscardItemStoreFragment : Fragment() {
                         )
                     }
                     else -> {
-                        //this.findNavController().navigate(DiscardItemStoreFragmentDirections.actionDiscardItemStoreToInventoryList(adminId, storeId, businessId))
+                        this.findNavController().navigate(DiscardItemStoreFragmentDirections.actionDiscardItemStoreToCashReportFragment(adminId, storeId, businessId))
                     }
                 }
                 testViewModel.onStoreNavigated()

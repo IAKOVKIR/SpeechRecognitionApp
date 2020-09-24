@@ -105,9 +105,9 @@ abstract class UniDatabase: RoomDatabase() {
 
         private val cashOperations = listOf(
             CashOperation(1, 1, 1, 3000F, true, "20/08/2020", "13:00"),
-            CashOperation(1, 3, 1, 600F, false, "20/08/2020", "13:00"),
-            CashOperation(1, 2, 1, 600F, false, "20/08/2020", "13:00"),
-            CashOperation(1, 4, 1, 600F, false, "20/08/2020", "13:00"),
+            CashOperation(2, 3, 1, 600F, false, "20/08/2020", "13:00"),
+            CashOperation(3, 2, 1, 600F, false, "20/08/2020", "13:00"),
+            CashOperation(4, 4, 1, 600F, false, "20/08/2020", "13:00"),
         )
 
         @Volatile

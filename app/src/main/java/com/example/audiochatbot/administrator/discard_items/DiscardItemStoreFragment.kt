@@ -64,12 +64,15 @@ class DiscardItemStoreFragment : Fragment() {
                                     adminId, storeId, businessId)
                         )
                     }
-                    else -> {
+                    2 -> {
                         this.findNavController().navigate(
                             DiscardItemStoreFragmentDirections
                                 .actionDiscardItemStoreToInventoryList(
                                     adminId, storeId, businessId)
                         )
+                    }
+                    else -> {
+                        //this.findNavController().navigate(DiscardItemStoreFragmentDirections.actionDiscardItemStoreToInventoryList(adminId, storeId, businessId))
                     }
                 }
                 testViewModel.onStoreNavigated()

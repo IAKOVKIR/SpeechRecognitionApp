@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 @Database(entities = [User::class, Business::class, Store::class, AssignedUser::class, Product::class,
 AssignedProduct::class, DiscardedItem::class, Delivery::class, DeliveryUser::class, DeliveryProduct::class,
-InventoryCount::class],
+InventoryCount::class, CashOperation::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
 
@@ -103,6 +103,13 @@ abstract class UniDatabase: RoomDatabase() {
             InventoryCount(2, 1, 1, 860F, 850F, "19/07/2020", "12:00"),
         )
 
+        private val cashOperations = listOf(
+            CashOperation(1, 1, 1, 3000F, true, "20/08/2020", "13:00"),
+            CashOperation(1, 3, 1, 600F, false, "20/08/2020", "13:00"),
+            CashOperation(1, 2, 1, 600F, false, "20/08/2020", "13:00"),
+            CashOperation(1, 4, 1, 600F, false, "20/08/2020", "13:00"),
+        )
+
         @Volatile
         private var INSTANCE: UniDatabase? = null
 
@@ -149,6 +156,7 @@ abstract class UniDatabase: RoomDatabase() {
             userDao.insertDeliveries(deliveries)
             userDao.insertDeliveryProducts(deliveryItems)
             userDao.insertInventoryCount(inventories)
+            userDao.insertCashOperations(cashOperations)
         }
     }
 }

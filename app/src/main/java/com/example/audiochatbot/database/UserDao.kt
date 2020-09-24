@@ -283,4 +283,10 @@ interface UserDao {
     @Query("SELECT InventoryCountID FROM INVENTORY_COUNT ORDER BY InventoryCountID DESC LIMIT 1")
     fun getLastInventoryCountId(): Int
 
+    //Cash Operation
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCashOperation(cashOperation: CashOperation)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCashOperations(list: List<CashOperation>)
 }

@@ -43,6 +43,13 @@ class AdministratorHomeFragment : Fragment() {
         binding.viewInventoryButton.setOnClickListener {
             this.findNavController().navigate(
                 AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
+                    adminId, businessId, 3)
+            )
+        }
+
+        binding.viewInventoryButton.setOnClickListener {
+            this.findNavController().navigate(
+                AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
                     adminId, businessId, 2)
             )
         }

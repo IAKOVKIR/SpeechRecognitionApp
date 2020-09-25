@@ -55,11 +55,7 @@ class UserDetailFragment : Fragment(), TextToSpeech.OnInitListener {
 
         // Create an instance of the ViewModel Factory.
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
-        val viewModelFactory =
-            UserDetailViewModelFactory(
-                arguments.userKey,
-                dataSource
-            )
+        val viewModelFactory = UserDetailViewModelFactory(arguments.userKey, dataSource)
 
         // Get a reference to the ViewModel associated with this fragment.
         val userDetailViewModel =

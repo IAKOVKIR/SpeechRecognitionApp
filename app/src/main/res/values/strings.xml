@@ -28,8 +28,8 @@
     <string name="product_management">Product Management</string>
     <string name="log_out">Log Out</string>
     <string name="home_administrator">Home - Administrator</string>
-    <string name="view_inventory">View Inventory</string>
-    <string name="view_delivery_list">View Delivery List</string>
+    <string name="view_inventory">Inventory Count</string>
+    <string name="delivery_list">Delivery List</string>
     <string name="discard_items">Discard Items</string>
     <string name="cash_report">Cash Report</string>
     <string name="user_management">User Management</string>

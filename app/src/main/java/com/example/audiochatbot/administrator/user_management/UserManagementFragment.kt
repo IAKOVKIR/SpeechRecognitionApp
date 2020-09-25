@@ -53,8 +53,7 @@ class UserManagementFragment : Fragment() {
             userId?.let {
                 this.findNavController().navigate(
                     UserManagementFragmentDirections.actionSleepTrackerFragmentToSleepDetailFragment(
-                        userId
-                    )
+                        userId)
                 )
                 testViewModel.onUserNavigated()
             }

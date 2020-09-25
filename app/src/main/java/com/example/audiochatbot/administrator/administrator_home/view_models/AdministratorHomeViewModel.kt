@@ -14,6 +14,14 @@ class AdministratorHomeViewModel: ViewModel() {
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
+    private val inventoryCountArray = arrayOf("open inventory count", "inventory count")
+    private val deliveryListArray = arrayOf("open delivery list", "delivery list")
+    private val discardItemsArray = arrayOf("discard items", "discard item")
+    private val cashReportArray = arrayOf("cash report", "open cash report")
+    private val userManagementArray = arrayOf("open user management", "user management")
+    private val storeManagementArray = arrayOf("open store management", "store management")
+    private val productManagementArray = arrayOf("open product management", "product management")
+    private val logOutArray = arrayOf("log out")
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -32,8 +40,16 @@ class AdministratorHomeViewModel: ViewModel() {
 
     fun convertStringToAction(text: String) {
         uiScope.launch {
-            if (text == "open store management") {
-                _action.value = 1
+            when {
+                inventoryCountArray.contains(text) -> _action.value = 1
+                deliveryListArray.contains(text) -> _action.value = 2
+                discardItemsArray.contains(text) -> _action.value = 3
+                cashReportArray.contains(text) -> _action.value = 4
+                userManagementArray.contains(text) -> _action.value = 5
+                storeManagementArray.contains(text) -> _action.value = 6
+                productManagementArray.contains(text) -> _action.value = 7
+                logOutArray.contains(text) -> _action.value = 8
+                else -> _action.value = 0
             }
         }
     }

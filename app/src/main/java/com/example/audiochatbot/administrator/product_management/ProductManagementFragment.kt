@@ -43,8 +43,7 @@ class ProductManagementFragment : Fragment() {
 
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
-        val viewModelFactory =
-            ProductManagementViewModelFactory(businessId, userDataSource)
+        val viewModelFactory = ProductManagementViewModelFactory(businessId, userDataSource)
 
         testViewModel =
             ViewModelProvider(
@@ -59,9 +58,8 @@ class ProductManagementFragment : Fragment() {
 
         val adapter =
             ProductManagementRecyclerViewAdapter(
-                ProductListener { productId ->
-                    testViewModel.onProductClicked(productId)
-                }, userDataSource)
+                ProductListener { productId -> testViewModel.onProductClicked(productId) },
+                userDataSource)
         binding.userList.adapter = adapter
 
         binding.findProduct.setOnClickListener {

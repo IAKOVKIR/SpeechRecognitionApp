@@ -27,13 +27,14 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-private const val REQUEST_CODE_STT = 1
 
 class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
     private lateinit var pref: SharedPreferences
     private lateinit var viewModel: AdministratorHomeViewModel
+    private val requestCodeStt = 1
+    private var response = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +71,7 @@ class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
             sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
             try {
                 // Start the intent for a result, and pass in our request code.
-                startActivityForResult(sttIntent, REQUEST_CODE_STT)
+                startActivityForResult(sttIntent, requestCodeStt)
             } catch (e: ActivityNotFoundException) {
                 // Handling error when the service is not available.
                 e.printStackTrace()
@@ -119,7 +120,7 @@ class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
                     // 0 - 15 are usually available on any device
                     val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
 
-                    if (musicVolume == 0)
+                    if (musicVolume == 0 || !response)
                         Toast.makeText(requireContext(), "Can't recognize your command", Toast.LENGTH_SHORT).show()
                     else
                         textToSpeech!!.speak("Can't recognize your command", TextToSpeech.QUEUE_FLUSH, null, null)
@@ -184,7 +185,7 @@ class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             // Handle the result for our request code.
-            REQUEST_CODE_STT -> {
+            requestCodeStt -> {
                 // Safety checks to ensure data is available.
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     // Retrieve the result array.
@@ -224,8 +225,11 @@ class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
                 Log.e("TTS", "The Language specified is not supported!")
-        } else
+            else
+                response = true
+        } else {
             Log.e("TTS", "Initialization Failed!")
+        }
     }
 
     override fun onStop() {

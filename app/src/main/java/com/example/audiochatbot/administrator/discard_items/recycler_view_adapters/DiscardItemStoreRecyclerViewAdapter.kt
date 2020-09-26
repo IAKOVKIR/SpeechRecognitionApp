@@ -1,10 +1,12 @@
 package com.example.audiochatbot.administrator.discard_items.recycler_view_adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.audiochatbot.R
 import com.example.audiochatbot.database.Store
 import com.example.audiochatbot.databinding.FragmentDiscardItemStoreRecyclerViewAdapterBinding
 
@@ -23,14 +25,14 @@ class DiscardItemStoreRecyclerViewAdapter(private val clickListener: ItemStoreLi
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: FragmentDiscardItemStoreRecyclerViewAdapterBinding)
+    class ViewHolder private constructor(val binding: FragmentDiscardItemStoreRecyclerViewAdapterBinding, val context: Context)
         : RecyclerView.ViewHolder(binding.root){
 
         fun bind(clickListener: ItemStoreListener, item: Store) {
             binding.store = item
             binding.clickListener = clickListener
-            binding.storeName.text = "Store ${item.storeId} / Business ${item.businessId}"
-            binding.storeAddress.text = "${item.street}, ${item.city}"
+            binding.storeName.text = context.getString(R.string.store_business, item.storeId, item.businessId)
+            binding.storeAddress.text = context.getString(R.string.comma, item.street, item.city)
         }
 
         companion object {
@@ -38,7 +40,7 @@ class DiscardItemStoreRecyclerViewAdapter(private val clickListener: ItemStoreLi
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = FragmentDiscardItemStoreRecyclerViewAdapterBinding.inflate(layoutInflater, parent, false)
 
-                return ViewHolder(binding)
+                return ViewHolder(binding, parent.context)
             }
         }
     }

@@ -3,7 +3,6 @@ package com.example.audiochatbot.administrator.cash_report.view_models
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.administrator.store_management.view_models.StoreDetailViewModel
 import com.example.audiochatbot.database.CashOperation
 import com.example.audiochatbot.database.Store
 import com.example.audiochatbot.database.UserDao

@@ -10,7 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".delivery_user.DeliveryUserActivity" />
-        <activity android:name=".administrator.AdministratorActivity" />
+        <activity android:name=".administrator.AdministratorActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".employee.EmployeeActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>

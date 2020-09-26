@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.audiochatbot.R
 import com.example.audiochatbot.database.CashOperation
 import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentCashReportRecyclerViewAdapterBinding
@@ -33,7 +34,6 @@ class CashReportRecyclerViewAdapter(private val database: UserDao) : ListAdapter
         : RecyclerView.ViewHolder(binding.root){
 
         fun bind(item: CashOperation, database: UserDao) {
-            //binding.storeAddress.text = context.getString(R.string.comma, item.street, item.city)
             CoroutineScope(Dispatchers.Default).launch {
 
                 var fullName: String
@@ -49,10 +49,10 @@ class CashReportRecyclerViewAdapter(private val database: UserDao) : ListAdapter
             }
 
             if (item.operationType)
-                binding.operationAmount.text = "Deposit: A$${item.amount}"
+                binding.operationAmount.text = context.getString(R.string.deposited_amount, item.amount)
             else
-                binding.operationAmount.text = "Withdraw: A$${item.amount}"
-            binding.dateTime.text = "${item.date} / ${item.time}"
+                binding.operationAmount.text = context.getString(R.string.withdrawn_amount, item.amount)
+            binding.dateTime.text = context.getString(R.string.comma, item.date, item.time)
         }
 
         companion object {

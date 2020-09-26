@@ -1,10 +1,14 @@
 package com.example.audiochatbot.administrator.cash_report
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.audiochatbot.R
@@ -15,11 +19,14 @@ import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentCashReportBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
  */
 class CashReportFragment : Fragment() {
+
+    private val requestCodeStt = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +56,26 @@ class CashReportFragment : Fragment() {
         binding.cashReportViewModel = testViewModel
 
         binding.lifecycleOwner = this
+
+        binding.microphoneImage.setOnClickListener {
+            // Get the Intent action
+            val sttIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            // Language model defines the purpose, there are special models for other use cases, like search.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            // Adding an extra language, you can use any language from the Locale class.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            // Text that shows up on the Speech input prompt.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
+            try {
+                // Start the intent for a result, and pass in our request code.
+                startActivityForResult(sttIntent, requestCodeStt)
+            } catch (e: ActivityNotFoundException) {
+                // Handling error when the service is not available.
+                e.printStackTrace()
+
+                Toast.makeText(requireContext(), "Your device does not support STT.", Toast.LENGTH_LONG).show()
+            }
+        }
 
         val adapter =
             CashReportRecyclerViewAdapter(dataSource)

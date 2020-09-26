@@ -118,14 +118,22 @@ class DiscardItemStoreFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         })
 
-        testViewModel.message.observe(viewLifecycleOwner, { result ->
-            // 0 - 15 are usually available on any device
-            val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
+        testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result)
+                    this.findNavController().popBackStack()
+        })
 
-            if (musicVolume == 0 || !response)
-                Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
-            else
-                textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH, null, null)
+        testViewModel.message.observe(viewLifecycleOwner, { result ->
+            if (result != null) {
+                // 0 - 15 are usually available on any device
+                val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
+
+                if (musicVolume == 0 || !response)
+                    Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
+                else
+                    textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH, null, null)
+            }
         })
 
         val adapter =

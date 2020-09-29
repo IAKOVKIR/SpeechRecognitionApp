@@ -51,21 +51,20 @@ class DiscardItemStoreViewModel(val adminId: Int,val database: UserDao) : ViewMo
                 val match = pattern.find(text)
                 val index = match?.range?.last
                 var num = 0
-                var result = ""
 
                 if (index != null) {
                     val str = text.substring(index)
-                    result = str.filter { it.isDigit() }
-                }
+                    val result = str.filter { it.isDigit() }
 
-                when {
-                    result != "" -> {
-                        Log.e("heh", result)
-                        num = result.toInt()
+                    when {
+                        result != "" -> {
+                            Log.e("heh", result)
+                            num = result.toInt()
+                        }
+                        text.contains("store number one") -> num = 1
+                        text.contains("store number to") -> num = 2
+                        text.contains("store number for") -> num = 4
                     }
-                    text.contains("store number one") -> num = 1
-                    text.contains("store number to") -> num = 2
-                    text.contains("store number for") -> num = 3
                 }
 
                 if (num > 0) {

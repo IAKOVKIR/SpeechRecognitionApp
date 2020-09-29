@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.cash_report.view_models
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,8 @@ import com.example.audiochatbot.database.CashOperation
 import com.example.audiochatbot.database.Store
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
+import java.lang.NumberFormatException
+import kotlin.math.round
 
 /**
  * ViewModel for CashReportFragment.
@@ -29,14 +32,108 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    val cashReports = database.getAllCashReports(storeId)
+
     private var _store = MutableLiveData<Store>()
     val store: LiveData<Store> get() = _store
 
-    val cashReports = database.getAllCashReports(storeId)
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String?>
+        get() = _message
+
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
 
     init {
         uiScope.launch {
             _store.value = retrieveStore(storeId)
+        }
+    }
+
+    fun convertStringToAction(text: String) {
+        uiScope.launch {
+            Log.e("heh", text)
+            if (text.contains("go back"))
+                _closeFragment.value = true
+            else {
+                val matchDeposit = "deposit".toRegex().find(text)
+                val matchWithdraw = "withdraw".toRegex().find(text)
+                val matchDollar = "dollar".toRegex().find(text)
+
+                val indexDeposit = matchDeposit?.range?.last
+                val indexWithdraw = matchWithdraw?.range?.last
+                val indexDollar = matchDollar?.range?.first
+
+                if (indexDollar != null) {
+                    if (indexDeposit != null) {
+                        if (indexDeposit < indexDollar) {
+                            val str = text.substring(indexDeposit + 1, indexDollar)
+
+                            val num = try {
+                                val result = str.toFloat()
+                                result.round(2)
+                            } catch (e: NumberFormatException) {
+                                convertTextToNumber(str)
+                            }
+
+                            if (num > 0)
+                                depositOrWithdrawMoney(num, true)
+
+                            Log.e("final", "$num")
+                        }
+                    } else if (indexWithdraw != null) {
+                        if (indexWithdraw < indexDollar) {
+                            val str = text.substring(indexWithdraw + 1, indexDollar)
+                            val num = try {
+                                val result = str.toFloat()
+                                result.round(2)
+                            } catch (e: NumberFormatException) {
+                                convertTextToNumber(str)
+                            }
+
+                            if (num > 0)
+                                depositOrWithdrawMoney(num, false)
+
+                            Log.e("final", "$num")
+                        }
+                    }
+                } else if (indexDeposit != null) {
+                    if (indexDeposit < text.length - 3) {
+                        Log.e("final", "${text[indexDeposit + 2]}")
+                        if (text[indexDeposit + 2] == '$') {
+                            val str = text.substring(indexDeposit + 3)
+                            val num = try {
+                                val result = str.toFloat()
+                                result.round(2)
+                            } catch (e: NumberFormatException) {
+                                convertTextToNumber(str)
+                            }
+
+                            if (num > 0)
+                                depositOrWithdrawMoney(num, true)
+
+                            Log.e("final", "$num")
+                        }
+                    }
+                } else if (indexWithdraw != null) {
+                    if (indexWithdraw < text.length - 3) {
+                        if (text[indexWithdraw + 2] == '$') {
+                            val str = text.substring(indexWithdraw + 3)
+                            val num = try {
+                                val result = str.toFloat()
+                                result.round(2)
+                            } catch (e: NumberFormatException) {
+                                convertTextToNumber(str)
+                            }
+
+                            if (num > 0)
+                                depositOrWithdrawMoney(num, false)
+
+                            Log.e("final", "$num")
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -62,6 +159,21 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
                     }
                 }
             }
+        }
+    }
+
+    private fun Float.round(decimals: Int): Float {
+        var multiplier = 1F
+        repeat(decimals) { multiplier *= 10 }
+        return round(this * multiplier) / multiplier
+    }
+
+    private fun convertTextToNumber(text: String): Float {
+        return when {
+            text.contains("one") -> 1F
+            text.contains("to") -> 2F
+            text.contains("for") -> 4F
+            else -> -1F
         }
     }
 

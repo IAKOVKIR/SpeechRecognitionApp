@@ -1,9 +1,14 @@
 package com.example.audiochatbot.administrator.cash_report
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.administrator.cash_report.view_models.CashReportViewModel
 import com.example.audiochatbot.administrator.cash_report.view_models.CashReportViewModelFactory
@@ -24,8 +30,11 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-class CashReportFragment : Fragment() {
+class CashReportFragment : Fragment() , TextToSpeech.OnInitListener {
 
+    private var textToSpeech: TextToSpeech? = null
+    private var response = false
+    private lateinit var testViewModel: CashReportViewModel
     private val requestCodeStt = 1
 
     override fun onCreateView(
@@ -44,10 +53,15 @@ class CashReportFragment : Fragment() {
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
+        // Get the AudioManager service
+        val audio = activity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        textToSpeech = TextToSpeech(requireActivity(), this)
+
         val viewModelFactory =
             CashReportViewModelFactory(adminId, storeId, dataSource)
 
-        val testViewModel =
+        testViewModel =
             ViewModelProvider(
                 this, viewModelFactory).get(CashReportViewModel::class.java)
 
@@ -77,6 +91,24 @@ class CashReportFragment : Fragment() {
             }
         }
 
+        testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result)
+                    this.findNavController().popBackStack()
+        })
+
+        testViewModel.message.observe(viewLifecycleOwner, { result ->
+            if (result != null) {
+                // 0 - 15 are usually available on any device
+                val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
+
+                if (musicVolume == 0 || !response)
+                    Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
+                else
+                    textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH, null, null)
+            }
+        })
+
         val adapter =
             CashReportRecyclerViewAdapter(dataSource)
         binding.cashReportList.adapter = adapter
@@ -104,5 +136,57 @@ class CashReportFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            // Handle the result for our request code.
+            requestCodeStt -> {
+                // Safety checks to ensure data is available.
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    // Retrieve the result array.
+                    val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    // Ensure result array is not null or empty to avoid errors.
+                    if (!result.isNullOrEmpty()) {
+                        // Recognized text is in the first position.
+                        val recognizedText = result[0]
+                        // Do what you want with the recognized text.
+                        testViewModel.convertStringToAction(recognizedText)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            // set UK English as language for tts
+            val result = textToSpeech!!.setLanguage(Locale.UK)
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
+                Log.e("TTS", "The Language specified is not supported!")
+            else
+                response = true
+        } else {
+            Log.e("TTS", "Initialization Failed!")
+        }
+    }
+
+    override fun onStop() {
+        if (textToSpeech != null) {
+            textToSpeech!!.stop()
+        }
+
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        // Shut down TTS
+        if (textToSpeech != null) {
+            textToSpeech!!.shutdown()
+        }
+
+        super.onDestroy()
     }
 }

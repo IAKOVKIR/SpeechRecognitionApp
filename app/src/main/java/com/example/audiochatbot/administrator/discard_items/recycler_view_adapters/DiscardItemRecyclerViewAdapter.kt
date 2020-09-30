@@ -30,7 +30,7 @@ class DiscardItemRecyclerViewAdapter(private val discardProductListener: Discard
         : RecyclerView.ViewHolder(binding.root){
 
         fun bind(discardProductListener: DiscardProductListener, item: Product) {
-            binding.name.text = item.name
+            binding.name.text = "${item.productId} / ${item.name}"
             binding.price.text = "A$${item.price}"
             binding.addButton.setOnClickListener {
                 val num = binding.quantity.text.toString()

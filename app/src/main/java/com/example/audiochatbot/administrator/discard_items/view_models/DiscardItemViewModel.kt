@@ -1,15 +1,16 @@
 package com.example.audiochatbot.administrator.discard_items.view_models
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.administrator.store_management.view_models.StoreManagementViewModel
 import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.DiscardedItem
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class DiscardItemViewModel(val storeId: Int, val database: UserDao) : ViewModel() {
+class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, val database: UserDao) : ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -24,7 +25,7 @@ class DiscardItemViewModel(val storeId: Int, val database: UserDao) : ViewModel(
      *
      * By default, all coroutines started in uiScope will launch in [Dispatchers.Main] which is
      * the main thread on Android. This is a sensible default because most coroutines started by
-     * a [StoreManagementViewModel] update the UI after performing some processing.
+     * a [DiscardItemViewModel] update the UI after performing some processing.
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
@@ -34,12 +35,149 @@ class DiscardItemViewModel(val storeId: Int, val database: UserDao) : ViewModel(
     val message: LiveData<String?>
         get() = _message
 
-    fun discardItem(productId: Int, userId: Int, quantity: Int) {
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
+
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(text: String) {
+        uiScope.launch {
+            Log.e("heh", text)
+            if (text.contains("go back"))
+                _closeFragment.value = true
+            else {
+                val patternDiscard = "discard".toRegex()
+                val patternProductName = "items of".toRegex()
+                val patternSingleProductName = "item of".toRegex()
+                val patternProductId = "items of product".toRegex()
+                val patternSingleProductId = "item of product".toRegex()
+
+                val matchDiscard = patternDiscard.find(text)
+                val matchProductName = patternProductName.find(text)
+                val matchSingleProductName = patternSingleProductName.find(text)
+                val matchProductId = patternProductId.find(text)
+                val matchSingleProductId = patternSingleProductId.find(text)
+
+                val indexDiscard = matchDiscard?.range?.last
+                val indexProductName = matchProductName?.range
+                val indexSingleProductName = matchSingleProductName?.range
+                val indexProductId = matchProductId?.range
+                val indexSingleProductId = matchSingleProductId?.range
+
+                if (indexDiscard != null) {
+                    if (indexProductId != null) {
+                        Log.e("step 0", "passed")
+                        val txt = text.substring(indexProductId.last + 1).trim()
+                        val txtId = txt.filter { it.isDigit() }
+                        val list = products.value?.toList()
+                        var itemId = -1
+
+                        if (list != null) {
+                            Log.e("step 1", txt)
+                            val num = when {
+                                txtId != "" -> txtId.toInt()
+                                txt.contains("one") -> 1
+                                txt.contains("to") || txt.contains("two") -> 2
+                                txt.contains("for") -> 4
+                                else -> -1
+                            }
+
+                            for (i in list.indices) {
+                                if (num == list[i].productId) {
+                                    itemId = num
+                                    break
+                                }
+                            }
+
+                            if (itemId != -1) {
+                                Log.e("step 2", "passed $itemId")
+                                val newTxt = text.substring(indexDiscard, indexProductId.first)
+                                val result = newTxt.filter { it.isDigit() }
+
+                                when {
+                                    result != "" -> discardItem(itemId, result.toInt())
+                                    newTxt.contains("one") -> discardItem(itemId, 1)
+                                    newTxt.contains("two") -> discardItem(itemId, 2)
+                                    newTxt.contains("for") || newTxt.contains("four") -> discardItem(itemId, 4)
+                                    else -> _message.value = "Can't recognise your command"
+                                }
+                            } else
+                                _message.value = "Can't recognise your command"
+                        } else
+                            _message.value = "Can't recognise your command"
+                    } else if (indexProductName != null) {
+                        //Log.e("step 1", "passed")
+                        val txt = text.substring(indexProductName.last + 1).trim().toLowerCase()
+                        val list = products.value?.toList()
+                        var itemId = -1
+
+                        if (list != null) {
+                            for (i in list.indices) {
+                                if (txt.contains(list[i].name.toLowerCase())) {
+                                    itemId = list[i].productId
+                                    break
+                                }
+                            }
+
+                            if (itemId != -1) {
+                                //Log.e("step 2", "passed")
+                                val newTxt = text.substring(indexDiscard, indexProductName.first)
+                                val result = newTxt.filter { it.isDigit() }
+
+                                when {
+                                    result != "" -> discardItem(itemId, result.toInt())
+                                    text.contains("one") -> discardItem(itemId, 1)
+                                    text.contains("two") -> discardItem(itemId, 2)
+                                    text.contains("for") -> discardItem(itemId, 4)
+                                    else -> _message.value = "Can't recognise your command"
+                                }
+                            } else
+                                _message.value = "Can't recognise your command"
+                        } else
+                            _message.value = "Can't recognise your command"
+                    } else if (indexSingleProductName != null) {
+                        //Log.e("step 1", "passed")
+                        val txt = text.substring(indexSingleProductName.last + 1).trim().toLowerCase()
+                        val list = products.value?.toList()
+                        var itemId = -1
+
+                        if (list != null) {
+                            for (i in list.indices) {
+                                if (txt.contains(list[i].name.toLowerCase())) {
+                                    itemId = list[i].productId
+                                    break
+                                }
+                            }
+
+                            if (itemId != -1) {
+                                //Log.e("step 2", "passed")
+                                val newTxt = text.substring(indexDiscard, indexSingleProductName.first)
+                                val result = newTxt.filter { it.isDigit() }
+
+                                when {
+                                    result != "" -> discardItem(itemId, result.toInt())
+                                    newTxt.contains("one") -> discardItem(itemId, 1)
+                                    newTxt.contains("to") -> discardItem(itemId, 2)
+                                    newTxt.contains("for") -> discardItem(itemId, 4)
+                                    else -> _message.value = "Can't recognise your command"
+                                }
+                            } else
+                                _message.value = "Can't recognise your command"
+                        } else
+                            _message.value = "Can't recognise your command"
+                    } else
+                        _message.value = "Can't recognise your command"
+                } else
+                    _message.value = "Can't recognise your command"
+            }
+        }
+    }
+
+    fun discardItem(productId: Int, quantity: Int) {
         uiScope.launch {
             if (quantity > 0) {
                 val num = getQuantity(productId)
                 if (num >= quantity) {
-                    val aId = dItem(productId, userId, quantity)
+                    val aId = dItem(productId, adminId, quantity)
                     val aItem = getAssignedProduct(aId)
                     aItem!!.quantity -= quantity
                     updateAssignedItem(aItem!!)

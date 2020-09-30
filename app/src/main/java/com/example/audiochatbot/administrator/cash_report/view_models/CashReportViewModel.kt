@@ -78,6 +78,8 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
 
                             if (num > 0)
                                 depositOrWithdrawMoney(num, true)
+                            else if (num == -1F)
+                                _message.value = "Can't understand your command"
 
                             Log.e("final", "$num")
                         } else
@@ -94,6 +96,8 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
 
                             if (num > 0)
                                 depositOrWithdrawMoney(num, false)
+                            else if (num == -1F)
+                                _message.value = "Can't understand your command"
 
                             Log.e("final", "$num")
                         } else
@@ -114,6 +118,8 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
 
                             if (num > 0)
                                 depositOrWithdrawMoney(num, true)
+                            else if (num == -1F)
+                                _message.value = "Can't understand your command"
 
                             Log.e("final", "$num")
                         } else

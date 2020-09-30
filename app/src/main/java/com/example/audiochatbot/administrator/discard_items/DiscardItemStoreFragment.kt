@@ -86,6 +86,19 @@ class DiscardItemStoreFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         }
 
+        val adapter =
+            DiscardItemStoreRecyclerViewAdapter(
+                ItemStoreListener { storeId ->
+                    testViewModel.onStoreClicked(storeId)
+                })
+        binding.storeList.adapter = adapter
+
+        testViewModel.stores.observe(viewLifecycleOwner, {
+            it?.let {
+                adapter.submitList(it)
+            }
+        })
+
         testViewModel.navigateToDiscardItem.observe(viewLifecycleOwner, { storeId ->
             storeId?.let {
                 when (args.directionId) {
@@ -133,19 +146,6 @@ class DiscardItemStoreFragment : Fragment(), TextToSpeech.OnInitListener {
                     Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
                 else
                     textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH, null, null)
-            }
-        })
-
-        val adapter =
-            DiscardItemStoreRecyclerViewAdapter(
-                ItemStoreListener { storeId ->
-                    testViewModel.onStoreClicked(storeId)
-                })
-        binding.storeList.adapter = adapter
-
-        testViewModel.stores.observe(viewLifecycleOwner, {
-            it?.let {
-                adapter.submitList(it)
             }
         })
 

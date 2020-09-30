@@ -47,21 +47,21 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
             else {
                 val patternDiscard = "discard".toRegex()
                 val patternProductName = "items of".toRegex()
-                val patternSingleProductName = "item of".toRegex()
+                val patternOneProductName = "discard one item of".toRegex()
                 val patternProductId = "items of product".toRegex()
-                val patternSingleProductId = "item of product".toRegex()
+                val patternOneProductId = "discard one item of product".toRegex()
 
                 val matchDiscard = patternDiscard.find(text)
                 val matchProductName = patternProductName.find(text)
-                val matchSingleProductName = patternSingleProductName.find(text)
+                val matchOneProductName = patternOneProductName.find(text)
                 val matchProductId = patternProductId.find(text)
-                val matchSingleProductId = patternSingleProductId.find(text)
+                val matchOneProductId = patternOneProductId.find(text)
 
                 val indexDiscard = matchDiscard?.range?.last
                 val indexProductName = matchProductName?.range
-                val indexSingleProductName = matchSingleProductName?.range
+                val indexOneProductName = matchOneProductName?.range?.last
                 val indexProductId = matchProductId?.range
-                val indexSingleProductId = matchSingleProductId?.range
+                val indexOneProductId = matchOneProductId?.range
 
                 if (indexDiscard != null) {
                     if (indexProductId != null) {
@@ -104,6 +104,36 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
                                 _message.value = "Can't recognise your command"
                         } else
                             _message.value = "Can't recognise your command"
+                    } else if (indexOneProductId != null) {
+                        val txt = text.substring(indexOneProductId.last + 1).trim()
+                        val txtId = txt.filter { it.isDigit() }
+                        val list = products.value?.toList()
+                        var itemId = -1
+
+                        if (list != null) {
+                            Log.e("step 1", txt)
+                            val num = when {
+                                txtId != "" -> txtId.toInt()
+                                txt.contains("one") -> 1
+                                txt.contains("to") || txt.contains("two") -> 2
+                                txt.contains("for") -> 4
+                                else -> -1
+                            }
+
+                            for (i in list.indices) {
+                                if (num == list[i].productId) {
+                                    itemId = num
+                                    break
+                                }
+                            }
+
+                            if (itemId != -1) {
+                                Log.e("step 2", "passed $itemId")
+                                discardItem(itemId, 1)
+                            } else
+                                _message.value = "Can't recognise your command"
+                        } else
+                            _message.value = "Can't recognise your command"
                     } else if (indexProductName != null) {
                         //Log.e("step 1", "passed")
                         val txt = text.substring(indexProductName.last + 1).trim().toLowerCase()
@@ -134,9 +164,8 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
                                 _message.value = "Can't recognise your command"
                         } else
                             _message.value = "Can't recognise your command"
-                    } else if (indexSingleProductName != null) {
-                        //Log.e("step 1", "passed")
-                        val txt = text.substring(indexSingleProductName.last + 1).trim().toLowerCase()
+                    } else if (indexOneProductName != null) {
+                        val txt = text.substring(indexOneProductName + 1).trim().toLowerCase()
                         val list = products.value?.toList()
                         var itemId = -1
 
@@ -148,22 +177,12 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
                                 }
                             }
 
-                            if (itemId != -1) {
-                                //Log.e("step 2", "passed")
-                                val newTxt = text.substring(indexDiscard, indexSingleProductName.first)
-                                val result = newTxt.filter { it.isDigit() }
-
-                                when {
-                                    result != "" -> discardItem(itemId, result.toInt())
-                                    newTxt.contains("one") -> discardItem(itemId, 1)
-                                    newTxt.contains("to") -> discardItem(itemId, 2)
-                                    newTxt.contains("for") -> discardItem(itemId, 4)
-                                    else -> _message.value = "Can't recognise your command"
-                                }
-                            } else
-                                _message.value = "Can't recognise your command"
+                            if (itemId != -1)
+                                discardItem(itemId, 1)
+                            else
+                                _message.value = "The store doesn't have this product"
                         } else
-                            _message.value = "Can't recognise your command"
+                            _message.value = "The store doesn't have any products"
                     } else
                         _message.value = "Can't recognise your command"
                 } else

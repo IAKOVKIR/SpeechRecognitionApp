@@ -53,7 +53,7 @@ class DiscardItemStoreViewModel(val adminId: Int,val database: UserDao) : ViewMo
                 var num = 0
 
                 if (index != null) {
-                    val str = text.substring(index)
+                    val str = text.substring(index + 1)
                     val result = str.filter { it.isDigit() }
 
                     when {
@@ -61,9 +61,9 @@ class DiscardItemStoreViewModel(val adminId: Int,val database: UserDao) : ViewMo
                             Log.e("heh", result)
                             num = result.toInt()
                         }
-                        text.contains("store number one") -> num = 1
-                        text.contains("store number to") -> num = 2
-                        text.contains("store number for") -> num = 4
+                        str.contains("one") -> num = 1
+                        str.contains("to") || str.contains("two") -> num = 2
+                        str.contains("for") -> num = 4
                     }
                 }
 

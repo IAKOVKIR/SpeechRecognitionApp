@@ -43,49 +43,50 @@ class DiscardItemStoreViewModel(val adminId: Int,val database: UserDao) : ViewMo
 
     fun convertStringToAction(text: String) {
         uiScope.launch {
-
             if (text.contains("go back"))
                 _closeFragment.value = true
             else {
                 val pattern = "store number".toRegex()
                 val match = pattern.find(text)
                 val index = match?.range?.last
-                var num = 0
 
                 if (index != null) {
                     val str = text.substring(index + 1)
                     val result = str.filter { it.isDigit() }
 
-                    when {
+                    val num = when {
                         result != "" -> {
                             Log.e("heh", result)
-                            num = result.toInt()
+                            result.toInt()
                         }
-                        str.contains("one") -> num = 1
-                        str.contains("to") || str.contains("two") -> num = 2
-                        str.contains("for") -> num = 4
+                        str.contains("one") -> 1
+                        str.contains("to") || str.contains("two") -> 2
+                        str.contains("for") -> 4
+                        else -> -1
                     }
-                }
 
-                if (num > 0) {
-                    val list = stores.value
-                    var res = false
+                    if (num > 0) {
+                        val list = stores.value
+                        var res = false
 
-                    if (list != null) {
-                        for (i in list) {
-                            if (i.storeId == num) {
-                                res = true
-                                break
+                        if (list != null) {
+                            for (i in list) {
+                                if (i.storeId == num) {
+                                    res = true
+                                    break
+                                }
                             }
-                        }
-                    }
 
-                    if (res)
-                        _navigateToDiscardItem.value = num
-                    else
-                        _message.value = "You do not have an access to this store"
+                            if (res)
+                                _navigateToDiscardItem.value = num
+                            else
+                                _message.value = "You do not have an access to this store"
+                        } else
+                            _message.value = "Cannot understand your command"
+                    } else
+                        _message.value = "Cannot understand your command"
                 } else
-                    _message.value = "Can't understand your command"
+                    _message.value = "Cannot understand your command"
             }
         }
     }

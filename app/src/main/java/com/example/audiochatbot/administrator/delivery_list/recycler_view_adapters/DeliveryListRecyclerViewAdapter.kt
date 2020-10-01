@@ -31,7 +31,7 @@ class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListene
         fun bind(clickListener: DeliveryListener, cancelDeliveryListener: CancelDeliveryListener, item: Delivery) {
             binding.delivery = item
             binding.clickListener = clickListener
-            binding.deliveryName.text = "Delivery ${item.deliveryId} / Store ${item.storeId}"
+            binding.deliveryName.text = "Delivery ${item.deliveryId}"
             binding.status.text = "Status: ${item.status}"
 
             if (item.status == "Delivered" || item.status == "Canceled") {
@@ -40,7 +40,6 @@ class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListene
 
             binding.cancelButton.setOnClickListener {
                 cancelDeliveryListener.onClick(item)
-                binding.cancelButton.isEnabled = false
             }
 
         }

@@ -95,6 +95,7 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
         testViewModel.deliveries.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
+                adapter.notifyDataSetChanged()
             }
         })
 

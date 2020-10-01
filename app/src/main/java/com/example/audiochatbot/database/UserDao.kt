@@ -249,12 +249,17 @@ interface UserDao {
     @Query("SELECT * FROM DELIVERY INNER JOIN STORE ON DELIVERY.StoreID = STORE.StoreID WHERE STORE.BusinessID = :businessId ORDER BY DeliveryID  DESC")
     fun getAllDeliveries(businessId: Int): LiveData<List<Delivery>>
 
+    @Query("SELECT * FROM DELIVERY WHERE StoreID = :storeId ORDER BY DeliveryID  DESC")
+    fun getAllLiveDeliveriesWithStore(storeId: Int): LiveData<List<Delivery>>
+
+    @Query("SELECT * FROM DELIVERY WHERE StoreID = :storeId ORDER BY DeliveryID  DESC")
+    fun getAllDeliveriesWithStore(storeId: Int): List<Delivery>
+
     @Query("SELECT Status FROM DELIVERY WHERE DeliveryID = :deliveryId")
     fun getDeliveryStatus(deliveryId: Int): String
 
     @Query("SELECT DeliveryID FROM DELIVERY ORDER BY DeliveryID DESC LIMIT 1")
     fun getLastDeliveryId(): Int
-
 
     //Delivery product
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -267,7 +272,7 @@ interface UserDao {
     fun updateDeliveryProduct(deliveryProduct: DeliveryProduct)
 
     @Query("SELECT * FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId ORDER BY AssignedProductID DESC")
-    fun getAllDeliveryProducts(deliveryId: Int): LiveData<List<DeliveryProduct>>
+    fun getAllDeliveryProducts(deliveryId: Int): List<DeliveryProduct>
 
 
     //Inventory Count

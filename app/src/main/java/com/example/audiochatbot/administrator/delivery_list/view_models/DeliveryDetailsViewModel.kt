@@ -1,6 +1,8 @@
 package com.example.audiochatbot.administrator.delivery_list.view_models
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.DeliveryProduct
@@ -26,7 +28,105 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val deliveryProducts = database.getAllDeliveryProducts(deliveryId)
+    private var _deliveryProducts = MutableLiveData<List<DeliveryProduct>>()
+    val deliveryProducts: LiveData<List<DeliveryProduct>> get() = _deliveryProducts
+
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String?>
+        get() = _message
+
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
+
+    init {
+        uiScope.launch {
+            _deliveryProducts.value = getItems()
+        }
+    }
+
+    fun convertStringToAction(text: String) {
+        uiScope.launch {
+            Log.e("heh", text)
+            if (text.contains("go back"))
+                _closeFragment.value = true
+            else {
+                val patternAcceptId = "accept item set number".toRegex()
+                val patternDeclineId = "decline item set number".toRegex()
+
+                val matchAcceptId = patternAcceptId.find(text)
+                val matchDeclineId = patternDeclineId.find(text)
+
+                val indexAcceptId = matchAcceptId?.range?.last
+                val indexDeclineId = matchDeclineId?.range?.last
+
+                when {
+                    indexAcceptId != null -> {
+                        val list = deliveryProducts.value?.toList()
+
+                        if (list != null) {
+                            Log.e("step 0", "passed")
+                            val num = textToInteger(text, indexAcceptId)
+                            var obj: DeliveryProduct? = null
+
+                            for (i in list.indices) {
+                                if (num == list[i].assignedProductId) {
+                                    if (list[i].status == "not available") {
+                                        obj = list[i]
+                                        break
+                                    }
+                                }
+                            }
+
+                            if (obj != null)
+                                acceptItems(obj)
+                            else
+                                _message.value = "Cannot understand your command"
+                        }
+                    }
+                    indexDeclineId != null -> {
+                        val list = deliveryProducts.value?.toList()
+
+                        if (list != null) {
+                            Log.e("step 0", "passed")
+                            val num = textToInteger(text, indexDeclineId)
+                            var obj: DeliveryProduct? = null
+
+                            for (i in list.indices) {
+                                if (num == list[i].assignedProductId) {
+                                    if (list[i].status == "not available") {
+                                        obj = list[i]
+                                        break
+                                    }
+                                }
+                            }
+
+                            if (obj != null)
+                                declineItems(obj)
+                            else
+                                _message.value = "Cannot understand your command"
+                        }
+                    }
+                    else -> _message.value = "Cannot recognise your command"
+                }
+            }
+        }
+    }
+
+    private fun textToInteger(text: String, lastIndex: Int): Int {
+        val str = text.substring(lastIndex + 1)
+        val result = str.filter { it.isDigit() }
+
+        return when {
+            result != "" -> {
+                Log.e("heh", result)
+                result.toInt()
+            }
+            str.contains("one") -> 1
+            str.contains("to") || str.contains("two") -> 2
+            str.contains("for") -> 4
+            else -> -1
+        }
+    }
 
     fun acceptItems(deliveryProduct: DeliveryProduct) {
         uiScope.launch {
@@ -81,6 +181,12 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
     private suspend fun getConversion(productId: Int): String {
         return withContext(Dispatchers.IO) {
             database.getProductConversionWithAssignedProductId(productId)
+        }
+    }
+
+    private suspend fun getItems(): List<DeliveryProduct> {
+        return withContext(Dispatchers.IO) {
+            database.getAllDeliveryProducts(deliveryId)
         }
     }
 

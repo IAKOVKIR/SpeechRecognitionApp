@@ -47,6 +47,7 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
 
             CoroutineScope(Dispatchers.Default).launch {
 
+                var productId: Int
                 var productName: String
                 var smallUnitName: String
                 var bigUnitName: String
@@ -54,6 +55,7 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
 
                 withContext(Dispatchers.IO) {
                     val obj = userDao.getProductIdWithAssignedProductId(item.assignedProductId)
+                    productId = obj.productId
                     productName = obj.name
                     smallUnitName = obj.smallUnitName
                     bigUnitName = obj.bigUnitName
@@ -61,6 +63,7 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
                 }
 
                 launch (Dispatchers.Main) {
+                    binding.itemSet.text = "Item set ${item.assignedProductId}"
                     binding.productName.text = productName
                     binding.smallUnitName.text = "$smallUnitName: ${item.smallUnitQuantity}"
                     binding.bigUnitName.text = "$bigUnitName: ${item.bigUnitQuantity}"

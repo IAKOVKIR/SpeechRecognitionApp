@@ -27,7 +27,8 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val deliveries = database.getAllDeliveries(storeId)
+    private var _deliveries = MutableLiveData<List<Delivery>>()
+    val deliveries: LiveData<List<Delivery>> get() = _deliveries
 
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
@@ -39,6 +40,12 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
 
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
+
+    init {
+        uiScope.launch {
+            _deliveries.value = getItems()
+        }
+    }
 
     fun convertStringToAction(text: String) {
         uiScope.launch {
@@ -94,7 +101,10 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
                             }
 
                             if (delivery != null)
-                                cancelDelivery(delivery)
+                                if (delivery.status != "Canceled" || delivery.status != "Delivered")
+                                    cancelDelivery(delivery)
+                                else
+                                    _message.value = "The delivery is already cancelled or delivered"
                             else
                                 _message.value = "You do not have an access to this delivery"
                         } else
@@ -111,6 +121,7 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
         uiScope.launch {
             delivery.status = "Canceled"
             updateDelivery(delivery)
+            _deliveries.value = getItems()
         }
     }
 
@@ -133,6 +144,12 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
     private suspend fun updateDelivery(delivery: Delivery) {
         withContext(Dispatchers.IO) {
             database.updateDelivery(delivery)
+        }
+    }
+
+    private suspend fun getItems(): List<Delivery> {
+        return withContext(Dispatchers.IO) {
+            database.getAllDeliveriesWithStore(storeId)
         }
     }
 

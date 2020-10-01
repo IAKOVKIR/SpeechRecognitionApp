@@ -37,17 +37,8 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
         fun bind(deliveryId: Int, acceptClickListener: AcceptDeliveryProductsListener,
                  declineClickListener: DeclineDeliveryProductsListener, item: DeliveryProduct,
                  userDao: UserDao) {
-            if (item.status != "not available") {
-                binding.status.text = item.status
-                binding.status.visibility = View.VISIBLE
-            } else {
-                binding.acceptButton.visibility = View.VISIBLE
-                binding.declineButton.visibility = View.VISIBLE
-            }
-
             CoroutineScope(Dispatchers.Default).launch {
 
-                var productId: Int
                 var productName: String
                 var smallUnitName: String
                 var bigUnitName: String
@@ -55,7 +46,6 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
 
                 withContext(Dispatchers.IO) {
                     val obj = userDao.getProductIdWithAssignedProductId(item.assignedProductId)
-                    productId = obj.productId
                     productName = obj.name
                     smallUnitName = obj.smallUnitName
                     bigUnitName = obj.bigUnitName
@@ -67,9 +57,25 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
                     binding.productName.text = productName
                     binding.smallUnitName.text = "$smallUnitName: ${item.smallUnitQuantity}"
                     binding.bigUnitName.text = "$bigUnitName: ${item.bigUnitQuantity}"
-                    if (status == "Delivered") {
-                        binding.acceptButton.isEnabled = true
-                        binding.declineButton.isEnabled = true
+
+                    if (status == "Delivered" && item.status != "not available") {
+                        binding.status.text = item.status
+                        binding.status.visibility = View.VISIBLE
+                        binding.acceptButton.visibility = View.GONE
+                        binding.declineButton.visibility = View.GONE
+                        binding.acceptButton.isEnabled = false
+                        binding.declineButton.isEnabled = false
+                    } else {
+                        binding.status.visibility = View.GONE
+                        binding.acceptButton.visibility = View.VISIBLE
+                        binding.declineButton.visibility = View.VISIBLE
+                        if (status != "Waiting") {
+                            binding.acceptButton.isEnabled = true
+                            binding.declineButton.isEnabled = true
+                        } else {
+                            binding.acceptButton.isEnabled = false
+                            binding.declineButton.isEnabled = false
+                        }
                     }
                 }
             }

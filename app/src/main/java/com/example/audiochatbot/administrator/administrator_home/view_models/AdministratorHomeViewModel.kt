@@ -21,7 +21,7 @@ class AdministratorHomeViewModel: ViewModel() {
     private val userManagementArray = arrayOf("open user management", "user management")
     private val storeManagementArray = arrayOf("open store management", "store management")
     private val productManagementArray = arrayOf("open product management", "product management")
-    private val logOutArray = arrayOf("log out")
+    private val logOutArray = arrayOf("log out", "logout")
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.

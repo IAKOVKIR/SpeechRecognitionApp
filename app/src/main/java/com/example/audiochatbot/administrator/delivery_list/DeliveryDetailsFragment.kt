@@ -1,6 +1,7 @@
 package com.example.audiochatbot.administrator.delivery_list
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
@@ -81,8 +82,29 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
         testViewModel.deliveryProducts.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
+                adapter.notifyDataSetChanged()
             }
         })
+
+        binding.microphoneImage.setOnClickListener {
+            // Get the Intent action
+            val sttIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            // Language model defines the purpose, there are special models for other use cases, like search.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            // Adding an extra language, you can use any language from the Locale class.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            // Text that shows up on the Speech input prompt.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
+            try {
+                // Start the intent for a result, and pass in our request code.
+                startActivityForResult(sttIntent, requestCodeStt)
+            } catch (e: ActivityNotFoundException) {
+                // Handling error when the service is not available.
+                e.printStackTrace()
+
+                Toast.makeText(requireContext(), "Your device does not support STT.", Toast.LENGTH_LONG).show()
+            }
+        }
 
         testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
             if (result != null)

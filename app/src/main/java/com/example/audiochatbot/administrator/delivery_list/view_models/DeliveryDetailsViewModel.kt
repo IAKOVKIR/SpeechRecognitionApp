@@ -50,22 +50,32 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
             if (text.contains("go back"))
                 _closeFragment.value = true
             else {
-                val patternAcceptId = "accept item set number".toRegex()
+                val patternAcceptId = "except item set number".toRegex() //google recognizes accept as except
+                val patternAcceptId1 = "except itemset number".toRegex() //google recognizes accept as except
                 val patternDeclineId = "decline item set number".toRegex()
+                val patternDeclineId1 = "decline itemset number".toRegex()
 
                 val matchAcceptId = patternAcceptId.find(text)
+                val matchAcceptId1 = patternAcceptId1.find(text)
                 val matchDeclineId = patternDeclineId.find(text)
+                val matchDeclineId1 = patternDeclineId1.find(text)
 
                 val indexAcceptId = matchAcceptId?.range?.last
+                val indexAcceptId1 = matchAcceptId1?.range?.last
                 val indexDeclineId = matchDeclineId?.range?.last
+                val indexDeclineId1 = matchDeclineId1?.range?.last
 
                 when {
-                    indexAcceptId != null -> {
+                    indexAcceptId != null || indexAcceptId1 != null-> {
                         val list = deliveryProducts.value?.toList()
 
                         if (list != null) {
                             Log.e("step 0", "passed")
-                            val num = textToInteger(text, indexAcceptId)
+                            val num = if (indexAcceptId != null) {
+                                textToInteger(text, indexAcceptId)
+                            } else {
+                                textToInteger(text, indexAcceptId1!!)
+                            }
                             var obj: DeliveryProduct? = null
 
                             for (i in list.indices) {
@@ -83,12 +93,16 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
                                 _message.value = "Cannot understand your command"
                         }
                     }
-                    indexDeclineId != null -> {
+                    indexDeclineId != null || indexDeclineId1 != null -> {
                         val list = deliveryProducts.value?.toList()
 
                         if (list != null) {
                             Log.e("step 0", "passed")
-                            val num = textToInteger(text, indexDeclineId)
+                            val num = if (indexDeclineId != null) {
+                                textToInteger(text, indexDeclineId)
+                            } else {
+                                textToInteger(text, indexDeclineId1!!)
+                            }
                             var obj: DeliveryProduct? = null
 
                             for (i in list.indices) {
@@ -150,6 +164,7 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
             val assignedProduct = getAssignedProduct(deliveryProduct.assignedProductId)
             assignedProduct!!.quantity = assignedProduct.quantity + ((deliveryProduct.smallUnitQuantity * smallQuantity) + (deliveryProduct.bigUnitQuantity * bigQuantity))
             updateAssignedProduct(assignedProduct)
+            _deliveryProducts.value = getItems()
         }
     }
 
@@ -157,6 +172,7 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
         uiScope.launch {
             deliveryProduct.status = "cancelled"
             updateDeliveryProduct(deliveryProduct)
+            _deliveryProducts.value = getItems()
         }
     }
 

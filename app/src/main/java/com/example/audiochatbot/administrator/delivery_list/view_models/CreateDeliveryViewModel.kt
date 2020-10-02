@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.delivery_list.view_models
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,14 +27,25 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    private var productIds: MutableList<Int> = arrayListOf()
+    private var smallBigQuantities: MutableList<Int> = arrayListOf()
+
     private var _products = MutableLiveData<List<Product>>()
     val products: LiveData<List<Product>> get() = _products
 
     private var _l = MutableLiveData<List<Int>>()
     val l: LiveData<List<Int>> get() = _l
 
-    private var productIds: MutableList<Int> = arrayListOf()
-    private var smallBigQuantities: MutableList<Int> = arrayListOf()
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String?>
+        get() = _message
+
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
+
+    private val _isDone = MutableLiveData<Boolean>()
+    val isDone
+        get() = _isDone
 
     init {
         uiScope.launch {
@@ -46,9 +58,90 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
         }
     }
 
-    private val _isDone = MutableLiveData<Boolean>()
-    val isDone
-        get() = _isDone
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(text: String) {
+        uiScope.launch {
+            Log.e("heh", text)
+            if (text.contains("go back"))
+                _closeFragment.value = true
+            else {
+                val patternAddItems = "add".toRegex()
+                val patternRemoveItems = "remove items of".toRegex()
+                val matchAddItems = patternAddItems.find(text)
+                val matchRemoveItems = patternRemoveItems.find(text)
+                val indexAddItems = matchAddItems?.range?.last
+                val indexRemoveItems = matchRemoveItems?.range?.last
+
+                if (indexAddItems != null) {
+
+                } else if (indexRemoveItems != null) {
+                    val patternProductId = "product number".toRegex()
+                    val matchProductId = patternProductId.find(text)
+                    val indexProductId = matchProductId?.range
+
+                    if (indexProductId != null) {
+                        if (indexProductId.first > indexRemoveItems) {
+                            val str = text.substring(indexProductId.last + 1)
+                            val result = str.filter { it.isDigit() }
+
+                            val num =  when {
+                                result != "" -> {
+                                    Log.e("heh", result)
+                                    result.toInt()
+                                }
+                                str.contains("one") -> 1
+                                str.contains("to") || str.contains("two") -> 2
+                                str.contains("for") -> 4
+                                else -> -1
+                            }
+
+                            if (num > 0) {
+                                val list = products.value
+                                var num1 = -1
+
+                                if (list != null) {
+                                    for (i in list) {
+                                        if (i.productId == num) {
+                                            num1 = num
+                                            break
+                                        }
+                                    }
+
+                                    if (num1 > 0)
+                                        removeItem(num1)
+                                    else
+                                        _message.value =
+                                            "You do not have an access to this product"
+                                } else
+                                    _message.value = "Items are not available"
+                            }
+                        }
+                    } else {
+                        val str = text.substring(indexRemoveItems + 1).toLowerCase()
+                        val list = products.value
+                        var num1 = -1
+
+                        if (list != null) {
+                            for (i in list) {
+                                Log.e(i.name.toLowerCase(), str)
+                                if (str.contains(i.name.toLowerCase())) {
+                                    num1 = i.productId
+                                    break
+                                }
+                            }
+
+                            if (num1 > 0)
+                                removeItem(num1)
+                            else
+                                _message.value =
+                                    "You do not have an access to this product"
+                        } else
+                            _message.value = "Items are not available"
+                    }
+                }
+            }
+        }
+    }
 
     fun addItem(productId: Int, smallQuantity: Int, bigQuantity: Int) {
         uiScope.launch {

@@ -59,41 +59,142 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
     }
 
     @SuppressLint("DefaultLocale")
-    fun convertStringToAction(text: String) {
+    fun convertStringToAction(givenText: String) {
         uiScope.launch {
+            val text = givenText.toLowerCase()
             Log.e("heh", text)
             if (text.contains("go back"))
                 _closeFragment.value = true
             else {
-                val patternAddItems = "add".toRegex()
-                val patternRemoveItems = "remove items of".toRegex()
-                val matchAddItems = patternAddItems.find(text)
-                val matchRemoveItems = patternRemoveItems.find(text)
+                val matchAddItems = "add".toRegex().find(text)
+                val matchRemoveItems = "remove items of".toRegex().find(text)
                 val indexAddItems = matchAddItems?.range?.last
                 val indexRemoveItems = matchRemoveItems?.range?.last
 
                 if (indexAddItems != null) {
+                    val matchSmallUnits = "small unit".toRegex().find(text)
+                    val matchBigUnits = "big unit".toRegex().find(text)
+                    val indexSmallUnits = matchSmallUnits?.range
+                    val indexBigUnits = matchBigUnits?.range
+                    var smallQuantity = 0
+                    var bigQuantity = 0
+                    var id = -1
+
+                    if (indexSmallUnits != null) {
+                        if (indexSmallUnits.first > indexAddItems) {
+                            var lastIndex = indexSmallUnits.last + 1
+                            val str = text.substring(indexAddItems + 1, indexAddItems + 7)
+                            smallQuantity = textToInteger(str)
+                            Log.e("heh s", "$smallQuantity")
+
+                            if (indexBigUnits != null) {
+                                if (indexBigUnits.first > indexSmallUnits.last) {
+                                    val strBig = text.substring(lastIndex, indexBigUnits.first)
+                                    lastIndex = indexBigUnits.last + 1
+                                    bigQuantity = textToInteger(strBig)
+                                    Log.e("heh b", "$bigQuantity")
+
+                                }
+                            }
+
+                            val strProduct = text.substring(lastIndex)
+                            val matchProductName = "of".toRegex().find(strProduct)
+                            val matchProductId = "of product number".toRegex().find(strProduct)
+                            val indexProductName = matchProductName?.range
+                            val indexProductId = matchProductId?.range
+
+                            if (smallQuantity > 0 || bigQuantity > 0) {
+                                if (indexProductName != null) {
+                                    val strName = text.substring(indexProductName.last + 1)
+
+                                    val list = products.value
+
+                                    if (list != null) {
+                                        for (i in list) {
+                                            Log.e(i.name.toLowerCase(), strName)
+                                            if (strName.contains(i.name.toLowerCase())) {
+                                                id = i.productId
+                                                break
+                                            }
+                                        }
+                                    }
+
+                                } else if (indexProductId != null) {
+                                    val strId = text.substring(indexProductId.last + 1)
+                                    val testId = textToInteger(strId)
+                                    val list = products.value
+
+                                    if (list != null) {
+                                        for (i in list) {
+                                            if (i.productId == testId) {
+                                                id = testId
+                                                break
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else if (indexBigUnits != null) {
+                        if (indexBigUnits.first > indexAddItems) {
+                            val strBig = text.substring(indexAddItems, indexBigUnits.last + 1)
+                            bigQuantity = textToInteger(strBig)
+                            Log.e("heh b", "$bigQuantity")
+
+                            val strProduct = text.substring(indexBigUnits.last + 1)
+                            val matchProductName = "of".toRegex().find(strProduct)
+                            val matchProductId = "of product number".toRegex().find(strProduct)
+                            val indexProductName = matchProductName?.range
+                            val indexProductId = matchProductId?.range
+
+                            if (bigQuantity > 0) {
+                                if (indexProductName != null) {
+                                    val strName = text.substring(indexProductName.last + 1)
+
+                                    val list = products.value
+
+                                    if (list != null) {
+                                        for (i in list) {
+                                            Log.e(i.name.toLowerCase(), strName)
+                                            if (strName.contains(i.name.toLowerCase())) {
+                                                id = i.productId
+                                                break
+                                            }
+                                        }
+                                    }
+
+                                } else if (indexProductId != null) {
+                                    val strId = text.substring(indexProductId.last + 1)
+                                    val testId = textToInteger(strId)
+                                    val list = products.value
+
+                                    if (list != null) {
+                                        for (i in list) {
+                                            if (i.productId == testId) {
+                                                id = testId
+                                                break
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (id > 0) {
+                        if (smallQuantity > 0 || bigQuantity > 0) {
+                            addItem(id, smallQuantity, bigQuantity)
+                        }
+                    }
 
                 } else if (indexRemoveItems != null) {
-                    val patternProductId = "product number".toRegex()
-                    val matchProductId = patternProductId.find(text)
+                    val matchProductId = "product number".toRegex().find(text)
                     val indexProductId = matchProductId?.range
 
                     if (indexProductId != null) {
                         if (indexProductId.first > indexRemoveItems) {
                             val str = text.substring(indexProductId.last + 1)
-                            val result = str.filter { it.isDigit() }
-
-                            val num =  when {
-                                result != "" -> {
-                                    Log.e("heh", result)
-                                    result.toInt()
-                                }
-                                str.contains("one") -> 1
-                                str.contains("to") || str.contains("two") -> 2
-                                str.contains("for") -> 4
-                                else -> -1
-                            }
+                            val num = textToInteger(str)
 
                             if (num > 0) {
                                 val list = products.value
@@ -117,7 +218,7 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                             }
                         }
                     } else {
-                        val str = text.substring(indexRemoveItems + 1).toLowerCase()
+                        val str = text.substring(indexRemoveItems + 1)
                         val list = products.value
                         var num1 = -1
 
@@ -200,6 +301,22 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
             if (checkId == deliveryId) {
                 _isDone.value = true
             }
+        }
+    }
+
+    private fun textToInteger(str: String): Int {
+        val result = str.filter { it.isDigit() }
+
+        return when {
+            result != "" -> {
+                Log.e("heh", result)
+                result.toInt()
+            }
+            str.contains("one") -> 1
+            str.contains("to") || str.contains("two") -> 2
+            str.contains("three") -> 3
+            str.contains("for") -> 4
+            else -> 0
         }
     }
 

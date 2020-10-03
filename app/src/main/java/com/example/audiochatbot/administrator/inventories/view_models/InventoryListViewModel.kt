@@ -1,10 +1,14 @@
 package com.example.audiochatbot.administrator.inventories.view_models
 
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class InventoryListViewModel(val businessId: Int, val database: UserDao) : ViewModel() {
 
@@ -26,6 +30,33 @@ class InventoryListViewModel(val businessId: Int, val database: UserDao) : ViewM
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     val inventories = database.getAllInventoryCounts(businessId)
+
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String?>
+        get() = _message
+
+    private val _navigateToInventoryCount = MutableLiveData<Boolean>()
+    val navigateToInventoryCount get() = _navigateToInventoryCount
+
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
+
+    fun convertStringToAction(text: String) {
+        uiScope.launch {
+            Log.e("heh", text)
+            when {
+                text.contains("go back") -> _closeFragment.value = true
+                text.contains("inventory count") -> _navigateToInventoryCount.value = true
+                else -> _message.value = "I'm sorry, I cannot understand your command"
+            }
+        }
+    }
+
+    fun onInventoryCountNavigated() {
+        _message.value = null
+        _closeFragment.value = null
+        _navigateToInventoryCount.value = null
+    }
 
     /**
      * Called when the ViewModel is dismantled.

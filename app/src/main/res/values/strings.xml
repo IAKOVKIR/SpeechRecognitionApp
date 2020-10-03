@@ -21,7 +21,10 @@
     <string name="cash_report_title">Store %1$s - $A%2$.2f</string>
     <string name="selected_item">Selected position:</string>
     <string name="find_product">Find Product</string>
+    <string name="find_user">Find User</string>
     <string name="create_new_product">Create New Product</string>
+    <string name="create_new_store">Create New Store</string>
+    <string name="create_new_user">Create New User</string>
     <string name="microphone_icon">microphone icon</string>
     <string name="enter_product_name">enter product name</string>
     <string name="audio_input">Audio Input</string>

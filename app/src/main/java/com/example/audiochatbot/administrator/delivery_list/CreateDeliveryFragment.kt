@@ -92,13 +92,6 @@ class CreateDeliveryFragment : Fragment(), TextToSpeech.OnInitListener {
             binding.deliveryList.adapter = adapter
         })
 
-        testViewModel.isDone.observe(viewLifecycleOwner, { result ->
-            if (result) {
-                this.findNavController().popBackStack()
-                this.findNavController().popBackStack()
-            }
-        })
-
         binding.submitTheDelivery.setOnClickListener {
             testViewModel.submitDelivery()
         }

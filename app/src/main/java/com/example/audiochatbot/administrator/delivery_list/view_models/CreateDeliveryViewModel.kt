@@ -43,10 +43,6 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
-    private val _isDone = MutableLiveData<Boolean>()
-    val isDone
-        get() = _isDone
-
     init {
         uiScope.launch {
             _products.value = getItems()
@@ -58,20 +54,29 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
         }
     }
 
+    /**
+     * Method that analyses the string and do the actions based on the command that was found in the string
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
         uiScope.launch {
             val text = givenText.toLowerCase()
             Log.e("heh", text)
+            // if the command is go back
             if (text.contains("go back"))
                 _closeFragment.value = true
-            else {
+            else if (text.contains("submit the delivery")) {
+                submitDelivery()
+            } else{
+                // get the last indexes of the given substrings
                 val matchAddItems = "add".toRegex().find(text)
                 val matchRemoveItems = "remove items of".toRegex().find(text)
                 val indexAddItems = matchAddItems?.range?.last
                 val indexRemoveItems = matchRemoveItems?.range?.last
 
+
                 if (indexAddItems != null) {
+                    // get the ranges of the given substrings
                     val matchSmallUnits = "small unit".toRegex().find(text)
                     val matchBigUnits = "big unit".toRegex().find(text)
                     val indexSmallUnits = matchSmallUnits?.range
@@ -104,8 +109,24 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                             val indexProductId = matchProductId?.range
 
                             if (smallQuantity > 0 || bigQuantity > 0) {
-                                if (indexProductName != null) {
-                                    val strName = text.substring(indexProductName.last + 1)
+                                if (indexProductId != null) {
+                                    val strId = strProduct.substring(indexProductId.last + 1)
+                                    Log.e("heh", strId)
+                                    val testId = textToInteger(strId)
+                                    val list = products.value
+
+                                    if (list != null) {
+                                        for (i in list) {
+                                            if (i.productId == testId) {
+                                                id = testId
+                                                break
+                                            }
+                                        }
+                                    }
+
+                                    Log.e("what the fuck???", "$id")
+                                } else if (indexProductName != null) {
+                                    val strName = strProduct.substring(indexProductName.last + 1)
 
                                     val list = products.value
 
@@ -119,19 +140,6 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                                         }
                                     }
 
-                                } else if (indexProductId != null) {
-                                    val strId = text.substring(indexProductId.last + 1)
-                                    val testId = textToInteger(strId)
-                                    val list = products.value
-
-                                    if (list != null) {
-                                        for (i in list) {
-                                            if (i.productId == testId) {
-                                                id = testId
-                                                break
-                                            }
-                                        }
-                                    }
                                 }
                             }
                         }
@@ -148,7 +156,20 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                             val indexProductId = matchProductId?.range
 
                             if (bigQuantity > 0) {
-                                if (indexProductName != null) {
+                                if (indexProductId != null) {
+                                    val strId = text.substring(indexProductId.last + 1)
+                                    val testId = textToInteger(strId)
+                                    val list = products.value
+
+                                    if (list != null) {
+                                        for (i in list) {
+                                            if (i.productId == testId) {
+                                                id = testId
+                                                break
+                                            }
+                                        }
+                                    }
+                                } else if (indexProductName != null) {
                                     val strName = text.substring(indexProductName.last + 1)
 
                                     val list = products.value
@@ -163,19 +184,6 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                                         }
                                     }
 
-                                } else if (indexProductId != null) {
-                                    val strId = text.substring(indexProductId.last + 1)
-                                    val testId = textToInteger(strId)
-                                    val list = products.value
-
-                                    if (list != null) {
-                                        for (i in list) {
-                                            if (i.productId == testId) {
-                                                id = testId
-                                                break
-                                            }
-                                        }
-                                    }
                                 }
                             }
                         }
@@ -215,8 +223,10 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                                             "You do not have an access to this product"
                                 } else
                                     _message.value = "Items are not available"
-                            }
-                        }
+                            } else
+                                _message.value = "I'm sorry, I cannot understand your command"
+                        } else
+                            _message.value = "I'm sorry, I cannot understand your command"
                     } else {
                         val str = text.substring(indexRemoveItems + 1)
                         val list = products.value
@@ -239,72 +249,94 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                         } else
                             _message.value = "Items are not available"
                     }
-                }
+                } else
+                    _message.value = "I'm sorry, I cannot understand your command"
             }
         }
     }
 
+    /**
+     * Method addItem updates the item of the list with entered quantities
+     */
     fun addItem(productId: Int, smallQuantity: Int, bigQuantity: Int) {
         uiScope.launch {
-            if (smallQuantity != 0 || bigQuantity != 0) {
-                for (i in 0 until productIds.size) {
-                    if (productId == productIds[i]) {
-                        smallBigQuantities[i * 2] = smallQuantity
-                        smallBigQuantities[i * 2 + 1] = bigQuantity
-                    }
-                }
-            }
+            // Items will be added if the entered total quantity
+            // (small unit and big unit quantities combined) is higher than zero.
+            if (smallQuantity > 0 || bigQuantity > 0) {
+                // get the index of productId in the list
+                val num = productIds.indexOf(productId)
+                // assign new values
+                smallBigQuantities[num * 2] = smallQuantity
+                smallBigQuantities[num * 2 + 1] = bigQuantity
 
-            _l.value = smallBigQuantities.toList()
-            _products.value = getItems()
-
-            Log.e("size", "${productIds.size}")
+                // update the lists
+                _l.value = smallBigQuantities.toList()
+                _products.value = getItems()
+            } else
+                _message.value = "The total quantity has to be higher than zero."
         }
     }
 
+    /**
+     * Method removeItem removes the quantities of the product
+     */
     fun removeItem(productId: Int) {
         uiScope.launch {
+            // get the index of productId in the list
             val num = productIds.indexOf(productId)
-
+            // assign new values
             smallBigQuantities[num * 2] = 0
             smallBigQuantities[num * 2 + 1] = 0
 
+            // update the lists
             _l.value = smallBigQuantities.toList()
             _products.value = getItems()
-
-            Log.e("size", "${productIds.size}")
         }
     }
 
+    /**
+     * Method submitDelivery inserts a new delivery with all added items
+     */
     fun submitDelivery() {
         uiScope.launch {
-            val deliveryId = getLastDeliveryId() + 1
-            val delivery = Delivery(deliveryId, storeId, "Waiting", "18/07/2020", "13:00")
-            addNewDelivery(delivery)
-
+            // declare a mutable list for items that has a total quantity higher than zero
             val itemList: MutableList<DeliveryProduct> = arrayListOf()
+            val deliveryId = getLastDeliveryId() + 1
             val list = getAssignedItems()
 
             for (element in list) {
                 for (j in 0 until productIds.size) {
+                    // if productIds are equal and total quantity os higher than 0, then it adds
+                    // a new DeliveryProduct object to the list and terminates the nearest enclosing loop
                     if (element.productId == productIds[j] && (smallBigQuantities[j * 2] != 0 || smallBigQuantities[j * 2 + 1] != 0)) {
-                        itemList.add(DeliveryProduct(deliveryId, productIds[j], smallBigQuantities[j * 2], smallBigQuantities[j * 2 + 1], "not available"))
+                        itemList.add(DeliveryProduct(deliveryId, element.assignedProductId, smallBigQuantities[j * 2], smallBigQuantities[j * 2 + 1], "not available"))
                         break
                     }
                 }
             }
 
-            val newList = itemList.toList()
-            addNewItems(newList)
+            if (itemList.size != 0) {
+                val delivery = Delivery(deliveryId, storeId, "Waiting", "18/07/2020", "13:00")
+                addNewDelivery(delivery)
 
-            val checkId = getLastDeliveryId()
-            if (checkId == deliveryId) {
-                _isDone.value = true
-            }
+                val newList = itemList.toList()
+                addNewItems(newList)
+
+                val checkId = getLastDeliveryId()
+                if (checkId == deliveryId)
+                    _closeFragment.value = true
+                else
+                    _message.value = "Something went wrong"
+            } else
+                _message.value = "The delivery list is empty"
         }
     }
 
+    /**
+     * Method textToInteger that returns the int value from the given string
+     */
     private fun textToInteger(str: String): Int {
+        // gets the string of numbers that were found in the string
         val result = str.filter { it.isDigit() }
 
         return when {
@@ -320,30 +352,45 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
         }
     }
 
+    /**
+     * Suspending method getLastDeliveryId that retrieves the id of the last delivery from the database
+     */
     private suspend fun getLastDeliveryId(): Int {
         return withContext(Dispatchers.IO) {
             database.getLastDeliveryId()
         }
     }
 
+    /**
+     * Suspending method addNewDelivery that inserts a new delivery into the database
+     */
     private suspend fun addNewDelivery(delivery: Delivery) {
         withContext(Dispatchers.IO) {
             database.insertDelivery(delivery)
         }
     }
 
+    /**
+     * Suspending method addNewItems that inserts a list of delivery products into the database
+     */
     private suspend fun addNewItems(itemList: List<DeliveryProduct>) {
         withContext(Dispatchers.IO) {
             database.insertDeliveryProducts(itemList)
         }
     }
 
+    /**
+     * Suspending method getAssignedItems that retrieves a list of the assigned items with storeId from database
+     */
     private suspend fun getAssignedItems(): List<AssignedProduct> {
         return withContext(Dispatchers.IO) {
             database.getAssignedProductsList(storeId)
         }
     }
 
+    /**
+     * Suspending method getItems that retrieves a list of the products with storeId from database
+     */
     private suspend fun getItems(): List<Product> {
         return withContext(Dispatchers.IO) {
             database.getAllProductsWithStoreID(storeId)

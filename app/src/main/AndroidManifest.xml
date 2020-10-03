@@ -15,11 +15,11 @@
         <activity android:name=".administrator.AdministratorActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".employee.EmployeeActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.TTS_SERVICE" />
-                <action android:screenOrientation="portrait"/>
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

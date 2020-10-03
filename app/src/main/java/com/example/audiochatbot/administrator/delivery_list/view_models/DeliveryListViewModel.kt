@@ -38,6 +38,9 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
     val navigateToDeliveryDetails
         get() = _navigateToDeliveryDetails
 
+    private val _navigateToCreateNewDelivery = MutableLiveData<Boolean>()
+    val navigateToCreateNewDelivery get() = _navigateToCreateNewDelivery
+
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
@@ -52,6 +55,8 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
             Log.e("heh", text)
             if (text.contains("go back"))
                 _closeFragment.value = true
+            else if (text.contains("add new delivery"))
+                _navigateToCreateNewDelivery.value = true
             else {
                 val pattern = "open delivery number".toRegex()
                 val patternCancelDelivery = "cancel delivery number".toRegex()
@@ -125,6 +130,12 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
         }
     }
 
+    fun refreshTheList() {
+        uiScope.launch {
+            _deliveries.value = getItems()
+        }
+    }
+
     private fun textToInteger(text: String, lastIndex: Int): Int {
         val str = text.substring(lastIndex + 1)
         val result = str.filter { it.isDigit() }
@@ -161,6 +172,7 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
         _navigateToDeliveryDetails.value = null
         _message.value = null
         _closeFragment.value = null
+        _navigateToCreateNewDelivery.value = null
     }
 
     /**

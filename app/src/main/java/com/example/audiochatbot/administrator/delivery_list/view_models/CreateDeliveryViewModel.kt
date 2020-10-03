@@ -50,6 +50,7 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                 productIds.add(element.productId)
             }
 
+            // generate a mutable list with double size of productIds and set all values as 0
             smallBigQuantities = List(productIds.size * 2) { 0 } as MutableList<Int>
         }
     }
@@ -67,7 +68,7 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                 _closeFragment.value = true
             else if (text.contains("submit the delivery")) {
                 submitDelivery()
-            } else{
+            } else {
                 // get the last indexes of the given substrings
                 val matchAddItems = "add".toRegex().find(text)
                 val matchRemoveItems = "remove items of".toRegex().find(text)
@@ -97,8 +98,6 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                                     val strBig = text.substring(lastIndex, indexBigUnits.first)
                                     lastIndex = indexBigUnits.last + 1
                                     bigQuantity = textToInteger(strBig)
-                                    Log.e("heh b", "$bigQuantity")
-
                                 }
                             }
 
@@ -122,12 +121,18 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                                                 break
                                             }
                                         }
-                                    }
 
-                                    Log.e("what the fuck???", "$id")
+                                        if (id > 0) {
+                                            if (smallQuantity > 0 || bigQuantity > 0) {
+                                                addItem(id, smallQuantity, bigQuantity)
+                                            } else
+                                                _message.value = "The total quantity of the product is less than zero"
+                                        } else
+                                            _message.value = "I'm sorry, I cannot understand your command"
+                                    } else
+                                        _message.value = "Items are not available"
                                 } else if (indexProductName != null) {
                                     val strName = strProduct.substring(indexProductName.last + 1)
-
                                     val list = products.value
 
                                     if (list != null) {
@@ -138,11 +143,22 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                                                 break
                                             }
                                         }
-                                    }
 
-                                }
-                            }
-                        }
+                                        if (id > 0) {
+                                            if (smallQuantity > 0 || bigQuantity > 0) {
+                                                addItem(id, smallQuantity, bigQuantity)
+                                            } else
+                                                _message.value = "The total quantity of the product is less than zero"
+                                        } else
+                                            _message.value = "I'm sorry, I cannot understand your command"
+                                    } else
+                                        _message.value = "Items are not available"
+                                } else
+                                    _message.value = "I'm sorry, I cannot understand your command"
+                            } else
+                                _message.value = "I'm sorry, I cannot understand your command"
+                        } else
+                            _message.value = "I'm sorry, I cannot understand your command"
                     } else if (indexBigUnits != null) {
                         if (indexBigUnits.first > indexAddItems) {
                             val strBig = text.substring(indexAddItems, indexBigUnits.last + 1)
@@ -168,7 +184,16 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                                                 break
                                             }
                                         }
-                                    }
+
+                                        if (id > 0) {
+                                            if (smallQuantity > 0 || bigQuantity > 0) {
+                                                addItem(id, smallQuantity, bigQuantity)
+                                            } else
+                                                _message.value = "The total quantity of the product is less than zero"
+                                        } else
+                                            _message.value = "I'm sorry, I cannot understand your command"
+                                    } else
+                                        _message.value = "Items are not available"
                                 } else if (indexProductName != null) {
                                     val strName = text.substring(indexProductName.last + 1)
 
@@ -182,18 +207,24 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
                                                 break
                                             }
                                         }
-                                    }
 
-                                }
-                            }
-                        }
-                    }
-
-                    if (id > 0) {
-                        if (smallQuantity > 0 || bigQuantity > 0) {
-                            addItem(id, smallQuantity, bigQuantity)
-                        }
-                    }
+                                        if (id > 0) {
+                                            if (smallQuantity > 0 || bigQuantity > 0) {
+                                                addItem(id, smallQuantity, bigQuantity)
+                                            } else
+                                                _message.value = "The total quantity of the product is less than zero"
+                                        } else
+                                            _message.value = "I'm sorry, I cannot understand your command"
+                                    } else
+                                        _message.value = "Items are not available"
+                                } else
+                                    _message.value = "I'm sorry, I cannot understand your command"
+                            } else
+                                _message.value = "I'm sorry, I cannot understand your command"
+                        } else
+                            _message.value = "I'm sorry, I cannot understand your command"
+                    } else
+                        _message.value = "I'm sorry, I cannot understand your command"
 
                 } else if (indexRemoveItems != null) {
                     val matchProductId = "product number".toRegex().find(text)
@@ -284,13 +315,16 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
         uiScope.launch {
             // get the index of productId in the list
             val num = productIds.indexOf(productId)
-            // assign new values
-            smallBigQuantities[num * 2] = 0
-            smallBigQuantities[num * 2 + 1] = 0
+            if (smallBigQuantities[num * 2] > 0 || smallBigQuantities[num * 2] > 0) {
+                // assign new values
+                smallBigQuantities[num * 2] = 0
+                smallBigQuantities[num * 2 + 1] = 0
 
-            // update the lists
-            _l.value = smallBigQuantities.toList()
-            _products.value = getItems()
+                // update the lists
+                _l.value = smallBigQuantities.toList()
+                _products.value = getItems()
+            } else
+                _message.value = "The total quantity of the product is equal to zero"
         }
     }
 

@@ -92,6 +92,12 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         }
 
+        binding.addNewDelivery.setOnClickListener {
+            this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId))
+        }
+
+        // Observers
+
         testViewModel.deliveries.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
@@ -112,6 +118,15 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
                     this.findNavController().popBackStack()
         })
 
+        testViewModel.navigateToCreateNewDelivery.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result) {
+                    this.findNavController().navigate(
+                        DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId))
+                    testViewModel.onStoreNavigated()
+                }
+        })
+
         testViewModel.message.observe(viewLifecycleOwner, { result ->
             if (result != null) {
                 // 0 - 15 are usually available on any device
@@ -123,10 +138,6 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
                     textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH, null, null)
             }
         })
-
-        binding.addNewDelivery.setOnClickListener {
-            this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId))
-        }
 
         return binding.root
     }
@@ -164,6 +175,11 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
         } else {
             Log.e("TTS", "Initialization Failed!")
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        testViewModel.refreshTheList()
     }
 
     override fun onStop() {

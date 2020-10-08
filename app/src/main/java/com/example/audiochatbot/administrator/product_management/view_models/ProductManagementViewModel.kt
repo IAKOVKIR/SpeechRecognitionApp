@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.product_management.view_models
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,13 +37,84 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
     private var _products = MutableLiveData<List<Product>>()
     val products: LiveData<List<Product>> get() = _products
 
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String?>
+        get() = _message
+
     private val _navigateToProductDetails = MutableLiveData<Int>()
     val navigateToProductDetails
         get() = _navigateToProductDetails
 
+    private val _navigateToCreateNewProduct = MutableLiveData<Boolean>()
+    val navigateToCreateNewProduct get() = _navigateToCreateNewProduct
+
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
+
     init {
         uiScope.launch {
             _products.value = getAllProducts(businessId)
+        }
+    }
+
+    fun convertStringToAction(text: String) {
+        uiScope.launch {
+            Log.e("heh", text)
+            if (text.contains("go back"))
+                _closeFragment.value = true
+            else if (text.contains("add new product") || text.contains("create new product")) {
+                _navigateToCreateNewProduct.value = true
+            } else {
+                val patternOpenProductNumber = "open product number".toRegex()
+                val patternCancelDelivery = "cancel delivery number".toRegex()
+
+                val matchOpenProductNumber = patternOpenProductNumber.find(text)
+                val matchCancelDelivery = patternCancelDelivery.find(text)
+
+                val indexOpenProductNumber = matchOpenProductNumber?.range?.last
+                val indexCancelDelivery = matchCancelDelivery?.range?.last
+
+                if (indexOpenProductNumber != null) {
+                    val num = textToInteger(text, indexOpenProductNumber)
+
+                    if (num > 0) {
+                        val list = products.value
+                        var res = false
+
+                        if (list != null) {
+                            for (i in list) {
+                                if (i.productId == num) {
+                                    res = true
+                                    break
+                                }
+                            }
+
+                            if (res)
+                                _navigateToProductDetails.value = num
+                            else
+                                _message.value = "You do not have an access to this product"
+                        } else
+                            _message.value = "Product list is empty"
+                    } else
+                        _message.value = "Cannot understand your command"
+                }
+            }
+        }
+    }
+
+    private fun textToInteger(text: String, lastIndex: Int): Int {
+        val str = text.substring(lastIndex + 1)
+        val result = str.filter { it.isDigit() }
+
+        return when {
+            result != "" -> {
+                Log.e("heh", result)
+                result.toInt()
+            }
+            str.contains("one") -> 1
+            str.contains("to") || str.contains("two") -> 2
+            str.contains("for") -> 4
+            else -> -1
         }
     }
 
@@ -57,7 +129,10 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
     }
 
     fun onProductNavigated() {
+        _navigateToCreateNewProduct.value = null
         _navigateToProductDetails.value = null
+        _message.value = null
+        _closeFragment.value = null
     }
 
     private suspend fun getAllProducts(businessId: Int): List<Product> {

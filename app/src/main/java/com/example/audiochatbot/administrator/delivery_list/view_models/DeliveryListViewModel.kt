@@ -55,7 +55,7 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
             Log.e("heh", text)
             if (text.contains("go back"))
                 _closeFragment.value = true
-            else if (text.contains("add new delivery"))
+            else if (text.contains("add new delivery") || text.contains("create new delivery"))
                 _navigateToCreateNewDelivery.value = true
             else {
                 val pattern = "open delivery number".toRegex()

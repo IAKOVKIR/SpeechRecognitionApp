@@ -66,13 +66,16 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
                 _navigateToCreateNewProduct.value = true
             } else {
                 val patternOpenProductNumber = "open product number".toRegex()
-                val patternCancelDelivery = "cancel delivery number".toRegex()
+                val patternOpenProduct = "open".toRegex()
+                val patternFindProduct = "find".toRegex()
 
                 val matchOpenProductNumber = patternOpenProductNumber.find(text)
-                val matchCancelDelivery = patternCancelDelivery.find(text)
+                val matchOpenProduct = patternOpenProduct.find(text)
+                val matchFindProduct = patternFindProduct.find(text)
 
                 val indexOpenProductNumber = matchOpenProductNumber?.range?.last
-                val indexCancelDelivery = matchCancelDelivery?.range?.last
+                val indexOpenProduct = matchOpenProduct?.range?.last
+                val indexFindProduct = matchFindProduct?.range?.last
 
                 if (indexOpenProductNumber != null) {
                     val num = textToInteger(text, indexOpenProductNumber)
@@ -97,6 +100,28 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
                             _message.value = "Product list is empty"
                     } else
                         _message.value = "Cannot understand your command"
+                } else if (indexOpenProduct != null) {
+                    val str = text.substring(indexOpenProduct + 1)
+                    val list = products.value
+                    var num = -1
+
+                    if (list != null) {
+                        for (i in list) {
+                            if (str.contains(i.name)) {
+                                num = i.productId
+                                break
+                            }
+                        }
+
+                        if (num != -1)
+                            _navigateToProductDetails.value = num
+                        else
+                            _message.value = "You do not have an access to this product"
+                    } else
+                        _message.value = "Product list is empty"
+                } else if (indexFindProduct != null) {
+                    val str = text.substring(indexFindProduct + 1)
+                    retrieveList(str)
                 }
             }
         }

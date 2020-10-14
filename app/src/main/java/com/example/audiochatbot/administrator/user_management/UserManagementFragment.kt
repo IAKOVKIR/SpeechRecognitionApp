@@ -109,6 +109,12 @@ class UserManagementFragment : Fragment(), TextToSpeech.OnInitListener  {
             }
         })
 
+        testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result)
+                    this.findNavController().popBackStack()
+        })
+
         testViewModel.navigateToUserDetails.observe(viewLifecycleOwner, { userId ->
             userId?.let {
                 this.findNavController().navigate(

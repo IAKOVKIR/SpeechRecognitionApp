@@ -102,6 +102,12 @@ class StoreManagementFragment : Fragment(), TextToSpeech.OnInitListener  {
             }
         })
 
+        testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result)
+                    this.findNavController().popBackStack()
+        })
+
         testViewModel.navigateToStoreDetails.observe(viewLifecycleOwner, { storeId ->
             storeId?.let {
                 this.findNavController().navigate(StoreManagementFragmentDirections.actionStoreManagementToStoreDetail(storeId, adminId, args.businessId))

@@ -40,7 +40,6 @@ class ProductManagementFragment : Fragment(), TextToSpeech.OnInitListener {
     private var response = false
     private var line = ""
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -107,6 +106,12 @@ class ProductManagementFragment : Fragment(), TextToSpeech.OnInitListener {
             it?.let {
                 adapter.submitList(it)
             }
+        })
+
+        testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result)
+                    this.findNavController().popBackStack()
         })
 
         testViewModel.navigateToProductDetails.observe(viewLifecycleOwner, { productId ->

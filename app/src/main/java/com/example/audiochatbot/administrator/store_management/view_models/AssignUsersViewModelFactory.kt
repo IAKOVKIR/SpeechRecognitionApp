@@ -7,14 +7,14 @@ import com.example.audiochatbot.database.UserDao
 /**
  * This is pretty much boiler plate code for a ViewModel Factory.
  *
- * Provides Store ID, Business ID and the UserDao to the ViewModel.
+ * Provides Admin ID, Store ID, Business ID and the UserDao to the ViewModel.
  */
-class AssignUsersViewModelFactory(private val storeId: Int, private val businessId: Int, private val dataSource: UserDao
+class AssignUsersViewModelFactory(private val adminId: Int, private val storeId: Int, private val businessId: Int, private val dataSource: UserDao
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AssignUsersViewModel::class.java)) {
-            return AssignUsersViewModel(storeId, businessId, dataSource) as T
+            return AssignUsersViewModel(adminId, storeId, businessId, dataSource) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

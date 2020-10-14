@@ -30,9 +30,12 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
     private var _store = MutableLiveData<Store>()
     val store: LiveData<Store> get() = _store
 
-    private val _isDone = MutableLiveData<Boolean>()
-    val isDone
-        get() = _isDone
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String?>
+        get() = _message
+
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
 
     init {
         getStoreScope()
@@ -48,7 +51,10 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
         uiScope.launch {
             updateStoreDb(store)
             val u = retrieveStore(storeId)
-            _isDone.value = u!!.storeId == store.storeId
+            if (u!!.storeId == store.storeId)
+                _closeFragment.value = true
+            else
+                _message.value = "Something went wrong"
         }
     }
 
@@ -62,7 +68,10 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
         uiScope.launch {
             deleteRecordDb()
             val u = retrieveStore(storeId)
-            _isDone.value = u == null
+            if (u == null)
+                _closeFragment.value = true
+            else
+                _message.value = "Something went wrong"
         }
     }
 

@@ -33,7 +33,7 @@ class StoreManagementFragmentRecyclerViewAdapter(private val clickListener: Stor
         fun bind(clickListener: StoreListener, item: Store) {
             binding.store = item
             binding.clickListener = clickListener
-            binding.storeName.text = context.getString(R.string.store_business, item.storeId, item.businessId)
+            binding.storeName.text = context.getString(R.string.store_business, item.storeId)
             binding.storeAddress.text = context.getString(R.string.comma, item.street, item.city)
         }
 

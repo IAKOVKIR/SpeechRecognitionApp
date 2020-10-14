@@ -32,7 +32,7 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-class ProductManagementFragment : Fragment() , TextToSpeech.OnInitListener {
+class ProductManagementFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
     private lateinit var testViewModel: ProductManagementViewModel

@@ -37,7 +37,7 @@ class ProductManagementRecyclerViewAdapter(private val clickListener: ProductLis
         fun bind(clickListener: ProductListener, item: Product, database: UserDao) {
             binding.product = item
             binding.clickListener = clickListener
-            binding.namePrice.text = context.getString(R.string.name_price, item.name, item.price)
+            binding.namePrice.text = context.getString(R.string.name_price, item.productId, item.name, item.price)
 
             CoroutineScope(Dispatchers.Default).launch {
 

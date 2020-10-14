@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.product_management.view_models
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -57,8 +58,10 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
         }
     }
 
-    fun convertStringToAction(text: String) {
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(recordedText: String) {
         uiScope.launch {
+            val text = recordedText.toLowerCase()
             Log.e("heh", text)
             if (text.contains("go back"))
                 _closeFragment.value = true
@@ -107,7 +110,7 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
 
                     if (list != null) {
                         for (i in list) {
-                            if (str.contains(i.name)) {
+                            if (str.contains(i.name.toLowerCase())) {
                                 num = i.productId
                                 break
                             }
@@ -120,9 +123,10 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
                     } else
                         _message.value = "Product list is empty"
                 } else if (indexFindProduct != null) {
-                    val str = text.substring(indexFindProduct + 1)
+                    val str = recordedText.substring(indexFindProduct + 1)
                     retrieveList(str)
-                }
+                } else
+                    _message.value = "Cannot understand your command"
             }
         }
     }

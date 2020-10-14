@@ -20,46 +20,26 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/shipper_field"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:layout_marginEnd="70dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="8dp"
-            android:gravity="top"
-            android:hint="Audio input"
-            android:background="@drawable/edit_text_borders"
-            android:inputType="textMultiLine"
-            android:overScrollMode="always"
-            android:padding="15dp"
-            android:scrollbarStyle="insideInset"
-            android:scrollbars="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/microphone_image"
-            app:layout_constraintTop_toBottomOf="@+id/home_title"/>
-
         <ImageButton
             android:id="@+id/microphone_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="8dp"
-            android:contentDescription="microphone icon"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/microphone_icon"
             android:src="@drawable/ic_baseline_mic_24"
-            app:layout_constraintBottom_toBottomOf="@+id/shipper_field"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/shipper_field" />
+            app:layout_constraintBottom_toBottomOf="@+id/add_new_delivery"
+            app:layout_constraintStart_toEndOf="@id/add_new_delivery"
+            app:layout_constraintTop_toTopOf="@+id/add_new_delivery" />
 
         <Button
             android:id="@+id/add_new_delivery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             android:text="Add New Delivery"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shipper_field" />
+            app:layout_constraintTop_toBottomOf="@+id/home_title" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/delivery_list"

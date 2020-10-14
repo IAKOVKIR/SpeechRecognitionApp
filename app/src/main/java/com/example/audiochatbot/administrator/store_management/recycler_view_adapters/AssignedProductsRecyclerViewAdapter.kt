@@ -45,7 +45,7 @@ class AssignedProductsRecyclerViewAdapter(private val clickListener: AssignedPro
             binding.product = item
             binding.clickListener = clickListener
             binding.removeProductListener = removeProductListener
-            binding.namePrice.text = context.getString(R.string.name_price, item.name, item.price)
+            binding.namePrice.text = context.getString(R.string.name_price, item.productId, item.name, item.price)
             CoroutineScope(Dispatchers.Default).launch {
 
                 var num: Int

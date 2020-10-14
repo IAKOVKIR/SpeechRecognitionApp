@@ -33,7 +33,7 @@ class UserManagementFragmentRecyclerViewAdapter(private val clickListener: UserL
         fun bind(clickListener: UserListener, item: User) {
             binding.user = item
             binding.clickListener = clickListener
-            binding.userName.text = context.getString(R.string.first_last_names, item.firstName, item.lastName)
+            binding.userName.text = context.getString(R.string.first_last_names, item.userId, item.firstName, item.lastName)
             when (item.position) {
                 'E' -> binding.userPosition.text = context.getString(R.string.employee)
                 'A' -> binding.userPosition.text = context.getString(R.string.administrator)

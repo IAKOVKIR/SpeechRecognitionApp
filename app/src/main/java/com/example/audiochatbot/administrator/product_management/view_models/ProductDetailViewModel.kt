@@ -61,6 +61,7 @@ class ProductDetailViewModel(
     init {
         uiScope.launch {
             _product.value = retrieveProduct(productId)
+            _assignedProduct.value = retrieveAssignedProduct(productId, storeId)
         }
     }
 

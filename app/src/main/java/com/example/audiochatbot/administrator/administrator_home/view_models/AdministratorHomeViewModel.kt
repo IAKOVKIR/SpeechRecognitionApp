@@ -14,13 +14,13 @@ class AdministratorHomeViewModel: ViewModel() {
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
-    private val inventoryCountArray = arrayOf("open inventory count", "inventory count", "open inventor account", "inventor account")
-    private val deliveryListArray = arrayOf("open delivery list", "delivery list")
+    private val inventoryCountArray = arrayOf("open the inventory count", "inventory count", "open inventor account", "inventor account")
+    private val deliveryListArray = arrayOf("open the delivery list", "delivery list")
     private val discardItemsArray = arrayOf("discard items", "discard item")
-    private val cashReportArray = arrayOf("cash report", "open cash report")
-    private val userManagementArray = arrayOf("open user management", "user management")
-    private val storeManagementArray = arrayOf("open store management", "store management")
-    private val productManagementArray = arrayOf("open product management", "product management")
+    private val cashReportArray = arrayOf("cash report", "open the cash report")
+    private val userManagementArray = arrayOf("open the user management", "user management")
+    private val storeManagementArray = arrayOf("open the store management", "store management")
+    private val productManagementArray = arrayOf("open the product management", "product management")
     private val logOutArray = arrayOf("log out", "logout")
 
     /**

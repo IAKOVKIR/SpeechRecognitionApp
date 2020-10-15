@@ -1,6 +1,7 @@
 package com.example.audiochatbot.administrator.store_management.recycler_view_adapters
 
 import android.content.Context
+import android.graphics.Color
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.R
+import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentAssignedProductsRecyclerViewAdapterBinding
@@ -45,17 +47,21 @@ class AssignedProductsRecyclerViewAdapter(private val clickListener: AssignedPro
             binding.product = item
             binding.clickListener = clickListener
             binding.removeProductListener = removeProductListener
-            binding.namePrice.text = context.getString(R.string.name_price, item.productId, item.name, item.price)
             CoroutineScope(Dispatchers.Default).launch {
 
-                var num: Int
+                var obj: AssignedProduct
 
-                withContext(Dispatchers.Default) {
-                    num = database.getAssignedProductQuantity(item.productId, storeId)
+                withContext(Dispatchers.IO) {
+                    obj = database.getAssignedProduct(item.productId, storeId)!!
                 }
 
                 launch (Dispatchers.Main) {
-                    binding.quantity.text = context.getString(R.string.total_product_quantity, num)
+                    binding.quantity.text = context.getString(R.string.total_product_quantity, obj.quantity)
+                    if (obj.sale > 0) {
+                        binding.namePrice.text = context.getString(R.string.name_price, item.productId, item.name, (item.price * (1.0F - (obj.sale / 100.0F))))
+                        binding.namePrice.setTextColor(Color.RED)
+                    } else
+                        binding.namePrice.text = context.getString(R.string.name_price, item.productId, item.name, item.price)
                 }
             }
         }

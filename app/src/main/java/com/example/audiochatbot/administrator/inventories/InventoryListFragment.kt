@@ -57,7 +57,7 @@ class InventoryListFragment : Fragment(), TextToSpeech.OnInitListener {
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            InventoryListViewModelFactory(args.businessId, dataSource)
+            InventoryListViewModelFactory(args.storeId, dataSource)
 
         testViewModel =
             ViewModelProvider(

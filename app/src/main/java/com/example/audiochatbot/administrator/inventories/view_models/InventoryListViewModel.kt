@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class InventoryListViewModel(val businessId: Int, val database: UserDao) : ViewModel() {
+class InventoryListViewModel(val storeId: Int, val database: UserDao) : ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -29,7 +29,7 @@ class InventoryListViewModel(val businessId: Int, val database: UserDao) : ViewM
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val inventories = database.getAllInventoryCounts(businessId)
+    val inventories = database.getAllInventoryCountsWithStore(storeId)
 
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>

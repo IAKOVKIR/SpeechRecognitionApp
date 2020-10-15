@@ -56,6 +56,7 @@
     <string name="comma">%1$s, %2$s</string>
     <string name="store_business">Store %1$d</string>
     <string name="select_store">Select Store</string>
+    <string name="expected_earned">Expected: A$%1$.2f / Earned: A$%2$.2f</string>
 
     <string-array name="Positions">
         <item>Employee</item>

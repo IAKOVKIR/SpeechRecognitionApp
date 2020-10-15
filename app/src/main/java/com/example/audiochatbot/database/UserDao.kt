@@ -224,6 +224,9 @@ interface UserDao {
     @Query("SELECT Quantity FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
     fun getAssignedProductQuantity(productId: Int, storeId: Int): Int
 
+    @Query("SELECT Sale FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
+    fun getAssignedProductSale(productId: Int, storeId: Int): Int
+
 
     //Discarded Items
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -287,6 +290,9 @@ interface UserDao {
 
     @Query("SELECT InventoryCountID FROM INVENTORY_COUNT ORDER BY InventoryCountID DESC LIMIT 1")
     fun getLastInventoryCountId(): Int
+
+    @Query("SELECT * FROM INVENTORY_COUNT WHERE StoreID = :storeId ORDER BY InventoryCountID DESC")
+    fun getAllInventoryCountsWithStore(storeId: Int): LiveData<List<InventoryCount>>
 
     //Cash Operation
     @Insert(onConflict = OnConflictStrategy.REPLACE)

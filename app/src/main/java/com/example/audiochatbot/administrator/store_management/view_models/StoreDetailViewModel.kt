@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.store_management.view_models
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -38,7 +39,19 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
     val closeFragment get() = _closeFragment
 
     init {
-        getStoreScope()
+        uiScope.launch {
+            _store.value = retrieveStore(storeId)
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(recordedText: String) {
+        uiScope.launch {
+            val text = recordedText.toLowerCase()
+            if (text == "go back") {
+                _closeFragment.value = true
+            }
+        }
     }
 
     fun updateStore(newStore: Store) {
@@ -55,12 +68,6 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
                 _closeFragment.value = true
             else
                 _message.value = "Something went wrong"
-        }
-    }
-
-    private fun getStoreScope() {
-        uiScope.launch {
-            _store.value = retrieveStore(storeId)
         }
     }
 

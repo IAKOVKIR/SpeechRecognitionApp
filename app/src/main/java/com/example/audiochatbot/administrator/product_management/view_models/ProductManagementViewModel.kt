@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.administrator.user_management.view_models.UserManagementViewModel
 import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
@@ -30,7 +29,7 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
      *
      * By default, all coroutines started in uiScope will launch in [Dispatchers.Main] which is
      * the main thread on Android. This is a sensible default because most coroutines started by
-     * a [UserManagementViewModel] update the UI after performing some processing.
+     * a [ProductManagementViewModel] update the UI after performing some processing.
      */
 
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)

@@ -48,8 +48,8 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
                 val patternDiscard = "discard".toRegex()
                 val patternProductName = "items of".toRegex()
                 val patternOneProductName = "discard one item of".toRegex()
-                val patternProductId = "items of product".toRegex()
-                val patternOneProductId = "discard one item of product".toRegex()
+                val patternProductId = "items of product number".toRegex()
+                val patternOneProductId = "discard one item of product number".toRegex()
 
                 val matchDiscard = patternDiscard.find(text)
                 val matchProductName = patternProductName.find(text)

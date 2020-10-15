@@ -1,8 +1,12 @@
 package com.example.audiochatbot.administrator.store_management
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -30,6 +34,7 @@ class StoreDetailFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
     private lateinit var testViewModel: StoreDetailViewModel
+    private val requestCodeStt = 1
     private var response = false
 
     override fun onCreateView(
@@ -67,17 +72,6 @@ class StoreDetailFragment : Fragment(), TextToSpeech.OnInitListener {
 
         binding.lifecycleOwner = this
 
-        binding.updateRecord.setOnClickListener {
-            val store = Store()
-            store.street = binding.storeStreet.text.trim().toString()
-            store.city = binding.storeCity.text.trim().toString()
-            store.state = binding.storeState.text.trim().toString()
-            store.phoneNumber = binding.storePhone.text.trim().toString()
-            store.zip_code = binding.zipCode.text.toString().toInt()
-            store.cashOnHand = binding.cashOnHand.text.toString().toFloat()
-            testViewModel.updateStore(store)
-        }
-
         binding.deleteRecord.setOnClickListener {
             testViewModel.deleteRecord()
         }
@@ -89,6 +83,43 @@ class StoreDetailFragment : Fragment(), TextToSpeech.OnInitListener {
         binding.assignedProducts.setOnClickListener {
             this.findNavController().navigate(StoreDetailFragmentDirections.actionStoreDetailToAssignedProductsFragment(storeKey, adminKey, businessId))
         }
+
+        binding.updateRecord.setOnClickListener {
+            val store = Store()
+            store.street = binding.storeStreet.text.trim().toString()
+            store.city = binding.storeCity.text.trim().toString()
+            store.state = binding.storeState.text.trim().toString()
+            store.phoneNumber = binding.storePhone.text.trim().toString()
+            store.zip_code = binding.zipCode.text.toString().toInt()
+            store.cashOnHand = binding.cashOnHand.text.toString().toFloat()
+            testViewModel.updateStore(store)
+        }
+
+        binding.microphoneImage.setOnClickListener {
+            // Get the Intent action
+            val sttIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            // Language model defines the purpose, there are special models for other use cases, like search.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            // Adding an extra language, you can use any language from the Locale class.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            // Text that shows up on the Speech input prompt.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
+            try {
+                // Start the intent for a result, and pass in our request code.
+                startActivityForResult(sttIntent, requestCodeStt)
+            } catch (e: ActivityNotFoundException) {
+                // Handling error when the service is not available.
+                e.printStackTrace()
+
+                Toast.makeText(requireContext(), "Your device does not support STT.", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result)
+                    this.findNavController().popBackStack()
+        })
 
         testViewModel.message.observe(viewLifecycleOwner, { result ->
             if (result != null) {
@@ -103,6 +134,27 @@ class StoreDetailFragment : Fragment(), TextToSpeech.OnInitListener {
         })
 
         return binding.root
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            // Handle the result for our request code.
+            requestCodeStt -> {
+                // Safety checks to ensure data is available.
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    // Retrieve the result array.
+                    val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    // Ensure result array is not null or empty to avoid errors.
+                    if (!result.isNullOrEmpty()) {
+                        // Recognized text is in the first position.
+                        val recognizedText = result[0]
+                        // Do what you want with the recognized text.
+                        testViewModel.convertStringToAction(recognizedText)
+                    }
+                }
+            }
+        }
     }
 
     override fun onInit(status: Int) {

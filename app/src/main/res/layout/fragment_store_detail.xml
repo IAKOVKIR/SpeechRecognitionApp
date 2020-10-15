@@ -27,6 +27,18 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Store Detail Title"/>
 
+        <ImageButton
+            android:id="@+id/microphone_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/microphone_icon"
+            android:src="@drawable/ic_baseline_mic_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_user_title" />
+
+
         <EditText
             android:id="@+id/store_street"
             android:layout_width="match_parent"
@@ -37,7 +49,7 @@
             android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/create_user_title" />
+            app:layout_constraintTop_toBottomOf="@+id/microphone_image" />
 
         <EditText
             android:id="@+id/store_city"

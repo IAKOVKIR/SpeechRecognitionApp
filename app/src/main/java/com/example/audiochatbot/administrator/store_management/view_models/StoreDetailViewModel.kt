@@ -38,6 +38,9 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    private val _action = MutableLiveData<Int>()
+    val action get() = _action
+
     init {
         uiScope.launch {
             _store.value = retrieveStore(storeId)
@@ -47,9 +50,13 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(recordedText: String) {
         uiScope.launch {
-            val text = recordedText.toLowerCase()
-            if (text == "go back") {
-                _closeFragment.value = true
+            when (recordedText.toLowerCase()) {
+                "go back" -> _closeFragment.value = true
+                "update details" -> _action.value = 1
+                "remove store" -> deleteRecord()
+                "assigned products", "open assigned items" -> _action.value = 2
+                "assigned users", "open assigned users" -> _action.value = 3
+                else -> _message.value = "I am sorry, I cannot understand your command"
             }
         }
     }
@@ -98,6 +105,12 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
         withContext(Dispatchers.IO) {
             database.deleteStoreRecord(storeId)
         }
+    }
+
+    fun onActionNavigated() {
+        _action.value = null
+        _message.value = null
+        _closeFragment.value = null
     }
 
     /**

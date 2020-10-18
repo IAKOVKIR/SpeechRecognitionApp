@@ -121,6 +121,42 @@ class StoreDetailFragment : Fragment(), TextToSpeech.OnInitListener {
                     this.findNavController().popBackStack()
         })
 
+        testViewModel.action.observe(viewLifecycleOwner, { num ->
+            if (num != null) {
+                when (num) {
+                    1 -> {
+                        val store = Store()
+                        store.street = binding.storeStreet.text.trim().toString()
+                        store.city = binding.storeCity.text.trim().toString()
+                        store.state = binding.storeState.text.trim().toString()
+                        store.phoneNumber = binding.storePhone.text.trim().toString()
+                        store.zip_code = binding.zipCode.text.toString().toInt()
+                        store.cashOnHand = binding.cashOnHand.text.toString().toFloat()
+                        testViewModel.updateStore(store)
+                        testViewModel.onActionNavigated()
+                    }
+                    2 -> {
+                        this.findNavController()
+                            .navigate(StoreDetailFragmentDirections
+                                .actionStoreDetailToAssignedProductsFragment(storeKey, adminKey, businessId))
+                        testViewModel.onActionNavigated()
+                    }
+                    3 -> {
+                        this.findNavController()
+                            .navigate(
+                                StoreDetailFragmentDirections
+                                    .actionStoreDetailToAssignedUsersFragment(
+                                        storeKey,
+                                        adminKey,
+                                        businessId
+                                    )
+                            )
+                        testViewModel.onActionNavigated()
+                    }
+                }
+            }
+        })
+
         testViewModel.message.observe(viewLifecycleOwner, { result ->
             if (result != null) {
                 // 0 - 15 are usually available on any device

@@ -75,9 +75,9 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
                             if (res)
                                 deleteRecord(num)
                             else
-                                _message.value = "You do not have an access to this product"
+                                _message.value = "You do not have an access to this user"
                         } else
-                            _message.value = "Product list is empty"
+                            _message.value = "User list is empty"
                     } else
                         _message.value = "Cannot understand your command"
                 } else

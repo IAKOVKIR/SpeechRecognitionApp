@@ -35,15 +35,10 @@ class AssignProductsRecyclerViewAdapter(private val clickListener: AssignProduct
         fun bind(clickListener: AssignProductListener, addProductListener: AddProductListener, item: Product) {
             binding.product = item
             binding.clickListener = clickListener
-            binding.name.text = item.name
+            binding.name.text = context.getString(R.string.product_id_name, item.productId, item.name)
             binding.price.text = context.getString(R.string.price_number, item.price)
             binding.addButton.setOnClickListener {
-                val num = binding.quantity.text.toString()
-                if (num != "") {
-                    addProductListener.onClick(item, num.toInt())
-                } else {
-                    addProductListener.onClick(item, 0)
-                }
+                addProductListener.onClick(item)
             }
         }
 
@@ -72,6 +67,6 @@ class AssignProductListener(val clickListener: (productId: Int) -> Unit) {
     fun onClick(product: Product) = clickListener(product.productId)
 }
 
-class AddProductListener(val clickListener: (productId: Int, quantity: Int) -> Unit) {
-    fun onClick(product: Product, quantity: Int) = clickListener(product.productId, quantity)
+class AddProductListener(val clickListener: (productId: Int) -> Unit) {
+    fun onClick(product: Product) = clickListener(product.productId)
 }

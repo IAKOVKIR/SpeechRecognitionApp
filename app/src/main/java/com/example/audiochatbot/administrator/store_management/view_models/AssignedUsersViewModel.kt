@@ -117,12 +117,23 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
     fun deleteRecord(userId: Int) {
         uiScope.launch {
             deleteRecordDb(userId)
+            val deletedProducts = getRecordDb(userId)
+            if (deletedProducts == 0)
+                _message.value = "The user was removed successfully "
+            else
+                _message.value = "Something went wrong"
         }
     }
 
     private suspend fun deleteRecordDb(userId: Int) {
         withContext(Dispatchers.IO) {
             database.removeUserFromStore(userId, storeId)
+        }
+    }
+
+    private suspend fun getRecordDb(productId: Int) : Int {
+        return withContext(Dispatchers.IO) {
+            database.ifUserAssigned(productId, storeId)
         }
     }
 

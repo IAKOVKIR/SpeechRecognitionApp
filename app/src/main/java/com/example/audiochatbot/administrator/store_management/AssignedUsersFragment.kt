@@ -125,6 +125,12 @@ class AssignedUsersFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         })
 
+        testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result)
+                    this.findNavController().popBackStack()
+        })
+
         testViewModel.message.observe(viewLifecycleOwner, { result ->
             if (result != null) {
                 // 0 - 15 are usually available on any device

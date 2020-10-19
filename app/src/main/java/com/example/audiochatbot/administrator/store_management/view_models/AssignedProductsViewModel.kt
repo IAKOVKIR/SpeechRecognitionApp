@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
@@ -55,7 +56,7 @@ class AssignedProductsViewModel(val storeId: Int, private val database: UserDao)
                 _navigateToAssignProducts.value = true
             else {
                 val matchRemoveProductNumber = "remove product number".toRegex().find(text)
-                val matchRemoveProductName = "remove ".toRegex().find(text)
+                val matchRemoveProductName = "remove".toRegex().find(text)
 
                 val indexRemoveProductNumber = matchRemoveProductNumber?.range?.last
                 val indexRemoveProductName = matchRemoveProductName?.range?.last
@@ -139,12 +140,23 @@ class AssignedProductsViewModel(val storeId: Int, private val database: UserDao)
     fun deleteRecord(productId: Int) {
         uiScope.launch {
             deleteRecordDb(productId)
+            val deletedProducts = getRecordDb(productId)
+            if (deletedProducts != null)
+                _message.value = "The product was removed successfully "
+            else
+                _message.value = "Something went wrong"
         }
     }
 
     private suspend fun deleteRecordDb(productId: Int) {
         withContext(Dispatchers.IO) {
             database.removeProductFromStore(productId, storeId)
+        }
+    }
+
+    private suspend fun getRecordDb(productId: Int) : AssignedProduct? {
+        return withContext(Dispatchers.IO) {
+            database.getAssignedProduct(productId, storeId)
         }
     }
 

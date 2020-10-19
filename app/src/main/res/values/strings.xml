@@ -58,6 +58,8 @@
     <string name="store_business">Store %1$d</string>
     <string name="select_store">Select Store</string>
     <string name="expected_earned">Expected: A$%1$.2f / Earned: A$%2$.2f</string>
+    <string name="home_employee">Home - Employee</string>
+    <string name="home_delivery_user">Home - Delivery User</string>
 
     <string-array name="Positions">
         <item>Employee</item>

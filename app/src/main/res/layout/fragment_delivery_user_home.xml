@@ -13,70 +13,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Home - Delivery User"
+            android:text="@string/home_delivery_user"
             android:textColor="#000"
             android:textSize="20sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/shipper_field"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="70dp"
-            android:background="@drawable/edit_text_borders"
-            android:gravity="top"
-            android:hint="Audio Input"
-            android:inputType="textMultiLine"
-            android:overScrollMode="always"
-            android:padding="15dp"
-            android:scrollbarStyle="insideInset"
-            android:scrollbars="vertical"
-            app:layout_constraintEnd_toStartOf="@id/microphone_image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/home_title" />
-
         <ImageButton
             android:id="@+id/microphone_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="8dp"
-            android:contentDescription="microphone icon"
+            android:contentDescription="@string/microphone_icon"
+            android:layout_marginStart="8dp"
             android:src="@drawable/ic_baseline_mic_24"
-            app:layout_constraintBottom_toBottomOf="@+id/shipper_field"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/home_title" />
-
-        <Button
-            android:id="@+id/create_new_delivery_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Create New Delivery"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shipper_field" />
+            app:layout_constraintStart_toEndOf="@id/view_delivery_list_button"
+            app:layout_constraintBottom_toBottomOf="@id/view_delivery_list_button"
+            app:layout_constraintTop_toTopOf="@+id/view_delivery_list_button" />
 
         <Button
             android:id="@+id/view_delivery_list_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="View Delivery List"
+            android:layout_marginTop="4dp"
+            android:text="@string/delivery_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/create_new_delivery_button" />
+            app:layout_constraintTop_toBottomOf="@+id/home_title" />
 
         <Button
             android:id="@+id/log_out_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Log Out"
+            android:layout_marginTop="4dp"
+            android:text="@string/log_out"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_delivery_list_button" />

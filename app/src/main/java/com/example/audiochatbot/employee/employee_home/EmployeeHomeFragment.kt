@@ -1,4 +1,4 @@
-package com.example.audiochatbot.administrator.administrator_home
+package com.example.audiochatbot.employee.employee_home
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -10,36 +10,35 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.LoginActivity
 import com.example.audiochatbot.R
-import com.example.audiochatbot.administrator.administrator_home.view_models.AdministratorHomeViewModel
-import com.example.audiochatbot.databinding.FragmentAdministratorHomeBinding
+import com.example.audiochatbot.databinding.FragmentEmployeeHomeBinding
+import com.example.audiochatbot.employee.employee_home.view_models.EmployeeHomeViewModel
 import java.util.*
 
 /**
  * A simple [Fragment] subclass.
  */
-
-class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
+class EmployeeHomeFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
     private lateinit var pref: SharedPreferences
-    private lateinit var viewModel: AdministratorHomeViewModel
+    private lateinit var viewModel: EmployeeHomeViewModel
     private val requestCodeStt = 1
     private var response = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pref = requireActivity().getSharedPreferences("eaPreferences", Context.MODE_PRIVATE)
-        viewModel = ViewModelProvider(this).get(AdministratorHomeViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(EmployeeHomeViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -47,17 +46,17 @@ class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val binding: FragmentAdministratorHomeBinding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_administrator_home, container, false)
-        val adminId: Int = pref.getInt("id", -1)
-        val businessId: Int = pref.getInt("businessId", -1)
+        val binding: FragmentEmployeeHomeBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_employee_home, container, false)
+
+        val userId: Int = pref.getInt("id", -1)
 
         // Get the AudioManager service
         val audio = activity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         textToSpeech = TextToSpeech(requireActivity(), this)
 
-        if (adminId == -1)
+        if (userId == -1)
             logOut()
 
         binding.microphoneImage.setOnClickListener {
@@ -81,7 +80,7 @@ class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
         }
 
         binding.apply {
-            viewInventoryButton.setOnClickListener {
+            inventoryCountButton.setOnClickListener {
                 viewModel.setAction(1)
             }
 
@@ -97,20 +96,8 @@ class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
                 viewModel.setAction(4)
             }
 
-            userManagementButton.setOnClickListener {
-                viewModel.setAction(5)
-            }
-
-            storeManagementButton.setOnClickListener {
-                viewModel.setAction(6)
-            }
-
-            productManagementButton.setOnClickListener {
-                viewModel.setAction(7)
-            }
-
             logOutButton.setOnClickListener {
-                viewModel.setAction(8)
+                viewModel.setAction(5)
             }
         }
 
@@ -126,55 +113,34 @@ class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
                         textToSpeech!!.speak("Cannot understand your command", TextToSpeech.QUEUE_FLUSH, null, null)
                 }
                 1 -> {
-                    this.findNavController().navigate(
+                    /*this.findNavController().navigate(
                         AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
                             adminId, businessId, 2)
-                    )
+                    )*/
                     viewModel.cancelAction()
                 }
                 2 -> {
-                    this.findNavController().navigate(
+                    /*this.findNavController().navigate(
                         AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
                             adminId, businessId, 1)
-                    )
+                    )*/
                     viewModel.cancelAction()
                 }
                 3 -> {
-                    this.findNavController().navigate(
+                    /*this.findNavController().navigate(
                         AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
                             adminId, businessId, 0)
-                    )
+                    )*/
                     viewModel.cancelAction()
                 }
                 4 -> {
-                    this.findNavController().navigate(
+                    /*this.findNavController().navigate(
                         AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
                             adminId, businessId, 3)
-                    )
+                    )*/
                     viewModel.cancelAction()
                 }
-                5 -> {
-                    this.findNavController().navigate(
-                        AdministratorHomeFragmentDirections.actionHomeDestinationToTestFragment(
-                            adminId, businessId)
-                    )
-                    viewModel.cancelAction()
-                }
-                6 -> {
-                    this.findNavController().navigate(
-                        AdministratorHomeFragmentDirections.actionHomeDestinationToStoreManagementFragment(
-                            adminId, businessId)
-                    )
-                    viewModel.cancelAction()
-                }
-                7 -> {
-                    this.findNavController().navigate(
-                        AdministratorHomeFragmentDirections.actionHomeAdministratorToProductManagementFragment(
-                            adminId, businessId)
-                    )
-                    viewModel.cancelAction()
-                }
-                8 -> logOut()
+                5 -> logOut()
             }
         })
 

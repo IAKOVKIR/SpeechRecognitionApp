@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/home_administrator"
-        android:name="com.example.audiochatbot.employee.EmployeeHomeFragment"
+        android:name="com.example.audiochatbot.employee.employee_home.EmployeeHomeFragment"
         android:label="EmployeeHomeFragment"
         tools:layout="@layout/fragment_employee_home" />
 </navigation>

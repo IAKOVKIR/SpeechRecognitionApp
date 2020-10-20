@@ -9,5 +9,24 @@
         android:id="@+id/home_administrator"
         android:name="com.example.audiochatbot.employee.employee_home.EmployeeHomeFragment"
         android:label="EmployeeHomeFragment"
-        tools:layout="@layout/fragment_employee_home" />
+        tools:layout="@layout/fragment_employee_home" >
+        <action
+            android:id="@+id/action_home_administrator_to_selectStoreFragment"
+            app:destination="@id/select_store" />
+    </fragment>
+    <fragment
+        android:id="@+id/select_store"
+        android:name="com.example.audiochatbot.employee.cash_report.SelectStoreFragment"
+        android:label="fragment_select_store"
+        tools:layout="@layout/fragment_select_store" >
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
+        <argument
+            android:name="directionId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

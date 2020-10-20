@@ -116,6 +116,9 @@ interface UserDao {
     @Query("SELECT * FROM STORE INNER JOIN USER ON STORE.BusinessID = USER.BusinessID WHERE USER.UserID = :adminId ORDER BY StoreID DESC")
     fun getAllAdminStores(adminId: Int): LiveData<List<Store>>
 
+    @Query("SELECT * FROM STORE INNER JOIN ASSIGNED_USER ON STORE.StoreID = ASSIGNED_USER.StoreID WHERE ASSIGNED_USER.UserID = :userId ORDER BY StoreID DESC")
+    fun getAllUserStores(userId: Int): LiveData<List<Store>>
+
     @Query("SELECT * FROM STORE ORDER BY StoreID DESC LIMIT 1")
     fun getLastStore(): Store
 

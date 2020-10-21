@@ -61,6 +61,8 @@
     <string name="home_employee">Home - Employee</string>
     <string name="home_delivery_user">Home - Delivery User</string>
     <string name="deposit">Deposit</string>
+    <string name="quantity">Quantity</string>
+    <string name="add">add</string>
 
     <string-array name="Positions">
         <item>Employee</item>

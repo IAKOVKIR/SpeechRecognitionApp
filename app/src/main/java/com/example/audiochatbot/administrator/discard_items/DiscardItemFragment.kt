@@ -35,14 +35,12 @@ class DiscardItemFragment : Fragment(), TextToSpeech.OnInitListener {
     private lateinit var testViewModel: DiscardItemViewModel
     private val requestCodeStt = 1
     private var storeId: Int? = null
-    private var businessId: Int? = null
     private var adminId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = DiscardItemFragmentArgs.fromBundle(requireArguments())
         storeId = args.storeId
-        businessId = args.businessId
         adminId = args.adminId
     }
 

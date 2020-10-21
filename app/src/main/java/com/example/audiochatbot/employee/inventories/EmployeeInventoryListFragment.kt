@@ -1,4 +1,4 @@
-package com.example.audiochatbot.administrator.inventories
+package com.example.audiochatbot.employee.inventories
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -18,11 +18,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-import com.example.audiochatbot.administrator.inventories.recycler_view_adapters.InventoryListRecyclerViewAdapter
-import com.example.audiochatbot.administrator.inventories.view_models.InventoryListViewModel
-import com.example.audiochatbot.administrator.inventories.view_models.InventoryListViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
-import com.example.audiochatbot.databinding.FragmentInventoryListBinding
+import com.example.audiochatbot.databinding.FragmentEmployeeInventoryListBinding
+import com.example.audiochatbot.employee.inventories.recycler_view_adapters.EmployeeInventoryListRecyclerViewAdapter
+import com.example.audiochatbot.employee.inventories.view_models.EmployeeInventoryListViewModel
+import com.example.audiochatbot.employee.inventories.view_models.EmployeeInventoryListViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.*
@@ -30,11 +30,11 @@ import java.util.*
 /**
  * A [Fragment] subclass that displays list of inventory counts and the button to start a new inventory count.
  */
-class InventoryListFragment : Fragment(), TextToSpeech.OnInitListener {
+class EmployeeInventoryListFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
     private var response = false
-    private lateinit var testViewModel: InventoryListViewModel
+    private lateinit var testViewModel: EmployeeInventoryListViewModel
     private val requestCodeStt = 1
 
     override fun onCreateView(
@@ -43,11 +43,11 @@ class InventoryListFragment : Fragment(), TextToSpeech.OnInitListener {
     ): View? {
         // Inflate the layout for this fragment
         // Get a reference to the binding object and inflate the fragment views.
-        val binding: FragmentInventoryListBinding = DataBindingUtil.inflate(inflater,
-            R.layout.fragment_inventory_list, container, false)
+        val binding: FragmentEmployeeInventoryListBinding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_employee_inventory_list, container, false)
 
         val application = requireNotNull(this.activity).application
-        val args = InventoryListFragmentArgs.fromBundle(requireArguments())
+        val args = EmployeeInventoryListFragmentArgs.fromBundle(requireArguments())
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
@@ -57,13 +57,13 @@ class InventoryListFragment : Fragment(), TextToSpeech.OnInitListener {
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            InventoryListViewModelFactory(args.storeId, dataSource)
+            EmployeeInventoryListViewModelFactory(args.adminId, args.storeId, dataSource)
 
         testViewModel =
             ViewModelProvider(
-                this, viewModelFactory).get(InventoryListViewModel::class.java)
+                this, viewModelFactory).get(EmployeeInventoryListViewModel::class.java)
 
-        val adapter = InventoryListRecyclerViewAdapter()
+        val adapter = EmployeeInventoryListRecyclerViewAdapter()
         binding.deliveryList.adapter = adapter
 
         testViewModel.inventories.observe(viewLifecycleOwner, {
@@ -80,7 +80,7 @@ class InventoryListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         testViewModel.navigateToInventoryCount.observe(viewLifecycleOwner, { deliveryId ->
             deliveryId?.let {
-                this.findNavController().navigate(InventoryListFragmentDirections.actionInventoryListToInventoryCount(args.adminId, args.storeId))
+                this.findNavController().navigate(EmployeeInventoryListFragmentDirections.actionEmployeeInventoryListToInventoryCount(args.adminId, args.storeId))
                 testViewModel.onInventoryCountNavigated()
             }
         })
@@ -100,7 +100,7 @@ class InventoryListFragment : Fragment(), TextToSpeech.OnInitListener {
         // buttons
 
         binding.inventoryCount.setOnClickListener {
-            this.findNavController().navigate(InventoryListFragmentDirections.actionInventoryListToInventoryCount(args.adminId, args.storeId))
+            this.findNavController().navigate(EmployeeInventoryListFragmentDirections.actionEmployeeInventoryListToInventoryCount(args.adminId, args.storeId))
             testViewModel.onInventoryCountNavigated()
         }
 

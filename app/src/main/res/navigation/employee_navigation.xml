@@ -34,6 +34,12 @@
         <action
             android:id="@+id/action_select_store_to_employeeDeliveryListFragment"
             app:destination="@id/employee_delivery_list" />
+        <action
+            android:id="@+id/action_select_store_to_discardItemFragment"
+            app:destination="@id/discard_item" />
+        <action
+            android:id="@+id/action_select_store_to_employee_inventory_list"
+            app:destination="@id/employee_inventory_list" />
     </fragment>
     <fragment
         android:id="@+id/employee_cash_report"
@@ -82,6 +88,51 @@
         android:name="com.example.audiochatbot.administrator.delivery_list.CreateDeliveryFragment"
         android:label="fragment_create_delivery"
         tools:layout="@layout/fragment_create_delivery" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/discard_item"
+        android:name="com.example.audiochatbot.administrator.discard_items.DiscardItemFragment"
+        android:label="discard_item_fragment"
+        tools:layout="@layout/discard_item_fragment" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/employee_inventory_list"
+        android:name="com.example.audiochatbot.employee.inventories.EmployeeInventoryListFragment"
+        android:label="fragment_employee_inventory_list"
+        tools:layout="@layout/fragment_employee_inventory_list" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_employee_inventory_list_to_inventory_count"
+            app:destination="@id/inventory_count" />
+    </fragment>
+    <fragment
+        android:id="@+id/inventory_count"
+        android:name="com.example.audiochatbot.administrator.inventories.InventoryCountFragment"
+        android:label="fragment_inventory_count"
+        tools:layout="@layout/fragment_inventory_count" >
         <argument
             android:name="adminId"
             app:argType="integer" />

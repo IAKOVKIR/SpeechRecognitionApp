@@ -103,11 +103,9 @@ class SelectStoreFragment : Fragment(), TextToSpeech.OnInitListener {
             storeId?.let {
                 when (args.directionId) {
                     0 -> {
-                        /*this.findNavController().navigate(
-                            DiscardItemStoreFragmentDirections
-                                .actionDiscardItemStoreToDiscardItemFragment(
-                                    userId, storeId, businessId)
-                        )*/
+                        this.findNavController().navigate(
+                            SelectStoreFragmentDirections.actionSelectStoreToDiscardItemFragment(userId, storeId, businessId)
+                        )
                     }
                     1 -> {
                         this.findNavController().navigate(
@@ -115,11 +113,7 @@ class SelectStoreFragment : Fragment(), TextToSpeech.OnInitListener {
                         )
                     }
                     2 -> {
-                        /*this.findNavController().navigate(
-                            DiscardItemStoreFragmentDirections
-                                .actionDiscardItemStoreToInventoryList(
-                                    userId, storeId, businessId)
-                        )*/
+                        this.findNavController().navigate(SelectStoreFragmentDirections.actionSelectStoreToEmployeeInventoryList(userId, storeId, businessId))
                     }
                     else -> {
                         this.findNavController().navigate(SelectStoreFragmentDirections.actionSelectStoreToEmployeeCashReport(userId, storeId, businessId))

@@ -300,6 +300,9 @@ interface UserDao {
     @Query("SELECT * FROM INVENTORY_COUNT WHERE StoreID = :storeId ORDER BY InventoryCountID DESC")
     fun getAllInventoryCountsWithStore(storeId: Int): LiveData<List<InventoryCount>>
 
+    @Query("SELECT * FROM INVENTORY_COUNT WHERE UserID =:userId AND StoreID = :storeId ORDER BY InventoryCountID DESC")
+    fun getAllInventoryCountsWithStoreAndUserID(userId: Int, storeId: Int): LiveData<List<InventoryCount>>
+
     //Cash Operation
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCashOperation(cashOperation: CashOperation)

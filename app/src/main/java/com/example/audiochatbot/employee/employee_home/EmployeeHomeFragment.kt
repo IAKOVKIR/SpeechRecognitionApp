@@ -81,7 +81,7 @@ class EmployeeHomeFragment : Fragment(), TextToSpeech.OnInitListener {
 
         binding.apply {
             inventoryCountButton.setOnClickListener {
-                viewModel.setAction(1)
+                viewModel.setAction(3)
             }
 
             viewDeliveryListButton.setOnClickListener {
@@ -89,7 +89,7 @@ class EmployeeHomeFragment : Fragment(), TextToSpeech.OnInitListener {
             }
 
             discardItemsButton.setOnClickListener {
-                viewModel.setAction(3)
+                viewModel.setAction(1)
             }
 
             cashReportButton.setOnClickListener {
@@ -113,10 +113,9 @@ class EmployeeHomeFragment : Fragment(), TextToSpeech.OnInitListener {
                         textToSpeech!!.speak("Cannot understand your command", TextToSpeech.QUEUE_FLUSH, null, null)
                 }
                 1 -> {
-                    /*this.findNavController().navigate(
-                        AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
-                            adminId, businessId, 2)
-                    )*/
+                    this.findNavController().navigate(
+                        EmployeeHomeFragmentDirections.actionHomeAdministratorToSelectStoreFragment(userId, 1, 0)
+                    )
                     viewModel.cancelAction()
                 }
                 2 -> {
@@ -126,10 +125,9 @@ class EmployeeHomeFragment : Fragment(), TextToSpeech.OnInitListener {
                     viewModel.cancelAction()
                 }
                 3 -> {
-                    /*this.findNavController().navigate(
-                        AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
-                            adminId, businessId, 0)
-                    )*/
+                    this.findNavController().navigate(
+                        EmployeeHomeFragmentDirections.actionHomeAdministratorToSelectStoreFragment(userId, 1, 2)
+                    )
                     viewModel.cancelAction()
                 }
                 4 -> {

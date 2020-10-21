@@ -18,12 +18,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
+import com.example.audiochatbot.administrator.cash_report.recycler_view_adapters.CashReportRecyclerViewAdapter
 import com.example.audiochatbot.database.UniDatabase
-import com.example.audiochatbot.databinding.FragmentSelectStoreBinding
-import com.example.audiochatbot.employee.cash_report.recycler_view_adapters.SelectStoreListener
-import com.example.audiochatbot.employee.cash_report.recycler_view_adapters.SelectStoreRecyclerViewAdapter
-import com.example.audiochatbot.employee.cash_report.view_models.SelectStoreViewModel
-import com.example.audiochatbot.employee.cash_report.view_models.SelectStoreViewModelFactory
+import com.example.audiochatbot.databinding.FragmentEmployeeCashReportBinding
+import com.example.audiochatbot.employee.cash_report.view_models.EmployeeCashReportViewModel
+import com.example.audiochatbot.employee.cash_report.view_models.EmployeeCashReportViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.*
@@ -31,40 +30,46 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-class SelectStoreFragment : Fragment(), TextToSpeech.OnInitListener {
+class EmployeeCashReportFragment : Fragment() , TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
     private var response = false
-    private lateinit var testViewModel: SelectStoreViewModel
+    private lateinit var testViewModel: EmployeeCashReportViewModel
     private val requestCodeStt = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         // Inflate the layout for this fragment
         // Get a reference to the binding object and inflate the fragment views.
-        val binding: FragmentSelectStoreBinding = DataBindingUtil.inflate(inflater,
-            R.layout.fragment_select_store, container, false)
+        val binding: FragmentEmployeeCashReportBinding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_employee_cash_report, container, false)
 
         val application = requireNotNull(this.activity).application
-        val args = SelectStoreFragmentArgs.fromBundle(requireArguments())
+        val args = EmployeeCashReportFragmentArgs.fromBundle(requireArguments())
         val userId: Int = args.userId
-        val businessId: Int = args.businessId
+        val storeId: Int = args.storeId
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
+
         // Get the AudioManager service
         val audio = activity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            SelectStoreViewModelFactory(userId, dataSource)
+            EmployeeCashReportViewModelFactory(userId, storeId, dataSource)
 
         testViewModel =
             ViewModelProvider(
-                this, viewModelFactory).get(SelectStoreViewModel::class.java)
+                this, viewModelFactory).get(EmployeeCashReportViewModel::class.java)
+
+        // To use the View Model with data binding, you have to explicitly
+        // give the binding object a reference to it.
+        binding.cashReportViewModel = testViewModel
+
+        binding.lifecycleOwner = this
 
         binding.microphoneImage.setOnClickListener {
             // Get the Intent action
@@ -86,51 +91,6 @@ class SelectStoreFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         }
 
-        val adapter =
-            SelectStoreRecyclerViewAdapter(
-                SelectStoreListener { storeId ->
-                    testViewModel.onStoreClicked(storeId)
-                })
-        binding.storeList.adapter = adapter
-
-        testViewModel.stores.observe(viewLifecycleOwner, {
-            it?.let {
-                adapter.submitList(it)
-            }
-        })
-
-        testViewModel.navigateToDiscardItem.observe(viewLifecycleOwner, { storeId ->
-            storeId?.let {
-                when (args.directionId) {
-                    0 -> {
-                        /*this.findNavController().navigate(
-                            DiscardItemStoreFragmentDirections
-                                .actionDiscardItemStoreToDiscardItemFragment(
-                                    userId, storeId, businessId)
-                        )*/
-                    }
-                    1 -> {
-                        /*this.findNavController().navigate(
-                            DiscardItemStoreFragmentDirections
-                                .actionDiscardItemStoreToDeliveryList(
-                                    userId, storeId, businessId)
-                        )*/
-                    }
-                    2 -> {
-                        /*this.findNavController().navigate(
-                            DiscardItemStoreFragmentDirections
-                                .actionDiscardItemStoreToInventoryList(
-                                    userId, storeId, businessId)
-                        )*/
-                    }
-                    else -> {
-                        this.findNavController().navigate(SelectStoreFragmentDirections.actionSelectStoreToEmployeeCashReport(userId, storeId, businessId))
-                    }
-                }
-                testViewModel.onStoreNavigated()
-            }
-        })
-
         testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
             if (result != null)
                 if (result)
@@ -148,6 +108,32 @@ class SelectStoreFragment : Fragment(), TextToSpeech.OnInitListener {
                     textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH, null, null)
             }
         })
+
+        val adapter =
+            CashReportRecyclerViewAdapter(dataSource)
+        binding.cashReportList.adapter = adapter
+
+        testViewModel.cashReports.observe(viewLifecycleOwner, {
+            it?.let {
+                adapter.submitList(it)
+            }
+        })
+
+        binding.deposit.setOnClickListener {
+            val amount = binding.amountField.text.toString()
+            if (amount!= "") {
+                testViewModel.depositOrWithdrawMoney(amount.toFloat(), true)
+                binding.amountField.text = null
+            }
+        }
+
+        binding.withdraw.setOnClickListener {
+            val amount = binding.amountField.text.toString()
+            if (amount!= "") {
+                testViewModel.depositOrWithdrawMoney(amount.toFloat(), false)
+                binding.amountField.text = null
+            }
+        }
 
         return binding.root
     }

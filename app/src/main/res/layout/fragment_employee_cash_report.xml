@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".administrator.cash_report.CashReportFragment">
+    tools:context=".employee.cash_report.EmployeeCashReportFragment">
 
     <data>
         <variable
             name="cashReportViewModel"
-            type="com.example.audiochatbot.administrator.cash_report.view_models.CashReportViewModel" />
+            type="com.example.audiochatbot.employee.cash_report.view_models.EmployeeCashReportViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,7 +60,7 @@
                 android:id="@+id/deposit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/deposit"
+                android:text="Deposit"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

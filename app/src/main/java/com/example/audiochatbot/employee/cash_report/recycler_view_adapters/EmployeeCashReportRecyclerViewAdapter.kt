@@ -1,0 +1,77 @@
+package com.example.audiochatbot.employee.cash_report.recycler_view_adapters
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.audiochatbot.R
+import com.example.audiochatbot.database.CashOperation
+import com.example.audiochatbot.database.UserDao
+import com.example.audiochatbot.databinding.FragmentEmployeeCashReportRecyclerViewAdapterBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+class EmployeeCashReportRecyclerViewAdapter(private val database: UserDao) : ListAdapter<CashOperation,
+        EmployeeCashReportRecyclerViewAdapter.ViewHolder>(
+    EmployeeCashOperationDiffCallback()
+) {
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = getItem(position)
+
+        holder.bind(item, database)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder.from(parent)
+    }
+
+    class ViewHolder private constructor(val binding: FragmentEmployeeCashReportRecyclerViewAdapterBinding, val context: Context)
+        : RecyclerView.ViewHolder(binding.root){
+
+        fun bind(item: CashOperation, database: UserDao) {
+            CoroutineScope(Dispatchers.Default).launch {
+
+                var fullName: String
+
+                withContext(Dispatchers.Default) {
+                    val user = database.getUserWithId(item.userId)
+                    fullName = "User ${item.userId}, ${user.firstName} ${user.lastName}"
+                }
+
+                launch (Dispatchers.Main) {
+                    binding.userName.text = fullName
+                }
+            }
+
+            if (item.operationType)
+                binding.operationAmount.text = context.getString(R.string.deposited_amount, item.amount)
+            else
+                binding.operationAmount.text = context.getString(R.string.withdrawn_amount, item.amount)
+            binding.dateTime.text = context.getString(R.string.comma, item.date, item.time)
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = FragmentEmployeeCashReportRecyclerViewAdapterBinding.inflate(layoutInflater, parent, false)
+
+                return ViewHolder(binding, parent.context)
+            }
+        }
+    }
+}
+
+class EmployeeCashOperationDiffCallback : DiffUtil.ItemCallback<CashOperation>() {
+    override fun areItemsTheSame(oldItem: CashOperation, newItem: CashOperation): Boolean {
+        return oldItem.cashOperationId == newItem.cashOperationId
+    }
+
+    override fun areContentsTheSame(oldItem: CashOperation, newItem: CashOperation): Boolean {
+        return oldItem == newItem
+    }
+}

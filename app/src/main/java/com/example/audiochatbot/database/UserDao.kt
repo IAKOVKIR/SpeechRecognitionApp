@@ -307,6 +307,9 @@ interface UserDao {
     @Query("SELECT * FROM CASH_OPERATION WHERE StoreID = :storeId ORDER BY CashOperationID DESC")
     fun getAllCashReports(storeId: Int): LiveData<List<CashOperation>>
 
+    @Query("SELECT * FROM CASH_OPERATION WHERE UserID =:userId AND StoreID = :storeId ORDER BY CashOperationID DESC")
+    fun getAllEmployeeCashReports(userId: Int, storeId: Int): LiveData<List<CashOperation>>
+
     @Query("SELECT CashOperationID FROM CASH_OPERATION ORDER BY CashOperationID DESC LIMIT 1")
     fun getLastCashReportId(): Int
 }

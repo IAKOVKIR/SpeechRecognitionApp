@@ -28,5 +28,23 @@
         <argument
             android:name="directionId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_select_store_to_employee_cash_report"
+            app:destination="@id/employee_cash_report" />
+    </fragment>
+    <fragment
+        android:id="@+id/employee_cash_report"
+        android:name="com.example.audiochatbot.employee.cash_report.EmployeeCashReportFragment"
+        android:label="fragment_employee_cash_report"
+        tools:layout="@layout/fragment_employee_cash_report" >
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
     </fragment>
 </navigation>

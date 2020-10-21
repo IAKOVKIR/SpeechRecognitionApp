@@ -60,6 +60,7 @@
     <string name="expected_earned">Expected: A$%1$.2f / Earned: A$%2$.2f</string>
     <string name="home_employee">Home - Employee</string>
     <string name="home_delivery_user">Home - Delivery User</string>
+    <string name="deposit">Deposit</string>
 
     <string-array name="Positions">
         <item>Employee</item>

@@ -261,7 +261,7 @@ interface UserDao {
     @Query("SELECT * FROM DELIVERY WHERE StoreID = :storeId ORDER BY DeliveryID  DESC")
     fun getAllDeliveriesWithStore(storeId: Int): List<Delivery>
 
-    @Query("SELECT * FROM DELIVERY WHERE StoreID = :storeId AND UserID =:userId ORDER BY DeliveryID  DESC")
+    @Query("SELECT * FROM DELIVERY WHERE StoreID = :storeId AND CreatedBy =:userId ORDER BY DeliveryID  DESC")
     fun getAllDeliveriesWithStoreAndUserID(userId: Int, storeId: Int): List<Delivery>
 
     @Query("SELECT Status FROM DELIVERY WHERE DeliveryID = :deliveryId")

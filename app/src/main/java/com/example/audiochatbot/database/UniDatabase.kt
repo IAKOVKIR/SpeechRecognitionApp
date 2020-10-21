@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(entities = [User::class, Business::class, Store::class, AssignedUser::class, Product::class,
-AssignedProduct::class, DiscardedItem::class, Delivery::class, DeliveryUser::class, DeliveryProduct::class,
+AssignedProduct::class, DiscardedItem::class, Delivery::class, DeliveryProduct::class,
 InventoryCount::class, CashOperation::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
@@ -86,8 +86,8 @@ abstract class UniDatabase: RoomDatabase() {
         )
 
         private val deliveries = listOf(
-            Delivery(1, 1, 1, "Waiting", "18/07/2020", "13:00"),
-            Delivery(2, 1, 1,"Delivered", "19/07/2020", "12:00"))
+            Delivery(1, 1, 1, -1, "Waiting", "18/07/2020", "13:00"),
+            Delivery(2, 1, 1, 7,"Delivered", "19/07/2020", "12:00"))
 
         private val deliveryItems = listOf(
             DeliveryProduct(1, 1, 10, 4, "not available"),

@@ -350,7 +350,7 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
             }
 
             if (itemList.size != 0) {
-                val delivery = Delivery(deliveryId, storeId, adminId, "Waiting", "18/07/2020", "13:00")
+                val delivery = Delivery(deliveryId, storeId, adminId, -1, "Waiting", "18/07/2020", "13:00")
                 addNewDelivery(delivery)
 
                 val newList = itemList.toList()

@@ -7,7 +7,9 @@ import androidx.room.*
     foreignKeys = [ForeignKey(entity = Store::class, parentColumns = [
         "StoreID"], childColumns = ["StoreID"], onDelete = ForeignKey.CASCADE),
         ForeignKey(entity = User::class, parentColumns = [
-            "UserID"], childColumns = ["UserID"], onDelete = ForeignKey.CASCADE)])
+            "UserID"], childColumns = ["CreatedBy"], onDelete = ForeignKey.CASCADE),
+        ForeignKey(entity = User::class, parentColumns = [
+            "UserID"], childColumns = ["DeliveredBy"], onDelete = ForeignKey.CASCADE)])
 data class Delivery (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "DeliveryID")
@@ -16,8 +18,11 @@ data class Delivery (
     @ColumnInfo(name = "StoreID")
     var storeId: Int,
 
-    @ColumnInfo(name = "UserID")
-    var userId: Int,
+    @ColumnInfo(name = "CreatedBy")
+    var createdBy: Int,
+
+    @ColumnInfo(name = "DeliveredBy")
+    var deliveredBy: Int,
 
     @ColumnInfo(name = "Status")
     var status: String,

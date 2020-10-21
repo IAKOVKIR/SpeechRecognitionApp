@@ -110,11 +110,9 @@ class SelectStoreFragment : Fragment(), TextToSpeech.OnInitListener {
                         )*/
                     }
                     1 -> {
-                        /*this.findNavController().navigate(
-                            DiscardItemStoreFragmentDirections
-                                .actionDiscardItemStoreToDeliveryList(
-                                    userId, storeId, businessId)
-                        )*/
+                        this.findNavController().navigate(
+                            SelectStoreFragmentDirections.actionSelectStoreToEmployeeDeliveryListFragment(userId, storeId)
+                        )
                     }
                     2 -> {
                         /*this.findNavController().navigate(

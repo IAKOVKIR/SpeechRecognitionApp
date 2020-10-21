@@ -308,6 +308,9 @@
         <argument
             android:name="storeId"
             app:argType="integer" />
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/inventory_list"

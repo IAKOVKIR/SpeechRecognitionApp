@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_select_store_to_employee_cash_report"
             app:destination="@id/employee_cash_report" />
+        <action
+            android:id="@+id/action_select_store_to_employeeDeliveryListFragment"
+            app:destination="@id/employee_delivery_list" />
     </fragment>
     <fragment
         android:id="@+id/employee_cash_report"
@@ -45,6 +48,45 @@
             app:argType="integer" />
         <argument
             android:name="businessId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/employee_delivery_list"
+        android:name="com.example.audiochatbot.employee.delivery_list.EmployeeDeliveryListFragment"
+        android:label="fragment_employee_delivery_list"
+        tools:layout="@layout/fragment_employee_delivery_list" >
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_employee_delivery_list_to_deliveryDetailsFragment"
+            app:destination="@id/delivery_details" />
+        <action
+            android:id="@+id/action_employee_delivery_list_to_createDeliveryFragment"
+            app:destination="@id/create_delivery" />
+    </fragment>
+    <fragment
+        android:id="@+id/delivery_details"
+        android:name="com.example.audiochatbot.administrator.delivery_list.DeliveryDetailsFragment"
+        android:label="fragment_delivery_details"
+        tools:layout="@layout/fragment_delivery_details" >
+        <argument
+            android:name="deliveryId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/create_delivery"
+        android:name="com.example.audiochatbot.administrator.delivery_list.CreateDeliveryFragment"
+        android:label="fragment_create_delivery"
+        tools:layout="@layout/fragment_create_delivery" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
             app:argType="integer" />
     </fragment>
 </navigation>

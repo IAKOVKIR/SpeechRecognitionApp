@@ -86,8 +86,8 @@ abstract class UniDatabase: RoomDatabase() {
         )
 
         private val deliveries = listOf(
-            Delivery(1, 1, "Waiting", "18/07/2020", "13:00"),
-            Delivery(2, 1, "Delivered", "19/07/2020", "12:00"))
+            Delivery(1, 1, 1, "Waiting", "18/07/2020", "13:00"),
+            Delivery(2, 1, 1,"Delivered", "19/07/2020", "12:00"))
 
         private val deliveryItems = listOf(
             DeliveryProduct(1, 1, 10, 4, "not available"),

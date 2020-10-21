@@ -120,10 +120,9 @@ class EmployeeHomeFragment : Fragment(), TextToSpeech.OnInitListener {
                     viewModel.cancelAction()
                 }
                 2 -> {
-                    /*this.findNavController().navigate(
-                        AdministratorHomeFragmentDirections.actionHomeAdministratorToDiscardItemStoreFragment(
-                            adminId, businessId, 1)
-                    )*/
+                    this.findNavController().navigate(
+                        EmployeeHomeFragmentDirections.actionHomeAdministratorToSelectStoreFragment(userId, 1, 1)
+                    )
                     viewModel.cancelAction()
                 }
                 3 -> {

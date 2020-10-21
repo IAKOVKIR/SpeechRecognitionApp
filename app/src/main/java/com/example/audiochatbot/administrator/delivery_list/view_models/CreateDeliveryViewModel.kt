@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.*
 import kotlinx.coroutines.*
 
-class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): ViewModel() {
+class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val database: UserDao): ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -350,7 +350,7 @@ class CreateDeliveryViewModel(val storeId: Int, private val database: UserDao): 
             }
 
             if (itemList.size != 0) {
-                val delivery = Delivery(deliveryId, storeId, "Waiting", "18/07/2020", "13:00")
+                val delivery = Delivery(deliveryId, storeId, adminId, "Waiting", "18/07/2020", "13:00")
                 addNewDelivery(delivery)
 
                 val newList = itemList.toList()

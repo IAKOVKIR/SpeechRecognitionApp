@@ -93,7 +93,7 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
         }
 
         binding.addNewDelivery.setOnClickListener {
-            this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId))
+            this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId, args.adminId))
         }
 
         // Observers
@@ -122,7 +122,7 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
             if (result != null)
                 if (result) {
                     this.findNavController().navigate(
-                        DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId))
+                        DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId, args.adminId))
                     testViewModel.onStoreNavigated()
                 }
         })

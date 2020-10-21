@@ -1,4 +1,4 @@
-package com.example.audiochatbot.administrator.delivery_list
+package com.example.audiochatbot.employee.delivery_list
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -9,32 +9,31 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.*
-import com.example.audiochatbot.administrator.delivery_list.view_models.CreateDeliveryViewModel
-import com.example.audiochatbot.administrator.delivery_list.view_models.CreateDeliveryViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
-import com.example.audiochatbot.databinding.FragmentCreateDeliveryBinding
+import com.example.audiochatbot.databinding.FragmentEmployeeDeliveryListBinding
+import com.example.audiochatbot.employee.delivery_list.recycler_view_adapters.EmployeeCancelDeliveryListener
+import com.example.audiochatbot.employee.delivery_list.recycler_view_adapters.EmployeeDeliveryListRecyclerViewAdapter
+import com.example.audiochatbot.employee.delivery_list.recycler_view_adapters.EmployeeDeliveryListener
+import com.example.audiochatbot.employee.delivery_list.view_models.EmployeeDeliveryListViewModel
+import com.example.audiochatbot.employee.delivery_list.view_models.EmployeeDeliveryListViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- */
-class CreateDeliveryFragment : Fragment(), TextToSpeech.OnInitListener {
+class EmployeeDeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
     private var response = false
-    private lateinit var testViewModel: CreateDeliveryViewModel
+    private lateinit var testViewModel: EmployeeDeliveryListViewModel
     private val requestCodeStt = 1
 
     override fun onCreateView(
@@ -43,58 +42,35 @@ class CreateDeliveryFragment : Fragment(), TextToSpeech.OnInitListener {
     ): View? {
         // Inflate the layout for this fragment
         // Get a reference to the binding object and inflate the fragment views.
-        val binding: FragmentCreateDeliveryBinding = DataBindingUtil.inflate(inflater,
-        R.layout.fragment_create_delivery, container, false)
+        val binding: FragmentEmployeeDeliveryListBinding= DataBindingUtil.inflate(inflater,
+            R.layout.fragment_employee_delivery_list, container, false)
 
         val application = requireNotNull(this.activity).application
-        val args = CreateDeliveryFragmentArgs.fromBundle(requireArguments())
+        val args = EmployeeDeliveryListFragmentArgs.fromBundle(requireArguments())
+        val storeId: Int = args.storeId
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
+
         // Get the AudioManager service
         val audio = activity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            CreateDeliveryViewModelFactory(args.storeId, args.adminId, dataSource)
+            EmployeeDeliveryListViewModelFactory(args.userId, storeId, dataSource)
 
         testViewModel =
             ViewModelProvider(
-                this, viewModelFactory).get(CreateDeliveryViewModel::class.java)
+                this, viewModelFactory).get(EmployeeDeliveryListViewModel::class.java)
 
-        var adapter =
-            CreateDeliveryRecyclerViewAdapter(
-                AddDeliveryProductListener { product, smallQuantity, bigQuantity ->
-                    testViewModel.addItem(product.productId, smallQuantity, bigQuantity)
-                },
-                RemoveDeliveryProductListener {
-                    testViewModel.removeItem(it.productId)
-                }, List(100) { 0 }
-            )
+        val adapter =
+            EmployeeDeliveryListRecyclerViewAdapter(
+                EmployeeDeliveryListener { deliveryId ->
+                    testViewModel.onDeliveryClicked(deliveryId)
+                }, EmployeeCancelDeliveryListener { delivery ->
+                    testViewModel.cancelDelivery(delivery)
+                })
         binding.deliveryList.adapter = adapter
-
-        testViewModel.products.observe(viewLifecycleOwner, {
-            it?.let {
-                adapter.submitList(it)
-            }
-        })
-
-        testViewModel.l.observe(viewLifecycleOwner, { l ->
-            adapter =
-                CreateDeliveryRecyclerViewAdapter(
-                    AddDeliveryProductListener { product, smallQuantity, bigQuantity ->
-                        testViewModel.addItem(product.productId, smallQuantity, bigQuantity)
-                    },
-                    RemoveDeliveryProductListener {
-                        testViewModel.removeItem(it.productId)
-                    }, l
-                )
-            binding.deliveryList.adapter = adapter
-        })
-
-        binding.submitTheDelivery.setOnClickListener {
-            testViewModel.submitDelivery()
-        }
 
         binding.microphoneImage.setOnClickListener {
             // Get the Intent action
@@ -116,10 +92,40 @@ class CreateDeliveryFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         }
 
+        binding.addNewDelivery.setOnClickListener {
+            this.findNavController().navigate(
+                EmployeeDeliveryListFragmentDirections.actionEmployeeDeliveryListToCreateDeliveryFragment(args.userId, storeId))
+        }
+
+        // Observers
+
+        testViewModel.deliveries.observe(viewLifecycleOwner, {
+            it?.let {
+                adapter.submitList(it)
+                adapter.notifyDataSetChanged()
+            }
+        })
+
+        testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { deliveryId ->
+            deliveryId?.let {
+                this.findNavController().navigate(EmployeeDeliveryListFragmentDirections.actionEmployeeDeliveryListToDeliveryDetailsFragment(deliveryId))
+                testViewModel.onStoreNavigated()
+            }
+        })
+
         testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
             if (result != null)
                 if (result)
                     this.findNavController().popBackStack()
+        })
+
+        testViewModel.navigateToCreateNewDelivery.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result) {
+                    this.findNavController().navigate(
+                        EmployeeDeliveryListFragmentDirections.actionEmployeeDeliveryListToCreateDeliveryFragment(args.userId, storeId))
+                    testViewModel.onStoreNavigated()
+                }
         })
 
         testViewModel.message.observe(viewLifecycleOwner, { result ->
@@ -170,6 +176,11 @@ class CreateDeliveryFragment : Fragment(), TextToSpeech.OnInitListener {
         } else {
             Log.e("TTS", "Initialization Failed!")
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        testViewModel.refreshTheList()
     }
 
     override fun onStop() {

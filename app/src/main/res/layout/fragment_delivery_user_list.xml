@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".employee.inventories.EmployeeInventoryListFragment">
+    tools:context=".delivery_user.delivery_list.DeliveryUserListFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Inventory List"
+            android:text="Delivery List"
             android:textSize="20sp"
             android:textColor="#000"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -27,16 +27,16 @@
             android:layout_marginStart="8dp"
             android:contentDescription="@string/microphone_icon"
             android:src="@drawable/ic_baseline_mic_24"
-            app:layout_constraintBottom_toBottomOf="@+id/inventory_count"
-            app:layout_constraintStart_toEndOf="@+id/inventory_count"
-            app:layout_constraintTop_toTopOf="@+id/inventory_count" />
+            app:layout_constraintBottom_toBottomOf="@+id/add_new_delivery"
+            app:layout_constraintStart_toEndOf="@id/add_new_delivery"
+            app:layout_constraintTop_toTopOf="@+id/add_new_delivery" />
 
         <Button
-            android:id="@+id/inventory_count"
+            android:id="@+id/add_new_delivery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Inventory Count"
+            android:layout_marginTop="2dp"
+            android:text="Available Deliveries"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/home_title" />
@@ -49,9 +49,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/inventory_count"
+            app:layout_constraintTop_toBottomOf="@id/add_new_delivery"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/fragment_employee_inventory_list_recycler_view_adapter"/>
+            tools:listitem="@layout/fragment_delivery_user_list_recycler_view_adapter"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

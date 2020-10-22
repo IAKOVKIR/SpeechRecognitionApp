@@ -170,7 +170,7 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
 
     fun declineItems(deliveryProduct: DeliveryProduct) {
         uiScope.launch {
-            deliveryProduct.status = "cancelled"
+            deliveryProduct.status = "declined"
             updateDeliveryProduct(deliveryProduct)
             _deliveryProducts.value = getItems()
         }

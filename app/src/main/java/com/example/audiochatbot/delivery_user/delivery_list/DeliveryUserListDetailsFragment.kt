@@ -1,63 +1,84 @@
-package com.example.audiochatbot.delivery_user.delivery_user_home
+package com.example.audiochatbot.delivery_user.delivery_list
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.media.AudioManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.audiochatbot.LoginActivity
 import com.example.audiochatbot.R
-import com.example.audiochatbot.databinding.FragmentDeliveryUserHomeBinding
-import com.example.audiochatbot.delivery_user.delivery_user_home.view_models.DeliveryUserHomeViewModel
+import com.example.audiochatbot.administrator.delivery_list.DeliveryDetailsFragmentArgs
+import com.example.audiochatbot.database.UniDatabase
+import com.example.audiochatbot.databinding.FragmentDeliveryUserListDetailsBinding
+import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserListDetailsRecyclerViewAdapter
+import com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserListDetailsViewModel
+import com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserListDetailsViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import java.util.*
 
 /**
  * A simple [Fragment] subclass.
  */
-class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
+class DeliveryUserListDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
-    private lateinit var pref: SharedPreferences
-    private lateinit var viewModel: DeliveryUserHomeViewModel
-    private val requestCodeStt = 1
     private var response = false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        pref = requireActivity().getSharedPreferences("eaPreferences", Context.MODE_PRIVATE)
-        viewModel = ViewModelProvider(this).get(DeliveryUserHomeViewModel::class.java)
-    }
+    private lateinit var testViewModel: DeliveryUserListDetailsViewModel
+    private val requestCodeStt = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val binding: FragmentDeliveryUserHomeBinding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_delivery_user_home, container, false)
+        // Get a reference to the binding object and inflate the fragment views.
+        val binding: FragmentDeliveryUserListDetailsBinding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_delivery_user_list_details, container, false)
 
-        val userId: Int = pref.getInt("id", -1)
+        val application = requireNotNull(this.activity).application
+        val args = DeliveryDetailsFragmentArgs.fromBundle(requireArguments())
 
+        val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
         // Get the AudioManager service
         val audio = activity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         textToSpeech = TextToSpeech(requireActivity(), this)
 
-        if (userId == -1)
-            logOut()
+        val viewModelFactory =
+            DeliveryUserListDetailsViewModelFactory(args.deliveryId, dataSource)
+
+        testViewModel =
+            ViewModelProvider(
+                this, viewModelFactory).get(DeliveryUserListDetailsViewModel::class.java)
+
+        // To use the View Model with data binding, you have to explicitly
+        // give the binding object a reference to it.
+        binding.deliveryDetailViewModel = testViewModel
+
+        binding.lifecycleOwner = this
+
+        val adapter =
+            DeliveryUserListDetailsRecyclerViewAdapter(args.deliveryId, dataSource)
+        binding.deliveryList.adapter = adapter
+
+        testViewModel.deliveryProducts.observe(viewLifecycleOwner, {
+            it?.let {
+                adapter.submitList(it)
+                adapter.notifyDataSetChanged()
+            }
+        })
 
         binding.microphoneImage.setOnClickListener {
             // Get the Intent action
@@ -79,54 +100,25 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         }
 
-        binding.apply {
-            viewDeliveryListButton.setOnClickListener {
-                viewModel.setAction(1)
-            }
+        testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result)
+                    this.findNavController().popBackStack()
+        })
 
-            logOutButton.setOnClickListener {
-                viewModel.setAction(2)
-            }
-        }
+        testViewModel.message.observe(viewLifecycleOwner, { result ->
+            if (result != null) {
+                // 0 - 15 are usually available on any device
+                val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
 
-        viewModel.action.observe(viewLifecycleOwner, {
-            when (it) {
-                0 -> {
-                    // 0 - 15 are usually available on any device
-                    val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
-
-                    if (musicVolume == 0 || !response)
-                        Toast.makeText(requireContext(), "Cannot understand your command", Toast.LENGTH_SHORT).show()
-                    else
-                        textToSpeech!!.speak("Cannot understand your command", TextToSpeech.QUEUE_FLUSH, null, null)
-                }
-                1 -> {
-                    this.findNavController().navigate(
-                        DeliveryUserHomeFragmentDirections.actionHomeAdministratorToDeliveryUserList(userId)
-                    )
-                    viewModel.cancelAction()
-                }
-                2 -> logOut()
+                if (musicVolume == 0 || !response)
+                    Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
+                else
+                    textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH, null, null)
             }
         })
 
         return binding.root
-    }
-
-    /**
-     * @function [logOut] removes all data from SharedPreferences and starts Login activity
-     * removing all the activities and fragments that were not destroyed before
-     */
-    private fun logOut() {
-        val editor: SharedPreferences.Editor = pref.edit()
-        editor.clear()
-        editor.apply()
-
-        val loginIntent = Intent(requireActivity(), LoginActivity::class.java)
-        // set the new task and clear flags
-        loginIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(loginIntent)
-        requireActivity().finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -143,7 +135,7 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
                         // Recognized text is in the first position.
                         val recognizedText = result[0]
                         // Do what you want with the recognized text.
-                        viewModel.convertStringToAction(recognizedText)
+                        testViewModel.convertStringToAction(recognizedText)
                     }
                 }
             }

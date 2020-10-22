@@ -261,8 +261,13 @@ interface UserDao {
     @Query("SELECT * FROM DELIVERY WHERE StoreID = :storeId ORDER BY DeliveryID  DESC")
     fun getAllDeliveriesWithStore(storeId: Int): List<Delivery>
 
-    @Query("SELECT * FROM DELIVERY WHERE StoreID = :storeId AND CreatedBy =:userId ORDER BY DeliveryID  DESC")
+    @Query("SELECT * FROM DELIVERY WHERE StoreID = :storeId AND UserID =:userId ORDER BY DeliveryID  DESC")
     fun getAllDeliveriesWithStoreAndUserID(userId: Int, storeId: Int): List<Delivery>
+
+    //@Query("SELECT * FROM DELIVERY WHERE Status LIKE :status AND StoreID IN (SELECT StoreID FROM ASSIGNED_USER WHERE UserID =:deliveryUserId) ORDER BY DeliveryID  DESC")
+
+    @Query("SELECT * FROM DELIVERY INNER JOIN DELIVERY_USER ON DELIVERY.DeliveryID = DELIVERY_USER.DeliveryID WHERE DELIVERY_USER.UserID =:deliveryUserId ORDER BY DeliveryID  DESC")
+    fun getAllDeliveriesWithStoreAndDeliveryUserID(deliveryUserId: Int): List<Delivery>
 
     @Query("SELECT Status FROM DELIVERY WHERE DeliveryID = :deliveryId")
     fun getDeliveryStatus(deliveryId: Int): String
@@ -282,6 +287,14 @@ interface UserDao {
 
     @Query("SELECT * FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId ORDER BY AssignedProductID DESC")
     fun getAllDeliveryProducts(deliveryId: Int): List<DeliveryProduct>
+
+
+    //Delivery User
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDeliveryUser(deliveryUser: DeliveryUser)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDeliveryUsers(list: List<DeliveryUser>)
 
 
     //Inventory Count

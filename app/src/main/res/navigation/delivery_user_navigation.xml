@@ -9,5 +9,30 @@
         android:id="@+id/home_administrator"
         android:name="com.example.audiochatbot.delivery_user.delivery_user_home.DeliveryUserHomeFragment"
         android:label="fragment_delivery_user_home"
-        tools:layout="@layout/fragment_delivery_user_home" />
+        tools:layout="@layout/fragment_delivery_user_home" >
+        <action
+            android:id="@+id/action_home_administrator_to_delivery_user_list"
+            app:destination="@id/delivery_user_list" />
+    </fragment>
+    <fragment
+        android:id="@+id/delivery_user_list"
+        android:name="com.example.audiochatbot.delivery_user.delivery_list.DeliveryUserListFragment"
+        android:label="fragment_delivery_user_list"
+        tools:layout="@layout/fragment_delivery_user_list" >
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_delivery_user_list_to_delivery_user_list_details"
+            app:destination="@id/delivery_user_list_details" />
+    </fragment>
+    <fragment
+        android:id="@+id/delivery_user_list_details"
+        android:name="com.example.audiochatbot.delivery_user.delivery_list.DeliveryUserListDetailsFragment"
+        android:label="fragment_delivery_user_list_details"
+        tools:layout="@layout/fragment_delivery_user_list_details" >
+        <argument
+            android:name="deliveryId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

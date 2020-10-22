@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_delivery_user_list_to_delivery_user_list_details"
             app:destination="@id/delivery_user_list_details" />
+        <action
+            android:id="@+id/action_delivery_user_list_to_available_deliveries"
+            app:destination="@id/available_deliveries" />
     </fragment>
     <fragment
         android:id="@+id/delivery_user_list_details"
@@ -34,5 +37,17 @@
         <argument
             android:name="deliveryId"
             app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/available_deliveries"
+        android:name="com.example.audiochatbot.delivery_user.delivery_list.AvailableDeliveriesFragment"
+        android:label="fragment_available_deliveries"
+        tools:layout="@layout/fragment_available_deliveries" >
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_available_deliveries_to_delivery_user_list_details"
+            app:destination="@id/delivery_user_list_details" />
     </fragment>
 </navigation>

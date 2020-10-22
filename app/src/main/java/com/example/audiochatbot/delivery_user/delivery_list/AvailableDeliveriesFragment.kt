@@ -9,32 +9,30 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.database.UniDatabase
+import com.example.audiochatbot.databinding.FragmentAvailableDeliveriesBinding
 import com.example.audiochatbot.databinding.FragmentDeliveryUserListBinding
-import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserListCancelDeliveryListener
-import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserListDeliveredDeliveryListener
-import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserListListener
-import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserListRecyclerViewAdapter
-import com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserListViewModel
-import com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserListViewModelFactory
+import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.*
+import com.example.audiochatbot.delivery_user.delivery_list.view_models.AvailableDeliveriesViewModel
+import com.example.audiochatbot.delivery_user.delivery_list.view_models.AvailableDeliveriesViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 
-class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
+class AvailableDeliveriesFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
     private var response = false
-    private lateinit var testViewModel: DeliveryUserListViewModel
+    private lateinit var testViewModel: AvailableDeliveriesViewModel
     private val requestCodeStt = 1
 
     override fun onCreateView(
@@ -43,8 +41,8 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
     ): View? {
         // Inflate the layout for this fragment
         // Get a reference to the binding object and inflate the fragment views.
-        val binding: FragmentDeliveryUserListBinding = DataBindingUtil.inflate(inflater,
-            R.layout.fragment_delivery_user_list, container, false)
+        val binding: FragmentAvailableDeliveriesBinding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_available_deliveries, container, false)
 
         val application = requireNotNull(this.activity).application
         val args = DeliveryUserListFragmentArgs.fromBundle(requireArguments())
@@ -57,20 +55,18 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            DeliveryUserListViewModelFactory(args.userId, dataSource)
+            AvailableDeliveriesViewModelFactory(args.userId, dataSource)
 
         testViewModel =
             ViewModelProvider(
-                this, viewModelFactory).get(DeliveryUserListViewModel::class.java)
+                this, viewModelFactory).get(AvailableDeliveriesViewModel::class.java)
 
         val adapter =
-            DeliveryUserListRecyclerViewAdapter(
-                DeliveryUserListListener { deliveryId ->
+            AvailableDeliveriesRecyclerViewAdapter(
+                AvailableDeliveryListener { deliveryId ->
                     testViewModel.onDeliveryClicked(deliveryId)
-                }, DeliveryUserListCancelDeliveryListener { delivery ->
-                    testViewModel.cancelDelivery(delivery)
-                }, DeliveryUserListDeliveredDeliveryListener { delivery ->
-                    testViewModel.deliveredDelivery(delivery)
+                }, DeliverDeliveryListener { delivery ->
+                    testViewModel.deliverDelivery(delivery)
                 })
         binding.deliveryList.adapter = adapter
 
@@ -94,11 +90,6 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         }
 
-        binding.addNewDelivery.setOnClickListener {
-            this.findNavController().navigate(
-                DeliveryUserListFragmentDirections.actionDeliveryUserListToAvailableDeliveries(args.userId))
-        }
-
         // Observers
 
         testViewModel.deliveries.observe(viewLifecycleOwner, {
@@ -110,7 +101,7 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { deliveryId ->
             deliveryId?.let {
-                this.findNavController().navigate(DeliveryUserListFragmentDirections.actionDeliveryUserListToDeliveryUserListDetails(deliveryId))
+                this.findNavController().navigate(AvailableDeliveriesFragmentDirections.actionAvailableDeliveriesToDeliveryUserListDetails(deliveryId))
                 testViewModel.onStoreNavigated()
             }
         })
@@ -119,15 +110,6 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
             if (result != null)
                 if (result)
                     this.findNavController().popBackStack()
-        })
-
-        testViewModel.navigateToCreateNewDelivery.observe(viewLifecycleOwner, { result ->
-            if (result != null)
-                if (result) {
-                    this.findNavController().navigate(
-                        DeliveryUserListFragmentDirections.actionDeliveryUserListToAvailableDeliveries(args.userId))
-                    testViewModel.onStoreNavigated()
-                }
         })
 
         testViewModel.message.observe(viewLifecycleOwner, { result ->
@@ -178,11 +160,6 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
         } else {
             Log.e("TTS", "Initialization Failed!")
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        testViewModel.refreshTheList()
     }
 
     override fun onStop() {

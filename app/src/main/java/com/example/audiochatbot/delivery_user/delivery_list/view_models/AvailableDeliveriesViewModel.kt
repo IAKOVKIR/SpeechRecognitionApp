@@ -9,7 +9,7 @@ import com.example.audiochatbot.database.DeliveryUser
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class DeliveryUserListViewModel(val userId: Int, val database: UserDao) : ViewModel() {
+class AvailableDeliveriesViewModel(val userId: Int, val database: UserDao) : ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -24,12 +24,11 @@ class DeliveryUserListViewModel(val userId: Int, val database: UserDao) : ViewMo
      *
      * By default, all coroutines started in uiScope will launch in [Dispatchers.Main] which is
      * the main thread on Android. This is a sensible default because most coroutines started by
-     * a [DeliveryUserListViewModel] update the UI after performing some processing.
+     * a [AvailableDeliveriesViewModel] update the UI after performing some processing.
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    private var _deliveries = MutableLiveData<List<Delivery>>()
-    val deliveries: LiveData<List<Delivery>> get() = _deliveries
+    val deliveries = database.getAllAvailableDeliveries(userId, "Waiting")
 
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
@@ -39,38 +38,23 @@ class DeliveryUserListViewModel(val userId: Int, val database: UserDao) : ViewMo
     val navigateToDeliveryDetails
         get() = _navigateToDeliveryDetails
 
-    private val _navigateToCreateNewDelivery = MutableLiveData<Boolean>()
-    val navigateToCreateNewDelivery get() = _navigateToCreateNewDelivery
-
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
-
-    init {
-        refreshTheList()
-    }
 
     fun convertStringToAction(text: String) {
         uiScope.launch {
             Log.e("heh", text)
             if (text.contains("go back"))
                 _closeFragment.value = true
-            else if (text.contains("add new delivery") || text.contains("create new delivery"))
-                _navigateToCreateNewDelivery.value = true
             else {
                 val pattern = "open delivery number".toRegex()
-                val patternCancelDelivery = "cancel delivery number".toRegex()
-                val patternDeliveryNumber = "delivery number".toRegex()
-                val patternDeliveryIsDelivered = "is delivered".toRegex()
+                val patternDeliverDelivery = "deliver delivery number".toRegex()
 
                 val match = pattern.find(text)
-                val matchCancelDelivery = patternCancelDelivery.find(text)
-                val matchDeliveryNumber = patternDeliveryNumber.find(text)
-                val matchDeliveryIsDelivered = patternDeliveryIsDelivered.find(text)
+                val matchCancelDelivery = patternDeliverDelivery.find(text)
 
                 val index = match?.range?.last
                 val indexCancelDelivery = matchCancelDelivery?.range?.last
-                val indexDeliveryNumber = matchDeliveryNumber?.range?.last
-                val indexDeliveryIsDelivered = matchDeliveryIsDelivered?.range?.first
 
                 if (index != null) {
                     val num = textToInteger(text, index)
@@ -92,7 +76,7 @@ class DeliveryUserListViewModel(val userId: Int, val database: UserDao) : ViewMo
                             else
                                 _message.value = "You do not have an access to this delivery"
                         } else
-                            _message.value = "The store does not have any deliveries"
+                            _message.value = "There are no available deliveries"
                     } else
                         _message.value = "Cannot understand your command"
                 } else if (indexCancelDelivery != null) {
@@ -111,45 +95,14 @@ class DeliveryUserListViewModel(val userId: Int, val database: UserDao) : ViewMo
                             }
 
                             if (delivery != null)
-                                if (delivery.status == "On the way")
-                                    cancelDelivery(delivery)
+                                if (delivery.status == "Waiting")
+                                    deliverDelivery(delivery)
                                 else
-                                    _message.value = "The delivery is already cancelled or delivered"
+                                    _message.value = "The delivery is not available"
                             else
                                 _message.value = "You do not have an access to this delivery"
                         } else
                             _message.value = "The store does not have any deliveries"
-                    } else
-                        _message.value = "Cannot understand your command"
-                } else if (indexDeliveryNumber != null && indexDeliveryIsDelivered != null) {
-                    if (indexDeliveryNumber < indexDeliveryIsDelivered) {
-                        val subStr = text.substring(indexDeliveryNumber, indexDeliveryIsDelivered)
-                        val num = textToInteger(subStr, 0)
-
-                        if (num > 0) {
-                            val list = deliveries.value
-                            var delivery: Delivery? = null
-
-                            if (list != null) {
-                                for (i in list) {
-                                    if (i.deliveryId == num) {
-                                        delivery = i
-                                        break
-                                    }
-                                }
-
-                                if (delivery != null)
-                                    if (delivery.status == "On the way")
-                                        deliveredDelivery(delivery)
-                                    else
-                                        _message.value = "The delivery is already cancelled or delivered"
-                                else
-                                    _message.value = "You do not have an access to this delivery"
-                            } else
-                                _message.value = "The store does not have any deliveries"
-                        } else
-                            _message.value = "Cannot understand your command"
-
                     } else
                         _message.value = "Cannot understand your command"
                 } else
@@ -158,27 +111,14 @@ class DeliveryUserListViewModel(val userId: Int, val database: UserDao) : ViewMo
         }
     }
 
-    fun cancelDelivery(delivery: Delivery) {
+    fun deliverDelivery(delivery: Delivery) {
         uiScope.launch {
-            delivery.status = "Waiting"
+            delivery.status = "On the way"
             //delivery.deliveredBy = -1
             updateDelivery(delivery)
-            removeDeliveryUser(delivery.deliveryId)
-            _deliveries.value = getItems()
-        }
-    }
-
-    fun deliveredDelivery(delivery: Delivery) {
-        uiScope.launch {
-            delivery.status = "Delivered"
-            updateDelivery(delivery)
-            _deliveries.value = getItems()
-        }
-    }
-
-    fun refreshTheList() {
-        uiScope.launch {
-            _deliveries.value = getItems()
+            val deliveryUserId = getDeliveryUserId() + 1
+            val newDeliveryUser = DeliveryUser(deliveryUserId, userId, delivery.deliveryId, "20/09/2020", "14:00")
+            insertDeliveryUser(newDeliveryUser)
         }
     }
 
@@ -204,15 +144,15 @@ class DeliveryUserListViewModel(val userId: Int, val database: UserDao) : ViewMo
         }
     }
 
-    private suspend fun removeDeliveryUser(deliveryId: Int) {
+    private suspend fun insertDeliveryUser(deliveryUser: DeliveryUser) {
         withContext(Dispatchers.IO) {
-            database.deleteDeliveryUserRecord(userId, deliveryId)
+            database.insertDeliveryUser(deliveryUser)
         }
     }
 
-    private suspend fun getItems(): List<Delivery> {
+    private suspend fun getDeliveryUserId(): Int {
         return withContext(Dispatchers.IO) {
-            database.getAllDeliveriesWithStoreAndDeliveryUserID(userId)
+            database.getLastDeliveryUserId()
         }
     }
 
@@ -224,7 +164,6 @@ class DeliveryUserListViewModel(val userId: Int, val database: UserDao) : ViewMo
         _navigateToDeliveryDetails.value = null
         _message.value = null
         _closeFragment.value = null
-        _navigateToCreateNewDelivery.value = null
     }
 
     /**

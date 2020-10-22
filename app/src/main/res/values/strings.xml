@@ -63,6 +63,7 @@
     <string name="deposit">Deposit</string>
     <string name="quantity">Quantity</string>
     <string name="add">add</string>
+    <string name="available_deliveries">Available Deliveries</string>
 
     <string-array name="Positions">
         <item>Employee</item>

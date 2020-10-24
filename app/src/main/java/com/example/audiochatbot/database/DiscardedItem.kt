@@ -23,6 +23,9 @@ data class DiscardedItem(
     @ColumnInfo(name = "Quantity")
     var quantity: Int,
 
+    @ColumnInfo(name = "Comment")
+    var comment: String,
+
     @ColumnInfo(name = "Date")
     var date: String,
 

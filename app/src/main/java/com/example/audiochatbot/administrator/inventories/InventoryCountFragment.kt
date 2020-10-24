@@ -182,7 +182,7 @@ class InventoryCountFragment : Fragment(), TextToSpeech.OnInitListener {
             else
                 response = true
         } else {
-            Log.e("TTS", "Initialization Failed!")
+            Log.e("TTS", "Initialization Failed!  /   $status")
         }
     }
 

@@ -147,6 +147,7 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
             }
             str.contains("one") -> 1
             str.contains("to") || str.contains("two") -> 2
+            str.contains("three") -> 3
             str.contains("for") -> 4
             else -> -1
         }

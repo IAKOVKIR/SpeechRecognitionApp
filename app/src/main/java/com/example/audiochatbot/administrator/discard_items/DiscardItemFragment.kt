@@ -68,8 +68,8 @@ class DiscardItemFragment : Fragment(), TextToSpeech.OnInitListener {
 
         val adapter =
             DiscardItemRecyclerViewAdapter(
-                DiscardProductListener { productId, quantity ->
-                    testViewModel.discardItem(productId, quantity)
+                DiscardProductListener { productId, quantity, comment ->
+                    testViewModel.discardItem(productId, quantity, comment)
                 })
         binding.productList.adapter = adapter
 
@@ -93,6 +93,12 @@ class DiscardItemFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         }
 
+        testViewModel.products.observe(viewLifecycleOwner, {
+            it?.let {
+                adapter.submitList(it)
+            }
+        })
+
         testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
             if (result != null)
                 if (result)
@@ -108,12 +114,6 @@ class DiscardItemFragment : Fragment(), TextToSpeech.OnInitListener {
                     Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
                 else
                     textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH, null, null)
-            }
-        })
-
-        testViewModel.products.observe(viewLifecycleOwner, {
-            it?.let {
-                adapter.submitList(it)
             }
         })
 

@@ -34,10 +34,11 @@ class DiscardItemRecyclerViewAdapter(private val discardProductListener: Discard
             binding.price.text = "A$${item.price}"
             binding.addButton.setOnClickListener {
                 val num = binding.quantity.text.toString()
+                val comment = binding.comment.text.toString()
                 if (num != "") {
-                    discardProductListener.onClick(item, num.toInt())
+                    discardProductListener.onClick(item, num.toInt(), comment)
                 } else {
-                    discardProductListener.onClick(item, 0)
+                    discardProductListener.onClick(item, 0, comment)
                 }
                 binding.quantity.text = null
             }
@@ -64,6 +65,6 @@ class DiscardItemsDiffCallback : DiffUtil.ItemCallback<Product>() {
     }
 }
 
-class DiscardProductListener(val clickListener: (productId: Int, quantity: Int) -> Unit) {
-    fun onClick(product: Product, quantity: Int) = clickListener(product.productId, quantity)
+class DiscardProductListener(val clickListener: (productId: Int, quantity: Int, comment: String) -> Unit) {
+    fun onClick(product: Product, quantity: Int, comment: String) = clickListener(product.productId, quantity, comment)
 }

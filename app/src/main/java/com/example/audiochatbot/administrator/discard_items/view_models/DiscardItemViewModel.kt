@@ -44,159 +44,17 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
             Log.e("heh", text)
             if (text.contains("go back"))
                 _closeFragment.value = true
-            else {
-                val patternDiscard = "discard".toRegex()
-                val patternProductName = "items of".toRegex()
-                val patternOneProductName = "discard one item of".toRegex()
-                val patternProductId = "items of product number".toRegex()
-                val patternOneProductId = "discard one item of product number".toRegex()
-
-                val matchDiscard = patternDiscard.find(text)
-                val matchProductName = patternProductName.find(text)
-                val matchOneProductName = patternOneProductName.find(text)
-                val matchProductId = patternProductId.find(text)
-                val matchOneProductId = patternOneProductId.find(text)
-
-                val indexDiscard = matchDiscard?.range?.last
-                val indexProductName = matchProductName?.range
-                val indexOneProductName = matchOneProductName?.range?.last
-                val indexProductId = matchProductId?.range
-                val indexOneProductId = matchOneProductId?.range
-
-                if (indexDiscard != null) {
-                    if (indexProductId != null) {
-                        Log.e("step 0", "passed")
-                        val txt = text.substring(indexProductId.last + 1).trim()
-                        val txtId = txt.filter { it.isDigit() }
-                        val list = products.value?.toList()
-                        var itemId = -1
-
-                        if (list != null) {
-                            Log.e("step 1", txt)
-                            val num = when {
-                                txtId != "" -> txtId.toInt()
-                                txt.contains("one") -> 1
-                                txt.contains("to") || txt.contains("two") -> 2
-                                txt.contains("for") -> 4
-                                else -> -1
-                            }
-
-                            for (i in list.indices) {
-                                if (num == list[i].productId) {
-                                    itemId = num
-                                    break
-                                }
-                            }
-
-                            if (itemId != -1) {
-                                Log.e("step 2", "passed $itemId")
-                                val newTxt = text.substring(indexDiscard, indexProductId.first)
-                                val result = newTxt.filter { it.isDigit() }
-
-                                when {
-                                    result != "" -> discardItem(itemId, result.toInt())
-                                    newTxt.contains("one") -> discardItem(itemId, 1)
-                                    newTxt.contains("two") -> discardItem(itemId, 2)
-                                    newTxt.contains("for") || newTxt.contains("four") -> discardItem(itemId, 4)
-                                    else -> _message.value = "Can't recognise your command"
-                                }
-                            } else
-                                _message.value = "Can't recognise your command"
-                        } else
-                            _message.value = "Can't recognise your command"
-                    } else if (indexOneProductId != null) {
-                        val txt = text.substring(indexOneProductId.last + 1).trim()
-                        val txtId = txt.filter { it.isDigit() }
-                        val list = products.value?.toList()
-                        var itemId = -1
-
-                        if (list != null) {
-                            Log.e("step 1", txt)
-                            val num = when {
-                                txtId != "" -> txtId.toInt()
-                                txt.contains("one") -> 1
-                                txt.contains("to") || txt.contains("two") -> 2
-                                txt.contains("for") -> 4
-                                else -> -1
-                            }
-
-                            for (i in list.indices) {
-                                if (num == list[i].productId) {
-                                    itemId = num
-                                    break
-                                }
-                            }
-
-                            if (itemId != -1) {
-                                Log.e("step 2", "passed $itemId")
-                                discardItem(itemId, 1)
-                            } else
-                                _message.value = "Can't recognise your command"
-                        } else
-                            _message.value = "Can't recognise your command"
-                    } else if (indexProductName != null) {
-                        //Log.e("step 1", "passed")
-                        val txt = text.substring(indexProductName.last + 1).trim().toLowerCase()
-                        val list = products.value?.toList()
-                        var itemId = -1
-
-                        if (list != null) {
-                            for (i in list.indices) {
-                                if (txt.contains(list[i].name.toLowerCase())) {
-                                    itemId = list[i].productId
-                                    break
-                                }
-                            }
-
-                            if (itemId != -1) {
-                                //Log.e("step 2", "passed")
-                                val newTxt = text.substring(indexDiscard, indexProductName.first)
-                                val result = newTxt.filter { it.isDigit() }
-
-                                when {
-                                    result != "" -> discardItem(itemId, result.toInt())
-                                    text.contains("one") -> discardItem(itemId, 1)
-                                    text.contains("two") -> discardItem(itemId, 2)
-                                    text.contains("for") -> discardItem(itemId, 4)
-                                    else -> _message.value = "Can't recognise your command"
-                                }
-                            } else
-                                _message.value = "Can't recognise your command"
-                        } else
-                            _message.value = "Can't recognise your command"
-                    } else if (indexOneProductName != null) {
-                        val txt = text.substring(indexOneProductName + 1).trim().toLowerCase()
-                        val list = products.value?.toList()
-                        var itemId = -1
-
-                        if (list != null) {
-                            for (i in list.indices) {
-                                if (txt.contains(list[i].name.toLowerCase())) {
-                                    itemId = list[i].productId
-                                    break
-                                }
-                            }
-
-                            if (itemId != -1)
-                                discardItem(itemId, 1)
-                            else
-                                _message.value = "The store doesn't have this product"
-                        } else
-                            _message.value = "The store doesn't have any products"
-                    } else
-                        _message.value = "Can't recognise your command"
-                } else
-                    _message.value = "Can't recognise your command"
-            }
+            else
+                _message.value = "I am sorry I cannot understand your command"
         }
     }
 
-    fun discardItem(productId: Int, quantity: Int) {
+    fun discardItem(productId: Int, quantity: Int, comment: String) {
         uiScope.launch {
             if (quantity > 0) {
                 val num = getQuantity(productId)
                 if (num >= quantity) {
-                    val aId = dItem(productId, adminId, quantity)
+                    val aId = dItem(productId, adminId, quantity, comment)
                     val aItem = getAssignedProduct(aId)
                     aItem!!.quantity -= quantity
                     updateAssignedItem(aItem!!)
@@ -211,11 +69,11 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
         }
     }
 
-    private suspend fun dItem(productId: Int, userId: Int, quantity: Int): Int {
+    private suspend fun dItem(productId: Int, userId: Int, quantity: Int, comment: String): Int {
         return withContext(Dispatchers.IO) {
             val num = database.getLastDiscardedItemId() + 1
             val apId = database.getAssignedProductId(productId, storeId)
-            val item = DiscardedItem(num, apId, userId, quantity, "30/07/2020", "12:40")
+            val item = DiscardedItem(num, apId, userId, quantity, comment, "30/07/2020", "12:40")
             database.discardItem(item)
             apId
         }

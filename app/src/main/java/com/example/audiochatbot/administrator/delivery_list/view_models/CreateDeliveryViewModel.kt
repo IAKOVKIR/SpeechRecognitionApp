@@ -336,6 +336,7 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
             // declare a mutable list for items that has a total quantity higher than zero
             val itemList: MutableList<DeliveryProduct> = arrayListOf()
             val deliveryId = getLastDeliveryId() + 1
+            var newId = getLastDeliveryProductId()
             val list = getAssignedItems()
 
             for (element in list) {
@@ -343,7 +344,8 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
                     // if productIds are equal and total quantity os higher than 0, then it adds
                     // a new DeliveryProduct object to the list and terminates the nearest enclosing loop
                     if (element.productId == productIds[j] && (smallBigQuantities[j * 2] != 0 || smallBigQuantities[j * 2 + 1] != 0)) {
-                        itemList.add(DeliveryProduct(getLastDeliveryProductId() + 1, deliveryId, element.assignedProductId, smallBigQuantities[j * 2], smallBigQuantities[j * 2 + 1]))
+                        newId++
+                        itemList.add(DeliveryProduct(newId, deliveryId, element.assignedProductId, smallBigQuantities[j * 2], smallBigQuantities[j * 2 + 1]))
                         break
                     }
                 }

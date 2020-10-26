@@ -19,10 +19,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.database.UniDatabase
-import com.example.audiochatbot.databinding.FragmentDeliveryUserListDetailsBinding
-import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserListDetailsRecyclerViewAdapter
-import com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserListDetailsViewModel
-import com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserListDetailsViewModelFactory
+import com.example.audiochatbot.databinding.FragmentDeliveryUserSelectStoreBinding
+import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserSelectStoreListener
+import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserSelectStoreRecyclerViewAdapter
+import com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserSelectStoreViewModel
+import com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserSelectStoreViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.*
@@ -30,24 +31,26 @@ import java.util.*
 /**
  * A simple [Fragment] subclass.
  */
-class DeliveryUserListDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
+class DeliveryUserSelectStoreFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
     private var response = false
-    private lateinit var testViewModel: DeliveryUserListDetailsViewModel
+    private lateinit var testViewModel: DeliveryUserSelectStoreViewModel
     private val requestCodeStt = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Inflate the layout for this fragment
         // Get a reference to the binding object and inflate the fragment views.
-        val binding: FragmentDeliveryUserListDetailsBinding = DataBindingUtil.inflate(inflater,
-            R.layout.fragment_delivery_user_list_details, container, false)
+        val binding: FragmentDeliveryUserSelectStoreBinding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_delivery_user_select_store, container, false)
 
         val application = requireNotNull(this.activity).application
-        val args = DeliveryUserListDetailsFragmentArgs.fromBundle(requireArguments())
+        val args = DeliveryUserSelectStoreFragmentArgs.fromBundle(requireArguments())
+        val userId: Int = args.userId
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
         // Get the AudioManager service
@@ -56,28 +59,11 @@ class DeliveryUserListDetailsFragment : Fragment(), TextToSpeech.OnInitListener 
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            DeliveryUserListDetailsViewModelFactory(args.deliveryId, dataSource)
+            DeliveryUserSelectStoreViewModelFactory(userId, dataSource)
 
         testViewModel =
             ViewModelProvider(
-                this, viewModelFactory).get(DeliveryUserListDetailsViewModel::class.java)
-
-        // To use the View Model with data binding, you have to explicitly
-        // give the binding object a reference to it.
-        binding.deliveryDetailViewModel = testViewModel
-
-        binding.lifecycleOwner = this
-
-        val adapter =
-            DeliveryUserListDetailsRecyclerViewAdapter(args.deliveryId, dataSource)
-        binding.deliveryList.adapter = adapter
-
-        testViewModel.deliveryProducts.observe(viewLifecycleOwner, {
-            it?.let {
-                adapter.submitList(it)
-                adapter.notifyDataSetChanged()
-            }
-        })
+                this, viewModelFactory).get(DeliveryUserSelectStoreViewModel::class.java)
 
         binding.microphoneImage.setOnClickListener {
             // Get the Intent action
@@ -98,6 +84,26 @@ class DeliveryUserListDetailsFragment : Fragment(), TextToSpeech.OnInitListener 
                 Toast.makeText(requireContext(), "Your device does not support STT.", Toast.LENGTH_LONG).show()
             }
         }
+
+        val adapter =
+            DeliveryUserSelectStoreRecyclerViewAdapter(
+                DeliveryUserSelectStoreListener { storeId ->
+                    testViewModel.onStoreClicked(storeId)
+                })
+        binding.storeList.adapter = adapter
+
+        testViewModel.stores.observe(viewLifecycleOwner, {
+            it?.let {
+                adapter.submitList(it)
+            }
+        })
+
+        testViewModel.navigateToDiscardItem.observe(viewLifecycleOwner, { storeId ->
+            storeId?.let {
+                this.findNavController().navigate(DeliveryUserSelectStoreFragmentDirections.actionDeliveryUserSelectStoreToDeliveryUserList(userId, storeId))
+                testViewModel.onStoreNavigated()
+            }
+        })
 
         testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
             if (result != null)

@@ -95,6 +95,7 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
         }
 
         binding.addNewDelivery.setOnClickListener {
+            this.findNavController().navigate(DeliveryUserListFragmentDirections.actionDeliveryUserListToCreateDeliveryFragment(args.storeId, args.userId))
             testViewModel.onStoreNavigated()
         }
 
@@ -123,6 +124,7 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
         testViewModel.navigateToCreateNewDelivery.observe(viewLifecycleOwner, { result ->
             if (result != null)
                 if (result) {
+                    this.findNavController().navigate(DeliveryUserListFragmentDirections.actionDeliveryUserListToCreateDeliveryFragment(args.storeId, args.userId))
                     testViewModel.onStoreNavigated()
                 }
         })

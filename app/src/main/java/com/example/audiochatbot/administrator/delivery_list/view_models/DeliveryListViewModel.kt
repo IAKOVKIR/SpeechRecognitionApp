@@ -107,7 +107,7 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
 
                             if (delivery != null)
                                 if (delivery.status != "Canceled" || delivery.status != "Delivered")
-                                    cancelDelivery(delivery)
+                                    updateDeliveryStatus(delivery, "Canceled")
                                 else
                                     _message.value = "The delivery is already cancelled or delivered"
                             else
@@ -122,9 +122,9 @@ class DeliveryListViewModel(val storeId: Int, val database: UserDao) : ViewModel
         }
     }
 
-    fun cancelDelivery(delivery: Delivery) {
+    fun updateDeliveryStatus(delivery: Delivery, status: String) {
         uiScope.launch {
-            delivery.status = "Canceled"
+            delivery.status = status
             updateDelivery(delivery)
             _deliveries.value = getItems()
         }

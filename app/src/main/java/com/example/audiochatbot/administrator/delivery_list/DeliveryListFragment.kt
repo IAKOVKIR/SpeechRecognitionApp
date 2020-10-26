@@ -18,6 +18,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
+import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.AdminDeliveredListener
 import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.CancelDeliveryListener
 import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.DeliveryListRecyclerViewAdapter
 import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.DeliveryListener
@@ -70,7 +71,9 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
                 DeliveryListener { deliveryId ->
                     testViewModel.onDeliveryClicked(deliveryId)
                 }, CancelDeliveryListener { delivery ->
-                    testViewModel.cancelDelivery(delivery)
+                    testViewModel.updateDeliveryStatus(delivery, "Canceled")
+                }, AdminDeliveredListener { delivery ->
+                    testViewModel.updateDeliveryStatus(delivery, "Delivered")
                 })
         binding.deliveryList.adapter = adapter
 
@@ -96,6 +99,7 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         binding.addNewDelivery.setOnClickListener {
             this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId, adminId))
+            testViewModel.onStoreNavigated()
         }
 
         // Observers

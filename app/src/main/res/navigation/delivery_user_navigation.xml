@@ -11,8 +11,8 @@
         android:label="fragment_delivery_user_home"
         tools:layout="@layout/fragment_delivery_user_home" >
         <action
-            android:id="@+id/action_home_administrator_to_selectStoreFragment22"
-            app:destination="@id/select_store" />
+            android:id="@+id/action_home_administrator_to_delivery_user_select_store"
+            app:destination="@id/delivery_user_select_store" />
     </fragment>
     <fragment
         android:id="@+id/delivery_user_list"
@@ -28,6 +28,9 @@
         <argument
             android:name="storeId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_delivery_user_list_to_createDeliveryFragment"
+            app:destination="@id/createDeliveryFragment" />
     </fragment>
     <fragment
         android:id="@+id/delivery_user_list_details"
@@ -39,21 +42,26 @@
             app:argType="integer" />
     </fragment>
     <fragment
-        android:id="@+id/select_store"
-        android:name="com.example.audiochatbot.employee.cash_report.SelectStoreFragment"
-        android:label="fragment_select_store"
-        tools:layout="@layout/fragment_select_store" >
+        android:id="@+id/delivery_user_select_store"
+        android:name="com.example.audiochatbot.delivery_user.delivery_list.DeliveryUserSelectStoreFragment"
+        android:label="fragment_delivery_user_select_store"
+        tools:layout="@layout/fragment_delivery_user_select_store" >
         <action
-            android:id="@+id/action_selectStoreFragment2_to_delivery_user_list"
+            android:id="@+id/action_delivery_user_select_store_to_delivery_user_list"
             app:destination="@id/delivery_user_list" />
         <argument
             android:name="userId"
             app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/createDeliveryFragment"
+        android:name="com.example.audiochatbot.administrator.delivery_list.CreateDeliveryFragment"
+        android:label="fragment_create_delivery"
+        tools:layout="@layout/fragment_create_delivery" >
         <argument
-            android:name="businessId"
+            android:name="storeId"
             app:argType="integer" />
-        <argument
-            android:name="directionId"
+        <argument android:name="adminId"
             app:argType="integer" />
     </fragment>
 </navigation>

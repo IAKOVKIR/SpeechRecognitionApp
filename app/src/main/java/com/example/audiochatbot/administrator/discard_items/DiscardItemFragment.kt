@@ -67,10 +67,10 @@ class DiscardItemFragment : Fragment(), TextToSpeech.OnInitListener {
                 this, viewModelFactory).get(DiscardItemViewModel::class.java)
 
         val adapter =
-            DiscardItemRecyclerViewAdapter(
+            DiscardItemRecyclerViewAdapter(storeId!!,
                 DiscardProductListener { productId, quantity, comment ->
                     testViewModel.discardItem(productId, quantity, comment)
-                })
+                }, dataSource)
         binding.productList.adapter = adapter
 
         binding.microphoneImage.setOnClickListener {

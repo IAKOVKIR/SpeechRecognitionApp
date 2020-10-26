@@ -45,7 +45,7 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
                 var status: String
 
                 withContext(Dispatchers.IO) {
-                    val obj = userDao.getProductIdWithAssignedProductId(item.assignedProductId)
+                    val obj = userDao.getProductWithAssignedProductId(item.assignedProductId)
                     productName = obj.name
                     smallUnitName = obj.smallUnitName
                     bigUnitName = obj.bigUnitName

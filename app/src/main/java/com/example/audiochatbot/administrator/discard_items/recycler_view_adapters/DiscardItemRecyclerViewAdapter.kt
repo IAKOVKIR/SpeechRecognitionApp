@@ -7,19 +7,26 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.Product
+import com.example.audiochatbot.database.User
+import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentDiscardItemRecyclerViewAdapterBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * A simple [Fragment] subclass.
  */
-class DiscardItemRecyclerViewAdapter(private val discardProductListener: DiscardProductListener
+class DiscardItemRecyclerViewAdapter(private val storeId: Int, private val discardProductListener: DiscardProductListener,
+                                     private val userDao: UserDao
 ) : ListAdapter<Product,
         DiscardItemRecyclerViewAdapter.ViewHolder>(DiscardItemsDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(discardProductListener, item)
+        holder.bind(storeId, discardProductListener, item, userDao)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,9 +36,22 @@ class DiscardItemRecyclerViewAdapter(private val discardProductListener: Discard
     class ViewHolder private constructor(val binding: FragmentDiscardItemRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(discardProductListener: DiscardProductListener, item: Product) {
+        fun bind(storeId: Int, discardProductListener: DiscardProductListener, item: Product, userDao: UserDao) {
             binding.name.text = "${item.productId} / ${item.name}"
             binding.price.text = "A$${item.price}"
+
+            CoroutineScope(Dispatchers.Default).launch {
+                var num: Int
+
+                withContext(Dispatchers.IO) {
+                    num = userDao.getQuantity(item.productId, storeId)
+                }
+
+                launch (Dispatchers.Main) {
+                    binding.quantityOfTheItem.text = "Quantity: $num"
+                }
+            }
+
             binding.addButton.setOnClickListener {
                 val num = binding.quantity.text.toString()
                 val comment = binding.comment.text.toString()

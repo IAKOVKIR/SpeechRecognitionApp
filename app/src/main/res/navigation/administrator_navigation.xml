@@ -239,9 +239,6 @@
         <argument
             android:name="businessId"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_discard_item_store_to_discardItemFragment"
-            app:destination="@id/discard_item" />
         <argument
             android:name="directionId"
             app:argType="integer" />
@@ -254,6 +251,9 @@
         <action
             android:id="@+id/action_discard_item_store_to_cashReportFragment"
             app:destination="@id/cash_report" />
+        <action
+            android:id="@+id/action_discard_item_store_to_discard_item_list"
+            app:destination="@id/discard_item_list" />
     </fragment>
     <fragment
         android:id="@+id/discard_item"
@@ -346,6 +346,24 @@
         android:id="@+id/cash_report"
         android:name="com.example.audiochatbot.administrator.cash_report.CashReportFragment"
         android:label="CashReportFragment" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/discard_item_list"
+        android:name="com.example.audiochatbot.administrator.discard_items.DiscardItemListFragment"
+        android:label="fragment_discard_item_list"
+        tools:layout="@layout/fragment_discard_item_list" >
+        <action
+            android:id="@+id/action_discard_item_list_to_discard_item"
+            app:destination="@id/discard_item" />
         <argument
             android:name="adminId"
             app:argType="integer" />

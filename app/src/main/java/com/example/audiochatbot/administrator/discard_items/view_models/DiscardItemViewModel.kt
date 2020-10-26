@@ -58,10 +58,7 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
                     val aItem = getAssignedProduct(aId)
                     aItem!!.quantity -= quantity
                     updateAssignedItem(aItem!!)
-                    if (quantity == 1)
-                        _message.value = "item is discarded"
-                    else
-                        _message.value = "Items are discarded"
+                    _closeFragment.value = true
                 } else
                     _message.value = "the entered value is bigger then the quantity of the product"
             } else

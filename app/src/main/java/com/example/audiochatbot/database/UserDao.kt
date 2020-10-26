@@ -174,8 +174,8 @@ interface UserDao {
     @Query("SELECT COUNT(*) FROM PRODUCT WHERE ProductID = :key")
     fun getProductIdWithId(key: Int): Int
 
-    @Query("SELECT * FROM PRODUCT INNER JOIN ASSIGNED_PRODUCT ON PRODUCT.ProductID = ASSIGNED_PRODUCT.ProductID WHERE AssignedProductID = :key")
-    fun getProductIdWithAssignedProductId(key: Int): Product
+    @Query("SELECT * FROM PRODUCT INNER JOIN ASSIGNED_PRODUCT ON PRODUCT.ProductID = ASSIGNED_PRODUCT.ProductID WHERE ASSIGNED_PRODUCT.AssignedProductID = :key")
+    fun getProductWithAssignedProductId(key: Int): Product
 
     @Query("SELECT * FROM PRODUCT ORDER BY ProductID DESC LIMIT 1")
     fun getLastProduct(): Product
@@ -230,6 +230,9 @@ interface UserDao {
     @Query("SELECT Sale FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
     fun getAssignedProductSale(productId: Int, storeId: Int): Int
 
+    @Query("SELECT Quantity FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
+    fun getQuantity(productId: Int, storeId: Int): Int
+
 
     //Discarded Items
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -240,6 +243,9 @@ interface UserDao {
 
     @Query("SELECT DiscardedItemID FROM DISCARDED_ITEM ORDER BY DiscardedItemID DESC LIMIT 1")
     fun getLastDiscardedItemId(): Int
+
+    @Query("SELECT DiscardedItemID, DISCARDED_ITEM.AssignedProductID, UserID, DISCARDED_ITEM.Quantity, Comment, DISCARDED_ITEM.Date, DISCARDED_ITEM.Time FROM DISCARDED_ITEM INNER JOIN ASSIGNED_PRODUCT ON DISCARDED_ITEM.AssignedProductID = ASSIGNED_PRODUCT.AssignedProductID WHERE StoreID =:storeId ORDER BY DiscardedItemID DESC")
+    fun getDiscardedItemsWithStoreId(storeId: Int): LiveData<List<DiscardedItem>>
 
 
     //Delivery

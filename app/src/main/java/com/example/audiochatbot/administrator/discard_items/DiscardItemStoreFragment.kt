@@ -105,7 +105,7 @@ class DiscardItemStoreFragment : Fragment(), TextToSpeech.OnInitListener {
                     0 -> {
                         this.findNavController().navigate(
                             DiscardItemStoreFragmentDirections
-                                .actionDiscardItemStoreToDiscardItemFragment(
+                                .actionDiscardItemStoreToDiscardItemList(
                                     adminId, storeId, businessId)
                         )
                     }

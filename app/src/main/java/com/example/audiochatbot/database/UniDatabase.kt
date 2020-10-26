@@ -10,8 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(entities = [User::class, Business::class, Store::class, AssignedUser::class, Product::class,
-AssignedProduct::class, DiscardedItem::class, Delivery::class, DeliveryProduct::class, DeliveryUser::class,
-InventoryCount::class, CashOperation::class],
+    AssignedProduct::class, DiscardedItem::class, Delivery::class, DeliveryProduct::class,
+    DeliveryProductStatus::class, InventoryCount::class, CashOperation::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
 
@@ -91,16 +91,17 @@ abstract class UniDatabase: RoomDatabase() {
             Delivery(2, 1, 1, "Delivered", "19/07/2020", "12:00"))
 
         private val deliveryItems = listOf(
-            DeliveryProduct(1, 1, 10, 4, "not available"),
-            DeliveryProduct(1, 3, 7, 2, "not available"),
-            DeliveryProduct(1, 4, 14, 3, "not available"),
-            DeliveryProduct(2, 1, 10, 4, "not available"),
-            DeliveryProduct(2, 2, 7, 2, "not available"),
-            DeliveryProduct(2, 5, 14, 3, "not available")
+            DeliveryProduct(1, 1, 1, 10, 4),
+            DeliveryProduct(2, 1, 3, 7, 2),
+            DeliveryProduct(3, 1, 4, 14, 3),
+            DeliveryProduct(4, 2, 1, 10, 4),
+            DeliveryProduct(5, 2, 2, 7, 2),
+            DeliveryProduct(6, 2, 5, 14, 3)
         )
 
-        private val deliveryUsers = listOf(
-            DeliveryUser(1, 7, 2, "18/07/2020", "12:00")
+        private val deliveryProductStatuses = listOf(
+            DeliveryProductStatus(1, 1, "Accepted", "18/07/2020", "13:00"),
+            DeliveryProductStatus(2, 2, "Accepted", "18/07/2020", "13:00")
         )
 
         private val inventories = listOf(
@@ -160,7 +161,7 @@ abstract class UniDatabase: RoomDatabase() {
             userDao.discardItems(discardedItems)
             userDao.insertDeliveries(deliveries)
             userDao.insertDeliveryProducts(deliveryItems)
-            userDao.insertDeliveryUsers(deliveryUsers)
+            userDao.insertDeliveryProductStatuses(deliveryProductStatuses)
             userDao.insertInventoryCount(inventories)
             userDao.insertCashOperations(cashOperations)
         }

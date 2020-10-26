@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.DeliveryProduct
+import com.example.audiochatbot.database.DeliveryProductStatus
+import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentDeliveryDetailsRecyclerViewAdapterBinding
 import kotlinx.coroutines.CoroutineScope
@@ -39,27 +41,24 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
                  userDao: UserDao) {
             CoroutineScope(Dispatchers.Default).launch {
 
-                var productName: String
-                var smallUnitName: String
-                var bigUnitName: String
                 var status: String
+                lateinit var obj: Product
+                var obj2: DeliveryProductStatus?
 
                 withContext(Dispatchers.IO) {
-                    val obj = userDao.getProductWithAssignedProductId(item.assignedProductId)
-                    productName = obj.name
-                    smallUnitName = obj.smallUnitName
-                    bigUnitName = obj.bigUnitName
+                    obj = userDao.getProductWithAssignedProductId(item.assignedProductId)
+                    obj2 = userDao.getDeliveryProductStatus(item.deliveryProductId)
                     status = userDao.getDeliveryStatus(deliveryId)
                 }
 
                 launch (Dispatchers.Main) {
                     binding.itemSet.text = "Item set ${item.assignedProductId}"
-                    binding.productName.text = productName
-                    binding.smallUnitName.text = "$smallUnitName: ${item.smallUnitQuantity}"
-                    binding.bigUnitName.text = "$bigUnitName: ${item.bigUnitQuantity}"
+                    binding.productName.text = obj.name
+                    binding.smallUnitName.text = "${obj.smallUnitName}: ${item.smallUnitQuantity}"
+                    binding.bigUnitName.text = "${obj.bigUnitName}: ${item.bigUnitQuantity}"
 
-                    if (status == "Delivered" && item.status != "not available") {
-                        binding.status.text = item.status
+                    if (status == "Delivered" && obj2 != null) {
+                        binding.status.text = "${obj2!!.status} by User ${obj2!!.userId}"
                         binding.status.visibility = View.VISIBLE
                         binding.acceptButton.visibility = View.GONE
                         binding.declineButton.visibility = View.GONE
@@ -69,7 +68,7 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
                         binding.status.visibility = View.GONE
                         binding.acceptButton.visibility = View.VISIBLE
                         binding.declineButton.visibility = View.VISIBLE
-                        if (status != "Waiting") {
+                        if (status == "Delivered") {
                             binding.acceptButton.isEnabled = true
                             binding.declineButton.isEnabled = true
                         } else {

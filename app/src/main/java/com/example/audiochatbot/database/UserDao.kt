@@ -269,13 +269,19 @@ interface UserDao {
     @Query("SELECT * FROM DELIVERY WHERE StoreID = :storeId ORDER BY DeliveryID  DESC")
     fun getAllDeliveriesWithStore(storeId: Int): List<Delivery>
 
+    @Query("SELECT * FROM DELIVERY WHERE UserID =:deliveryUserId AND StoreID = :storeId ORDER BY DeliveryID  DESC")
+    fun getAllDeliveriesWithDeliveryUserAndStoreID(deliveryUserId: Int, storeId: Int): List<Delivery>
+
     @Query("SELECT * FROM DELIVERY WHERE StoreID = :storeId AND UserID =:userId ORDER BY DeliveryID  DESC")
     fun getAllDeliveriesWithStoreAndUserID(userId: Int, storeId: Int): List<Delivery>
+
+    @Query("SELECT * FROM DELIVERY WHERE StoreID = :storeId AND Status =:status ORDER BY DeliveryID  DESC")
+    fun getAllDeliveriesWithStoreIDAndStatus(storeId: Int, status: String): List<Delivery>
 
     @Query("SELECT * FROM DELIVERY WHERE Status LIKE :status AND StoreID IN (SELECT StoreID FROM ASSIGNED_USER WHERE UserID =:userId) ORDER BY DeliveryID  DESC")
     fun getAllAvailableDeliveries(userId: Int, status: String): LiveData<List<Delivery>>
 
-    @Query("SELECT * FROM DELIVERY INNER JOIN DELIVERY_USER ON DELIVERY.DeliveryID = DELIVERY_USER.DeliveryID WHERE DELIVERY_USER.UserID =:deliveryUserId ORDER BY DeliveryID  DESC")
+    @Query("SELECT * FROM DELIVERY WHERE UserID =:deliveryUserId ORDER BY DeliveryID  DESC")
     fun getAllDeliveriesWithStoreAndDeliveryUserID(deliveryUserId: Int): List<Delivery>
 
     @Query("SELECT Status FROM DELIVERY WHERE DeliveryID = :deliveryId")
@@ -297,22 +303,19 @@ interface UserDao {
     @Query("SELECT * FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId ORDER BY AssignedProductID DESC")
     fun getAllDeliveryProducts(deliveryId: Int): List<DeliveryProduct>
 
+    @Query("SELECT DeliveryProductID FROM DELIVERY_PRODUCT ORDER BY DeliveryProductID DESC LIMIT 1")
+    fun getLastDeliveryProductId(): Int
 
-    //Delivery User
+
+    //Delivery Product Status
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertDeliveryUser(deliveryUser: DeliveryUser)
+    fun insertDeliveryProductStatus(deliveryProductStatus: DeliveryProductStatus)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertDeliveryUsers(list: List<DeliveryUser>)
+    fun insertDeliveryProductStatuses(list: List<DeliveryProductStatus>)
 
-    @Query("DELETE FROM DELIVERY_USER WHERE UserID =:userId AND DeliveryID =:deliveryId")
-    fun deleteDeliveryUserRecord(userId: Int, deliveryId: Int)
-
-    @Query("SELECT * FROM DELIVERY_USER WHERE UserID =:userId AND DeliveryID =:deliveryId ORDER BY DeliveryUserID DESC LIMIT 1")
-    fun getDeliveryUser(userId: Int, deliveryId: Int): DeliveryUser?
-
-    @Query("SELECT DeliveryUserID FROM DELIVERY_USER ORDER BY DeliveryUserID DESC LIMIT 1")
-    fun getLastDeliveryUserId(): Int
+    @Query("SELECT * FROM DELIVERY_PRODUCT_STATUS WHERE DeliveryProductID =:deliveryProductID")
+    fun getDeliveryProductStatus(deliveryProductID: Int): DeliveryProductStatus?
 
 
     //Inventory Count

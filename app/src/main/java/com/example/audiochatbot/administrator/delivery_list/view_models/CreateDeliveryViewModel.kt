@@ -343,7 +343,7 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
                     // if productIds are equal and total quantity os higher than 0, then it adds
                     // a new DeliveryProduct object to the list and terminates the nearest enclosing loop
                     if (element.productId == productIds[j] && (smallBigQuantities[j * 2] != 0 || smallBigQuantities[j * 2 + 1] != 0)) {
-                        itemList.add(DeliveryProduct(deliveryId, element.assignedProductId, smallBigQuantities[j * 2], smallBigQuantities[j * 2 + 1], "not available"))
+                        itemList.add(DeliveryProduct(getLastDeliveryProductId() + 1, deliveryId, element.assignedProductId, smallBigQuantities[j * 2], smallBigQuantities[j * 2 + 1]))
                         break
                     }
                 }
@@ -392,6 +392,15 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
     private suspend fun getLastDeliveryId(): Int {
         return withContext(Dispatchers.IO) {
             database.getLastDeliveryId()
+        }
+    }
+
+    /**
+     * Suspending method getLastDeliveryProductId that retrieves the id of the last delivery product from the database
+     */
+    private suspend fun getLastDeliveryProductId(): Int {
+        return withContext(Dispatchers.IO) {
+            database.getLastDeliveryProductId()
         }
     }
 

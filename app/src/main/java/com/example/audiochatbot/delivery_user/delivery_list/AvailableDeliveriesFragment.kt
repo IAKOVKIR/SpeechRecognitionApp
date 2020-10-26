@@ -20,7 +20,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentAvailableDeliveriesBinding
-import com.example.audiochatbot.databinding.FragmentDeliveryUserListBinding
 import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.*
 import com.example.audiochatbot.delivery_user.delivery_list.view_models.AvailableDeliveriesViewModel
 import com.example.audiochatbot.delivery_user.delivery_list.view_models.AvailableDeliveriesViewModelFactory
@@ -96,13 +95,6 @@ class AvailableDeliveriesFragment : Fragment(), TextToSpeech.OnInitListener {
             it?.let {
                 adapter.submitList(it)
                 adapter.notifyDataSetChanged()
-            }
-        })
-
-        testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { deliveryId ->
-            deliveryId?.let {
-                this.findNavController().navigate(AvailableDeliveriesFragmentDirections.actionAvailableDeliveriesToDeliveryUserListDetails(deliveryId))
-                testViewModel.onStoreNavigated()
             }
         })
 

@@ -115,6 +115,7 @@ class SelectStoreFragment : Fragment(), TextToSpeech.OnInitListener {
                     2 -> {
                         this.findNavController().navigate(SelectStoreFragmentDirections.actionSelectStoreToEmployeeInventoryList(userId, storeId, businessId))
                     }
+
                     else -> {
                         this.findNavController().navigate(SelectStoreFragmentDirections.actionSelectStoreToEmployeeCashReport(userId, storeId, businessId))
                     }

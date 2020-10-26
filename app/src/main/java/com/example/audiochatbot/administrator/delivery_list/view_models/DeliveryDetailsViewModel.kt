@@ -6,10 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.DeliveryProduct
+import com.example.audiochatbot.database.DeliveryProductStatus
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDao): ViewModel() {
+class DeliveryDetailsViewModel(val userId: Int, val deliveryId: Int, private val database: UserDao): ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -80,7 +81,7 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
 
                             for (i in list.indices) {
                                 if (num == list[i].assignedProductId) {
-                                    if (list[i].status == "not available") {
+                                    if (getDProductStatus(list[i].deliveryProductId) == null) {
                                         obj = list[i]
                                         break
                                     }
@@ -107,7 +108,7 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
 
                             for (i in list.indices) {
                                 if (num == list[i].assignedProductId) {
-                                    if (list[i].status == "not available") {
+                                    if (getDProductStatus(list[i].deliveryProductId) == null) {
                                         obj = list[i]
                                         break
                                     }
@@ -158,8 +159,8 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
 
             Log.d("s / b", "$smallQuantity / $bigQuantity")
 
-            deliveryProduct.status = "accepted"
-            updateDeliveryProduct(deliveryProduct)
+            val newDeliveryProductStatus = DeliveryProductStatus(deliveryProduct.deliveryProductId, userId, "accepted", "13/07/2020", "13:00")
+            addDProductStatus(newDeliveryProductStatus)
 
             val assignedProduct = getAssignedProduct(deliveryProduct.assignedProductId)
             assignedProduct!!.quantity = assignedProduct.quantity + ((deliveryProduct.smallUnitQuantity * smallQuantity) + (deliveryProduct.bigUnitQuantity * bigQuantity))
@@ -170,7 +171,8 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
 
     fun declineItems(deliveryProduct: DeliveryProduct) {
         uiScope.launch {
-            deliveryProduct.status = "declined"
+            val newDeliveryProductStatus = DeliveryProductStatus(deliveryProduct.deliveryProductId, userId, "declined", "13/07/2020", "13:00")
+            addDProductStatus(newDeliveryProductStatus)
             updateDeliveryProduct(deliveryProduct)
             _deliveryProducts.value = getItems()
         }
@@ -203,6 +205,18 @@ class DeliveryDetailsViewModel(val deliveryId: Int, private val database: UserDa
     private suspend fun getItems(): List<DeliveryProduct> {
         return withContext(Dispatchers.IO) {
             database.getAllDeliveryProducts(deliveryId)
+        }
+    }
+
+    private suspend fun getDProductStatus(deliveryProductId: Int): DeliveryProductStatus? {
+        return withContext(Dispatchers.IO) {
+            database.getDeliveryProductStatus(deliveryProductId)
+        }
+    }
+
+    private suspend fun addDProductStatus(deliveryProductStatus: DeliveryProductStatus) {
+        withContext(Dispatchers.IO) {
+            database.insertDeliveryProductStatus(deliveryProductStatus)
         }
     }
 

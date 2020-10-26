@@ -70,9 +70,6 @@
         <action
             android:id="@+id/action_employee_delivery_list_to_deliveryDetailsFragment"
             app:destination="@id/delivery_details" />
-        <action
-            android:id="@+id/action_employee_delivery_list_to_createDeliveryFragment"
-            app:destination="@id/create_delivery" />
     </fragment>
     <fragment
         android:id="@+id/delivery_details"
@@ -82,17 +79,8 @@
         <argument
             android:name="deliveryId"
             app:argType="integer" />
-    </fragment>
-    <fragment
-        android:id="@+id/create_delivery"
-        android:name="com.example.audiochatbot.administrator.delivery_list.CreateDeliveryFragment"
-        android:label="fragment_create_delivery"
-        tools:layout="@layout/fragment_create_delivery" >
         <argument
-            android:name="adminId"
-            app:argType="integer" />
-        <argument
-            android:name="storeId"
+            android:name="userId"
             app:argType="integer" />
     </fragment>
     <fragment

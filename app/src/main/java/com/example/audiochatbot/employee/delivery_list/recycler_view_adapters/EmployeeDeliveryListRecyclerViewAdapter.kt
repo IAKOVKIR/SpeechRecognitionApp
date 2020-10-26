@@ -8,9 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.Delivery
 import com.example.audiochatbot.databinding.FragmentEmployeeDeliveryListRecyclerViewAdapterBinding
 
-class EmployeeDeliveryListRecyclerViewAdapter(private val clickListener: EmployeeDeliveryListener,
-                                      private val cancelDeliveryListener: EmployeeCancelDeliveryListener
-) : ListAdapter<Delivery,
+class EmployeeDeliveryListRecyclerViewAdapter(private val clickListener: EmployeeDeliveryListener) : ListAdapter<Delivery,
         EmployeeDeliveryListRecyclerViewAdapter.ViewHolder>(
     EmployeeDeliveryDiffCallback()
 ) {
@@ -18,7 +16,7 @@ class EmployeeDeliveryListRecyclerViewAdapter(private val clickListener: Employe
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(clickListener, cancelDeliveryListener, item)
+        holder.bind(clickListener, item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,20 +26,11 @@ class EmployeeDeliveryListRecyclerViewAdapter(private val clickListener: Employe
     class ViewHolder private constructor(val binding: FragmentEmployeeDeliveryListRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: EmployeeDeliveryListener, cancelDeliveryListener: EmployeeCancelDeliveryListener, item: Delivery) {
+        fun bind(clickListener: EmployeeDeliveryListener, item: Delivery) {
             binding.delivery = item
             binding.clickListener = clickListener
             binding.deliveryName.text = "Delivery ${item.deliveryId}"
             binding.status.text = "Status: ${item.status}"
-
-            if (item.status == "Delivered" || item.status == "Canceled") {
-                binding.cancelButton.isEnabled = false
-            }
-
-            binding.cancelButton.setOnClickListener {
-                cancelDeliveryListener.onClick(item)
-            }
-
         }
 
         companion object {
@@ -67,8 +56,4 @@ class EmployeeDeliveryDiffCallback : DiffUtil.ItemCallback<Delivery>() {
 
 class EmployeeDeliveryListener(val clickListener: (deliveryId: Int) -> Unit) {
     fun onClick(delivery: Delivery) = clickListener(delivery.deliveryId)
-}
-
-class EmployeeCancelDeliveryListener(val clickListener: (delivery: Delivery) -> Unit) {
-    fun onClick(delivery: Delivery) = clickListener(delivery)
 }

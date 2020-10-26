@@ -102,7 +102,7 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
                 }
                 1 -> {
                     this.findNavController().navigate(
-                        DeliveryUserHomeFragmentDirections.actionHomeAdministratorToDeliveryUserList(userId)
+                        DeliveryUserHomeFragmentDirections.actionHomeAdministratorToSelectStoreFragment22(userId, 1, 8)
                     )
                     viewModel.cancelAction()
                 }

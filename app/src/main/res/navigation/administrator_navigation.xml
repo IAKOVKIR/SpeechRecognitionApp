@@ -299,6 +299,9 @@
         <argument
             android:name="deliveryId"
             app:argType="integer" />
+        <argument
+            android:name="userId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/create_delivery"

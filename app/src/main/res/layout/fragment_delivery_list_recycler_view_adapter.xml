@@ -23,7 +23,7 @@
             android:onClick="@{() -> clickListener.onClick(delivery)}"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/cancel_button"
+            app:layout_constraintEnd_toStartOf="@+id/delivered_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -57,9 +57,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/delivered_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delivered"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cancel_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

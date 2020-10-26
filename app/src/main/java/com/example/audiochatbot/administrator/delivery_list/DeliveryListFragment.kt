@@ -47,6 +47,7 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         val application = requireNotNull(this.activity).application
         val args = DeliveryListFragmentArgs.fromBundle(requireArguments())
+        val adminId: Int = args.adminId
         val storeId: Int = args.storeId
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
@@ -65,6 +66,7 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         val adapter =
             DeliveryListRecyclerViewAdapter(
+                adminId,
                 DeliveryListener { deliveryId ->
                     testViewModel.onDeliveryClicked(deliveryId)
                 }, CancelDeliveryListener { delivery ->
@@ -93,7 +95,7 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
         }
 
         binding.addNewDelivery.setOnClickListener {
-            this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId, args.adminId))
+            this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId, adminId))
         }
 
         // Observers
@@ -107,7 +109,7 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { deliveryId ->
             deliveryId?.let {
-                this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToDeliveryDetailsFragment(deliveryId))
+                this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToDeliveryDetailsFragment(deliveryId, adminId))
                 testViewModel.onStoreNavigated()
             }
         })
@@ -122,7 +124,7 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
             if (result != null)
                 if (result) {
                     this.findNavController().navigate(
-                        DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId, args.adminId))
+                        DeliveryListFragmentDirections.actionDeliveryListToCreateDelivery(storeId, adminId))
                     testViewModel.onStoreNavigated()
                 }
         })

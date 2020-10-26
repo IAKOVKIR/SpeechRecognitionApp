@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.Delivery
 import com.example.audiochatbot.databinding.FragmentDeliveryListRecyclerViewAdapterBinding
 
-class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListener,
+class DeliveryListRecyclerViewAdapter(private val adminId: Int, private val clickListener: DeliveryListener,
                                       private val cancelDeliveryListener: CancelDeliveryListener
 ) : ListAdapter<Delivery,
         DeliveryListRecyclerViewAdapter.ViewHolder>(
@@ -18,7 +18,7 @@ class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListene
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(clickListener, cancelDeliveryListener, item)
+        holder.bind(adminId, clickListener, cancelDeliveryListener, item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,7 +28,7 @@ class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListene
     class ViewHolder private constructor(val binding: FragmentDeliveryListRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: DeliveryListener, cancelDeliveryListener: CancelDeliveryListener, item: Delivery) {
+        fun bind(adminId: Int, clickListener: DeliveryListener, cancelDeliveryListener: CancelDeliveryListener, item: Delivery) {
             binding.delivery = item
             binding.clickListener = clickListener
             binding.deliveryName.text = "Delivery ${item.deliveryId}"
@@ -36,7 +36,9 @@ class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListene
 
             if (item.status == "Delivered" || item.status == "Canceled") {
                 binding.cancelButton.isEnabled = false
-            }
+                binding.deliveredButton.isEnabled = false
+            } else if (item.userId != adminId)
+                binding.deliveredButton.isEnabled = false
 
             binding.cancelButton.setOnClickListener {
                 cancelDeliveryListener.onClick(item)

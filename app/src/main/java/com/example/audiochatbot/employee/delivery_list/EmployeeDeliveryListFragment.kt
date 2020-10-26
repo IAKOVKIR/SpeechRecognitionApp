@@ -20,7 +20,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentEmployeeDeliveryListBinding
-import com.example.audiochatbot.employee.delivery_list.recycler_view_adapters.EmployeeCancelDeliveryListener
 import com.example.audiochatbot.employee.delivery_list.recycler_view_adapters.EmployeeDeliveryListRecyclerViewAdapter
 import com.example.audiochatbot.employee.delivery_list.recycler_view_adapters.EmployeeDeliveryListener
 import com.example.audiochatbot.employee.delivery_list.view_models.EmployeeDeliveryListViewModel
@@ -67,8 +66,6 @@ class EmployeeDeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
             EmployeeDeliveryListRecyclerViewAdapter(
                 EmployeeDeliveryListener { deliveryId ->
                     testViewModel.onDeliveryClicked(deliveryId)
-                }, EmployeeCancelDeliveryListener { delivery ->
-                    testViewModel.cancelDelivery(delivery)
                 })
         binding.deliveryList.adapter = adapter
 
@@ -92,11 +89,6 @@ class EmployeeDeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         }
 
-        binding.addNewDelivery.setOnClickListener {
-            this.findNavController().navigate(
-                EmployeeDeliveryListFragmentDirections.actionEmployeeDeliveryListToCreateDeliveryFragment(args.userId, storeId))
-        }
-
         // Observers
 
         testViewModel.deliveries.observe(viewLifecycleOwner, {
@@ -108,7 +100,7 @@ class EmployeeDeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { deliveryId ->
             deliveryId?.let {
-                this.findNavController().navigate(EmployeeDeliveryListFragmentDirections.actionEmployeeDeliveryListToDeliveryDetailsFragment(deliveryId))
+                this.findNavController().navigate(EmployeeDeliveryListFragmentDirections.actionEmployeeDeliveryListToDeliveryDetailsFragment(deliveryId, args.userId))
                 testViewModel.onStoreNavigated()
             }
         })
@@ -117,15 +109,6 @@ class EmployeeDeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
             if (result != null)
                 if (result)
                     this.findNavController().popBackStack()
-        })
-
-        testViewModel.navigateToCreateNewDelivery.observe(viewLifecycleOwner, { result ->
-            if (result != null)
-                if (result) {
-                    this.findNavController().navigate(
-                        EmployeeDeliveryListFragmentDirections.actionEmployeeDeliveryListToCreateDeliveryFragment(args.userId, storeId))
-                    testViewModel.onStoreNavigated()
-                }
         })
 
         testViewModel.message.observe(viewLifecycleOwner, { result ->

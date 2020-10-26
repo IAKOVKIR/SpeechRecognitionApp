@@ -57,7 +57,7 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            DeliveryUserListViewModelFactory(args.userId, dataSource)
+            DeliveryUserListViewModelFactory(args.userId, args.storeId, dataSource)
 
         testViewModel =
             ViewModelProvider(
@@ -95,8 +95,7 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
         }
 
         binding.addNewDelivery.setOnClickListener {
-            this.findNavController().navigate(
-                DeliveryUserListFragmentDirections.actionDeliveryUserListToAvailableDeliveries(args.userId))
+            testViewModel.onStoreNavigated()
         }
 
         // Observers
@@ -124,8 +123,6 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
         testViewModel.navigateToCreateNewDelivery.observe(viewLifecycleOwner, { result ->
             if (result != null)
                 if (result) {
-                    this.findNavController().navigate(
-                        DeliveryUserListFragmentDirections.actionDeliveryUserListToAvailableDeliveries(args.userId))
                     testViewModel.onStoreNavigated()
                 }
         })

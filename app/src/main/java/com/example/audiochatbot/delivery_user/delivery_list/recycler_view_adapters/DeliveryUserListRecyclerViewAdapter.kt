@@ -36,7 +36,7 @@ class DeliveryUserListRecyclerViewAdapter(private val clickListener: DeliveryUse
             binding.deliveryName.text = "Delivery ${item.deliveryId}"
             binding.status.text = "Status: ${item.status}"
 
-            if (item.status == "Delivered" || item.status != "On the way") {
+            if (item.status == "Waiting") {
                 binding.cancelButton.isEnabled = false
                 binding.deliveredButton.isEnabled = false
             }

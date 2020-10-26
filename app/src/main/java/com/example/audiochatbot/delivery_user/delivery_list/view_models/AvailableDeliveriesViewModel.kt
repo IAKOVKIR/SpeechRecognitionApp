@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.Delivery
-import com.example.audiochatbot.database.DeliveryUser
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
@@ -116,9 +115,6 @@ class AvailableDeliveriesViewModel(val userId: Int, val database: UserDao) : Vie
             delivery.status = "On the way"
             //delivery.deliveredBy = -1
             updateDelivery(delivery)
-            val deliveryUserId = getDeliveryUserId() + 1
-            val newDeliveryUser = DeliveryUser(deliveryUserId, userId, delivery.deliveryId, "20/09/2020", "14:00")
-            insertDeliveryUser(newDeliveryUser)
         }
     }
 
@@ -141,18 +137,6 @@ class AvailableDeliveriesViewModel(val userId: Int, val database: UserDao) : Vie
     private suspend fun updateDelivery(delivery: Delivery) {
         withContext(Dispatchers.IO) {
             database.updateDelivery(delivery)
-        }
-    }
-
-    private suspend fun insertDeliveryUser(deliveryUser: DeliveryUser) {
-        withContext(Dispatchers.IO) {
-            database.insertDeliveryUser(deliveryUser)
-        }
-    }
-
-    private suspend fun getDeliveryUserId(): Int {
-        return withContext(Dispatchers.IO) {
-            database.getLastDeliveryUserId()
         }
     }
 

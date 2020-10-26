@@ -58,7 +58,7 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            DeliveryDetailsViewModelFactory(args.deliveryId, dataSource)
+            DeliveryDetailsViewModelFactory(args.userId, args.deliveryId, dataSource)
 
         testViewModel =
             ViewModelProvider(

@@ -38,9 +38,6 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
     val navigateToDeliveryDetails
         get() = _navigateToDeliveryDetails
 
-    private val _navigateToCreateNewDelivery = MutableLiveData<Boolean>()
-    val navigateToCreateNewDelivery get() = _navigateToCreateNewDelivery
-
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
@@ -55,17 +52,10 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
             Log.e("heh", text)
             if (text.contains("go back"))
                 _closeFragment.value = true
-            else if (text.contains("add new delivery") || text.contains("create new delivery"))
-                _navigateToCreateNewDelivery.value = true
             else {
-                val pattern = "open delivery number".toRegex()
-                val patternCancelDelivery = "cancel delivery number".toRegex()
-
-                val match = pattern.find(text)
-                val matchCancelDelivery = patternCancelDelivery.find(text)
+                val match = "open delivery number".toRegex().find(text)
 
                 val index = match?.range?.last
-                val indexCancelDelivery = matchCancelDelivery?.range?.last
 
                 if (index != null) {
                     val num = textToInteger(text, index)
@@ -90,43 +80,9 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
                             _message.value = "The store does not have any deliveries"
                     } else
                         _message.value = "Cannot understand your command"
-                } else if (indexCancelDelivery != null) {
-                    val num = textToInteger(text, indexCancelDelivery)
-
-                    if (num > 0) {
-                        val list = deliveries.value
-                        var delivery: Delivery? = null
-
-                        if (list != null) {
-                            for (i in list) {
-                                if (i.deliveryId == num) {
-                                    delivery = i
-                                    break
-                                }
-                            }
-
-                            if (delivery != null)
-                                if (delivery.status != "Canceled" || delivery.status != "Delivered")
-                                    cancelDelivery(delivery)
-                                else
-                                    _message.value = "The delivery is already cancelled or delivered"
-                            else
-                                _message.value = "You do not have an access to this delivery"
-                        } else
-                            _message.value = "The store does not have any deliveries"
-                    } else
-                        _message.value = "Cannot understand your command"
                 } else
                     _message.value = "Cannot understand your command"
             }
-        }
-    }
-
-    fun cancelDelivery(delivery: Delivery) {
-        uiScope.launch {
-            delivery.status = "Canceled"
-            updateDelivery(delivery)
-            _deliveries.value = getItems()
         }
     }
 
@@ -152,15 +108,9 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
         }
     }
 
-    private suspend fun updateDelivery(delivery: Delivery) {
-        withContext(Dispatchers.IO) {
-            database.updateDelivery(delivery)
-        }
-    }
-
     private suspend fun getItems(): List<Delivery> {
         return withContext(Dispatchers.IO) {
-            database.getAllDeliveriesWithStoreAndUserID(userId, storeId)
+            database.getAllDeliveriesWithStoreIDAndStatus(storeId, "Delivered")
         }
     }
 
@@ -172,7 +122,6 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
         _navigateToDeliveryDetails.value = null
         _message.value = null
         _closeFragment.value = null
-        _navigateToCreateNewDelivery.value = null
     }
 
     /**

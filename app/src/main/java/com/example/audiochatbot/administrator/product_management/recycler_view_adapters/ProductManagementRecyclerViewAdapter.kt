@@ -42,7 +42,6 @@ class ProductManagementRecyclerViewAdapter(private val clickListener: ProductLis
             CoroutineScope(Dispatchers.Default).launch {
 
                 var num: Int
-                val sale: Int
 
                 withContext(Dispatchers.Default) {
                     num = database.totalProductQuantity(item.productId)

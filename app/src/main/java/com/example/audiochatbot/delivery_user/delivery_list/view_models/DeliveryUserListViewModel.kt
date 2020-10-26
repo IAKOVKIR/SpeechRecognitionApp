@@ -5,11 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.Delivery
-import com.example.audiochatbot.database.DeliveryUser
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class DeliveryUserListViewModel(val userId: Int, val database: UserDao) : ViewModel() {
+class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val database: UserDao) : ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -160,10 +159,8 @@ class DeliveryUserListViewModel(val userId: Int, val database: UserDao) : ViewMo
 
     fun cancelDelivery(delivery: Delivery) {
         uiScope.launch {
-            delivery.status = "Waiting"
-            //delivery.deliveredBy = -1
+            delivery.status = "Cancelled"
             updateDelivery(delivery)
-            removeDeliveryUser(delivery.deliveryId)
             _deliveries.value = getItems()
         }
     }
@@ -204,15 +201,9 @@ class DeliveryUserListViewModel(val userId: Int, val database: UserDao) : ViewMo
         }
     }
 
-    private suspend fun removeDeliveryUser(deliveryId: Int) {
-        withContext(Dispatchers.IO) {
-            database.deleteDeliveryUserRecord(userId, deliveryId)
-        }
-    }
-
     private suspend fun getItems(): List<Delivery> {
         return withContext(Dispatchers.IO) {
-            database.getAllDeliveriesWithStoreAndDeliveryUserID(userId)
+            database.getAllDeliveriesWithDeliveryUserAndStoreID(userId, storeId)
         }
     }
 

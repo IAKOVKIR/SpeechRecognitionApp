@@ -1,4 +1,4 @@
-package com.example.audiochatbot.administrator.discard_items
+package com.example.audiochatbot.employee.discard_items
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -9,29 +9,29 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-import com.example.audiochatbot.administrator.discard_items.recycler_view_adapters.DiscardedItemListRecyclerViewAdapter
-import com.example.audiochatbot.administrator.discard_items.view_models.DiscardItemListViewModel
-import com.example.audiochatbot.administrator.discard_items.view_models.DiscardItemListViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
-import com.example.audiochatbot.databinding.FragmentDiscardItemListBinding
+import com.example.audiochatbot.databinding.FragmentEmployeeDiscardItemListBinding
+import com.example.audiochatbot.employee.discard_items.recycler_view_adapters.EmployeeDiscardItemListRecyclerViewAdapter
+import com.example.audiochatbot.employee.discard_items.view_models.EmployeeDiscardItemListViewModel
+import com.example.audiochatbot.employee.discard_items.view_models.EmployeeDiscardItemListViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 
-class DiscardItemListFragment : Fragment(), TextToSpeech.OnInitListener {
+class EmployeeDiscardItemListFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
     private var response = false
-    private lateinit var testViewModel: DiscardItemListViewModel
+    private lateinit var testViewModel: EmployeeDiscardItemListViewModel
     private val requestCodeStt = 1
 
     override fun onCreateView(
@@ -40,11 +40,11 @@ class DiscardItemListFragment : Fragment(), TextToSpeech.OnInitListener {
     ): View? {
         // Inflate the layout for this fragment
         // Get a reference to the binding object and inflate the fragment views.
-        val binding: FragmentDiscardItemListBinding = DataBindingUtil.inflate(inflater,
-            R.layout.fragment_discard_item_list, container, false)
+        val binding: FragmentEmployeeDiscardItemListBinding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_employee_discard_item_list, container, false)
 
         val application = requireNotNull(this.activity).application
-        val args = DiscardItemListFragmentArgs.fromBundle(requireArguments())
+        val args = EmployeeDiscardItemListFragmentArgs.fromBundle(requireArguments())
         val storeId: Int = args.storeId
 
         val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
@@ -55,14 +55,14 @@ class DiscardItemListFragment : Fragment(), TextToSpeech.OnInitListener {
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            DiscardItemListViewModelFactory(storeId, dataSource)
+            EmployeeDiscardItemListViewModelFactory(args.adminId, storeId, dataSource)
 
         testViewModel =
             ViewModelProvider(
-                this, viewModelFactory).get(DiscardItemListViewModel::class.java)
+                this, viewModelFactory).get(EmployeeDiscardItemListViewModel::class.java)
 
         val adapter =
-            DiscardedItemListRecyclerViewAdapter(dataSource)
+            EmployeeDiscardItemListRecyclerViewAdapter(dataSource)
         binding.discardedItemsList.adapter = adapter
 
         binding.microphoneImage.setOnClickListener {
@@ -86,7 +86,7 @@ class DiscardItemListFragment : Fragment(), TextToSpeech.OnInitListener {
         }
 
         binding.discardItems.setOnClickListener {
-            this.findNavController().navigate(DiscardItemListFragmentDirections.actionDiscardItemListToDiscardItem(args.adminId, storeId, args.businessId))
+            this.findNavController().navigate(EmployeeDiscardItemListFragmentDirections.actionEmployeeDiscardItemListToDiscardItem(args.adminId, storeId, args.businessId))
             testViewModel.onStoreNavigated()
         }
 
@@ -107,7 +107,7 @@ class DiscardItemListFragment : Fragment(), TextToSpeech.OnInitListener {
         testViewModel.navigateToDiscardItems.observe(viewLifecycleOwner, { result ->
             if (result != null)
                 if (result) {
-                    this.findNavController().navigate(DiscardItemListFragmentDirections.actionDiscardItemListToDiscardItem(args.adminId, storeId, args.businessId))
+                    this.findNavController().navigate(EmployeeDiscardItemListFragmentDirections.actionEmployeeDiscardItemListToDiscardItem(args.adminId, storeId, args.businessId))
                     testViewModel.onStoreNavigated()
                 }
         })

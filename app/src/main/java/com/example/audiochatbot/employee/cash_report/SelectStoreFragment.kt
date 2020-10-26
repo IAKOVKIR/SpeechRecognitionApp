@@ -104,7 +104,7 @@ class SelectStoreFragment : Fragment(), TextToSpeech.OnInitListener {
                 when (args.directionId) {
                     0 -> {
                         this.findNavController().navigate(
-                            SelectStoreFragmentDirections.actionSelectStoreToDiscardItemFragment(userId, storeId, businessId)
+                            SelectStoreFragmentDirections.actionSelectStoreToEmployeeDiscardItemList(userId, storeId, businessId)
                         )
                     }
                     1 -> {

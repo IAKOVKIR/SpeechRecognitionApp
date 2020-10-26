@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+
+        <TextView
+            android:id="@+id/discarded_items_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="Discarded Items Id" />
+
+        <TextView
+            android:id="@+id/product_id_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#000"
+            app:layout_constraintStart_toStartOf="@+id/discarded_items_id"
+            app:layout_constraintTop_toBottomOf="@+id/discarded_items_id"
+            tools:text="id / product name" />
+
+        <TextView
+            android:id="@+id/quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#000"
+            app:layout_constraintStart_toStartOf="@+id/product_id_name"
+            app:layout_constraintTop_toBottomOf="@+id/product_id_name"
+            tools:text="Quantity: " />
+
+        <TextView
+            android:id="@+id/discarded_by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#000"
+            app:layout_constraintStart_toStartOf="@+id/quantity"
+            app:layout_constraintTop_toBottomOf="@+id/quantity"
+            tools:text="Discarded by: User " />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#000"
+            app:layout_constraintStart_toStartOf="@+id/product_id_name"
+            app:layout_constraintTop_toBottomOf="@+id/discarded_by"
+            tools:text="Reasons to discard:" />
+
+        <TextView
+            android:id="@+id/date_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#000"
+            app:layout_constraintStart_toStartOf="@+id/discarded_by"
+            app:layout_constraintTop_toBottomOf="@+id/description"
+            tools:text="date / time" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

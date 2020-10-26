@@ -247,6 +247,8 @@ interface UserDao {
     @Query("SELECT DiscardedItemID, DISCARDED_ITEM.AssignedProductID, UserID, DISCARDED_ITEM.Quantity, Comment, DISCARDED_ITEM.Date, DISCARDED_ITEM.Time FROM DISCARDED_ITEM INNER JOIN ASSIGNED_PRODUCT ON DISCARDED_ITEM.AssignedProductID = ASSIGNED_PRODUCT.AssignedProductID WHERE StoreID =:storeId ORDER BY DiscardedItemID DESC")
     fun getDiscardedItemsWithStoreId(storeId: Int): LiveData<List<DiscardedItem>>
 
+    @Query("SELECT DiscardedItemID, DISCARDED_ITEM.AssignedProductID, UserID, DISCARDED_ITEM.Quantity, Comment, DISCARDED_ITEM.Date, DISCARDED_ITEM.Time FROM DISCARDED_ITEM INNER JOIN ASSIGNED_PRODUCT ON DISCARDED_ITEM.AssignedProductID = ASSIGNED_PRODUCT.AssignedProductID WHERE StoreID =:storeId AND DISCARDED_ITEM.UserID =:userId ORDER BY DiscardedItemID DESC")
+    fun getDiscardedItemsWithStoreAndUserId(userId: Int, storeId: Int): LiveData<List<DiscardedItem>>
 
     //Delivery
     @Insert(onConflict = OnConflictStrategy.REPLACE)

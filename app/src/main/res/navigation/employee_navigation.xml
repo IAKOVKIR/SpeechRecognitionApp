@@ -35,11 +35,11 @@
             android:id="@+id/action_select_store_to_employeeDeliveryListFragment"
             app:destination="@id/employee_delivery_list" />
         <action
-            android:id="@+id/action_select_store_to_discardItemFragment"
-            app:destination="@id/discard_item" />
-        <action
             android:id="@+id/action_select_store_to_employee_inventory_list"
             app:destination="@id/employee_inventory_list" />
+        <action
+            android:id="@+id/action_select_store_to_employee_discard_item_list"
+            app:destination="@id/employee_discard_item_list" />
     </fragment>
     <fragment
         android:id="@+id/employee_cash_report"
@@ -139,5 +139,23 @@
         <argument
             android:name="storeId"
             app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/employee_discard_item_list"
+        android:name="com.example.audiochatbot.employee.discard_items.EmployeeDiscardItemListFragment"
+        android:label="fragment_employee_discard_item_list"
+        tools:layout="@layout/fragment_employee_discard_item_list" >
+        <argument
+            android:name="adminId"
+            app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="businessId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_employee_discard_item_list_to_discard_item"
+            app:destination="@id/discard_item" />
     </fragment>
 </navigation>

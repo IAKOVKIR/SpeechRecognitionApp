@@ -37,6 +37,25 @@ class DeliveryUserSelectStoreFragment : Fragment(), TextToSpeech.OnInitListener 
     private var response = false
     private lateinit var testViewModel: DeliveryUserSelectStoreViewModel
     private val requestCodeStt = 1
+    private var userId = -1
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val application = requireNotNull(this.activity).application
+        val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
+
+        val args = DeliveryUserSelectStoreFragmentArgs.fromBundle(requireArguments())
+        userId = args.userId
+
+        textToSpeech = TextToSpeech(requireActivity(), this)
+
+        val viewModelFactory =
+            DeliveryUserSelectStoreViewModelFactory(userId, dataSource)
+
+        testViewModel =
+            ViewModelProvider(
+                this, viewModelFactory).get(DeliveryUserSelectStoreViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,22 +67,8 @@ class DeliveryUserSelectStoreFragment : Fragment(), TextToSpeech.OnInitListener 
         val binding: FragmentDeliveryUserSelectStoreBinding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_delivery_user_select_store, container, false)
 
-        val application = requireNotNull(this.activity).application
-        val args = DeliveryUserSelectStoreFragmentArgs.fromBundle(requireArguments())
-        val userId: Int = args.userId
-
-        val dataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
         // Get the AudioManager service
         val audio = activity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-        textToSpeech = TextToSpeech(requireActivity(), this)
-
-        val viewModelFactory =
-            DeliveryUserSelectStoreViewModelFactory(userId, dataSource)
-
-        testViewModel =
-            ViewModelProvider(
-                this, viewModelFactory).get(DeliveryUserSelectStoreViewModel::class.java)
 
         binding.microphoneImage.setOnClickListener {
             // Get the Intent action

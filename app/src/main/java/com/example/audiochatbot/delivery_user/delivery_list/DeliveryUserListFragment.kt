@@ -30,6 +30,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.*
 
+/**
+ * A [Fragment] subclass that represent the list of deliveries for the delivery user.
+ */
 class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
@@ -95,14 +98,18 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
         }
 
         binding.addNewDelivery.setOnClickListener {
+            // Redirect to the create new delivery view
             this.findNavController().navigate(DeliveryUserListFragmentDirections.actionDeliveryUserListToCreateDeliveryFragment(args.storeId, args.userId))
             testViewModel.onStoreNavigated()
         }
 
-        // Observers
+        /**
+         * Observe the LiveData values, passing in this fragment as the LifecycleOwner and the observer.
+         */
 
         testViewModel.deliveries.observe(viewLifecycleOwner, {
             it?.let {
+                // Refresh the list of deliveries
                 adapter.submitList(it)
                 adapter.notifyDataSetChanged()
             }
@@ -110,6 +117,7 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { deliveryId ->
             deliveryId?.let {
+                // Redirect to delivery details view
                 this.findNavController().navigate(DeliveryUserListFragmentDirections.actionDeliveryUserListToDeliveryUserListDetails(deliveryId))
                 testViewModel.onStoreNavigated()
             }
@@ -118,12 +126,14 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
         testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
             if (result != null)
                 if (result)
+                    // Return to the previous fragment
                     this.findNavController().popBackStack()
         })
 
         testViewModel.navigateToCreateNewDelivery.observe(viewLifecycleOwner, { result ->
             if (result != null)
                 if (result) {
+                    // Redirect to the create new delivery view
                     this.findNavController().navigate(DeliveryUserListFragmentDirections.actionDeliveryUserListToCreateDeliveryFragment(args.storeId, args.userId))
                     testViewModel.onStoreNavigated()
                 }
@@ -134,7 +144,8 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
                 // 0 - 15 are usually available on any device
                 val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
 
-                if (musicVolume == 0 || !response)
+                // If the music volume is too quite then the toast message will be displayed
+                if (musicVolume < 1 || !response)
                     Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
                 else
                     textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH, null, null)
@@ -166,8 +177,9 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
     }
 
     override fun onInit(status: Int) {
+        // If tts engine is configured
         if (status == TextToSpeech.SUCCESS) {
-            // set UK English as language for tts
+            // Set UK English as language for tts
             val result = textToSpeech!!.setLanguage(Locale.UK)
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
@@ -181,10 +193,12 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
 
     override fun onResume() {
         super.onResume()
+        // Refresh the list of deliveries
         testViewModel.refreshTheList()
     }
 
     override fun onStop() {
+        // Stop TTS
         if (textToSpeech != null) {
             textToSpeech!!.stop()
         }

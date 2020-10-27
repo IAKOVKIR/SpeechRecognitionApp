@@ -51,7 +51,7 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val database:
     fun convertStringToAction(text: String) {
         uiScope.launch {
             Log.e("heh", text)
-            if (text.contains("go back"))
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else if (text.contains("add new delivery") || text.contains("create new delivery"))
                 _navigateToCreateNewDelivery.value = true

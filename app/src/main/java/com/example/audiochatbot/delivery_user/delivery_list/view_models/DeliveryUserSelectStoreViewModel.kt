@@ -1,6 +1,6 @@
 package com.example.audiochatbot.delivery_user.delivery_list.view_models
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +10,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for DeliveryUserSelectStoreFragment.
+ */
 class DeliveryUserSelectStoreViewModel(val userId: Int,val database: UserDao) : ViewModel() {
+
+    /** Coroutine setup variables */
+
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
@@ -28,6 +34,7 @@ class DeliveryUserSelectStoreViewModel(val userId: Int,val database: UserDao) : 
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    // Retrieve the LiveData with the list of the stores
     val stores = database.getAllUserStores(userId)
 
     private val _message = MutableLiveData<String>()
@@ -41,13 +48,14 @@ class DeliveryUserSelectStoreViewModel(val userId: Int,val database: UserDao) : 
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
-    fun convertStringToAction(text: String) {
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(newText: String) {
         uiScope.launch {
-            if (text.contains("go back"))
+            val text = newText.toLowerCase()
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else {
-                val pattern = "store number".toRegex()
-                val match = pattern.find(text)
+                val match = "store number".toRegex().find(text)
                 val index = match?.range?.last
 
                 if (index != null) {
@@ -55,12 +63,10 @@ class DeliveryUserSelectStoreViewModel(val userId: Int,val database: UserDao) : 
                     val result = str.filter { it.isDigit() }
 
                     val num = when {
-                        result != "" -> {
-                            Log.e("heh", result)
-                            result.toInt()
-                        }
+                        result != "" -> result.toInt()
                         str.contains("one") -> 1
                         str.contains("to") || str.contains("two") -> 2
+                        str.contains("three") -> 3
                         str.contains("for") -> 4
                         else -> -1
                     }
@@ -91,10 +97,16 @@ class DeliveryUserSelectStoreViewModel(val userId: Int,val database: UserDao) : 
         }
     }
 
+    /**
+     * Sets a new value of the store
+     */
     fun onStoreClicked(id: Int) {
         _navigateToDiscardItem.value = id
     }
 
+    /**
+     * Sets the values to null
+     */
     fun onStoreNavigated() {
         _navigateToDiscardItem.value = null
         _message.value = null

@@ -9,13 +9,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for DeliveryUserHomeFragment.
+ */
 class DeliveryUserHomeViewModel: ViewModel() {
+
+    /**
+     * String arrays that contain all the available commands for this view.
+     */
+    private val deliveryListArray = arrayOf("open the delivery list", "delivery list", "open delivery list")
+    private val logOutArray = arrayOf("log out", "logout")
+
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
-    private val deliveryListArray = arrayOf("open the delivery list", "delivery list")
-    private val logOutArray = arrayOf("log out", "logout")
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -29,13 +37,21 @@ class DeliveryUserHomeViewModel: ViewModel() {
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the value of the action
+     */
     private var _action = MutableLiveData<Int>()
     val action: LiveData<Int> get() = _action
 
+    /**
+     * method that checks a given string with all the available ones and then sets a new value for the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(text: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val newText = text.toLowerCase()
+            //convert string to action
             when {
                 deliveryListArray.contains(newText) -> _action.value = 1
                 logOutArray.contains(newText) -> _action.value = 2
@@ -44,10 +60,16 @@ class DeliveryUserHomeViewModel: ViewModel() {
         }
     }
 
+    /**
+     * Sets a new value of the action
+     */
     fun setAction(num: Int) {
         _action.value = num
     }
 
+    /**
+     * Sets the value of action as -1
+     */
     fun cancelAction() {
         _action.value = -1
     }

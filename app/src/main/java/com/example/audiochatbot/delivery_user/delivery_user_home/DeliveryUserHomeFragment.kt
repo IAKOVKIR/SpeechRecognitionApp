@@ -25,7 +25,7 @@ import com.example.audiochatbot.delivery_user.delivery_user_home.view_models.Del
 import java.util.*
 
 /**
- * A simple [Fragment] subclass.
+ * A [Fragment] subclass that represent the delivery user home view.
  */
 class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
 
@@ -34,11 +34,18 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
     private lateinit var viewModel: DeliveryUserHomeViewModel
     private val requestCodeStt = 1
     private var response = false
+    private var userId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pref = requireActivity().getSharedPreferences("eaPreferences", Context.MODE_PRIVATE)
         viewModel = ViewModelProvider(this).get(DeliveryUserHomeViewModel::class.java)
+        textToSpeech = TextToSpeech(requireActivity(), this)
+
+        userId = pref.getInt("id", -1)
+        // If the user id is equal to -1 then user activity is gonna be closed
+        if (userId == -1)
+            logOut()
     }
 
     override fun onCreateView(
@@ -49,37 +56,30 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
         val binding: FragmentDeliveryUserHomeBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_delivery_user_home, container, false)
 
-        val userId: Int = pref.getInt("id", -1)
-
         // Get the AudioManager service
         val audio = activity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        textToSpeech = TextToSpeech(requireActivity(), this)
-
-        if (userId == -1)
-            logOut()
-
-        binding.microphoneImage.setOnClickListener {
-            // Get the Intent action
-            val sttIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            // Language model defines the purpose, there are special models for other use cases, like search.
-            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            // Adding an extra language, you can use any language from the Locale class.
-            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-            // Text that shows up on the Speech input prompt.
-            sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
-            try {
-                // Start the intent for a result, and pass in our request code.
-                startActivityForResult(sttIntent, requestCodeStt)
-            } catch (e: ActivityNotFoundException) {
-                // Handling error when the service is not available.
-                e.printStackTrace()
-
-                Toast.makeText(requireContext(), "Your device does not support STT.", Toast.LENGTH_LONG).show()
-            }
-        }
-
         binding.apply {
+            microphoneImage.setOnClickListener {
+                // Get the Intent action
+                val sttIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                // Language model defines the purpose, there are special models for other use cases, like search.
+                sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                // Adding an extra language, you can use any language from the Locale class.
+                sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+                // Text that shows up on the Speech input prompt.
+                sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
+                try {
+                    // Start the intent for a result, and pass in our request code.
+                    startActivityForResult(sttIntent, requestCodeStt)
+                } catch (e: ActivityNotFoundException) {
+                    // Handling error when the service is not available.
+                    e.printStackTrace()
+
+                    Toast.makeText(requireContext(), "Your device does not support STT.", Toast.LENGTH_LONG).show()
+                }
+            }
+
             viewDeliveryListButton.setOnClickListener {
                 viewModel.setAction(1)
             }
@@ -89,18 +89,23 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         }
 
+        /**
+         * Observe the LiveData, passing in this fragment as the LifecycleOwner and the observer.
+         */
         viewModel.action.observe(viewLifecycleOwner, {
             when (it) {
                 0 -> {
                     // 0 - 15 are usually available on any device
                     val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
 
-                    if (musicVolume == 0 || !response)
+                    // If the music volume is too quite then the toast message will be displayed
+                    if (musicVolume < 1 || !response)
                         Toast.makeText(requireContext(), "Cannot understand your command", Toast.LENGTH_SHORT).show()
                     else
                         textToSpeech!!.speak("Cannot understand your command", TextToSpeech.QUEUE_FLUSH, null, null)
                 }
                 1 -> {
+                    // Navigate to the DeliveryUserSelectStoreFragment and pass the user id
                     this.findNavController().navigate(
                         DeliveryUserHomeFragmentDirections.actionHomeAdministratorToDeliveryUserSelectStore(userId)
                     )
@@ -151,8 +156,9 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
     }
 
     override fun onInit(status: Int) {
+        // If tts engine is configured
         if (status == TextToSpeech.SUCCESS) {
-            // set UK English as language for tts
+            // Set UK English as language for tts
             val result = textToSpeech!!.setLanguage(Locale.UK)
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
@@ -165,6 +171,7 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
     }
 
     override fun onStop() {
+        // Stop TTS
         if (textToSpeech != null) {
             textToSpeech!!.stop()
         }

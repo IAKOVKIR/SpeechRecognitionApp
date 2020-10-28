@@ -39,6 +39,7 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pref = requireActivity().getSharedPreferences("eaPreferences", Context.MODE_PRIVATE)
+        // Performs the decision making of this fragment.
         viewModel = ViewModelProvider(this).get(DeliveryUserHomeViewModel::class.java)
         textToSpeech = TextToSpeech(requireActivity(), this)
 
@@ -68,7 +69,7 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
                 // Adding an extra language, you can use any language from the Locale class.
                 sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
                 // Text that shows up on the Speech input prompt.
-                sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
+                sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "open the delivery list")
                 try {
                     // Start the intent for a result, and pass in our request code.
                     startActivityForResult(sttIntent, requestCodeStt)
@@ -171,7 +172,7 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
     }
 
     override fun onStop() {
-        // Stop TTS
+        // Stop TTS engine
         if (textToSpeech != null) {
             textToSpeech!!.stop()
         }
@@ -180,7 +181,7 @@ class DeliveryUserHomeFragment : Fragment(), TextToSpeech.OnInitListener {
     }
 
     override fun onDestroy() {
-        // Shut down TTS
+        // Shut down TTS engine
         if (textToSpeech != null) {
             textToSpeech!!.shutdown()
         }

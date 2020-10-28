@@ -1,6 +1,5 @@
 package com.example.audiochatbot.administrator.inventories.view_models
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.util.*
 
 class InventoryListViewModel(val storeId: Int, val database: UserDao) : ViewModel() {
 
@@ -41,12 +41,12 @@ class InventoryListViewModel(val storeId: Int, val database: UserDao) : ViewMode
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
-    fun convertStringToAction(text: String) {
+    fun convertStringToAction(newText: String) {
         uiScope.launch {
-            Log.e("heh", text)
+            val text = newText.toLowerCase(Locale.ROOT)
             when {
-                text.contains("go back") -> _closeFragment.value = true
-                text.contains("inventory count") -> _navigateToInventoryCount.value = true
+                text.contains("go back") || text.contains("return back") -> _closeFragment.value = true
+                text.contains("inventory count") || text.contains("inventor account") -> _navigateToInventoryCount.value = true
                 else -> _message.value = "I'm sorry, I cannot understand your command"
             }
         }

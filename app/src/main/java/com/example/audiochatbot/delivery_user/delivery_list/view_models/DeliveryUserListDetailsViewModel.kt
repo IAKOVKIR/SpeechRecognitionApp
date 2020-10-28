@@ -1,6 +1,6 @@
 package com.example.audiochatbot.delivery_user.delivery_list.view_models
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,7 +8,20 @@ import com.example.audiochatbot.database.DeliveryProduct
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class DeliveryUserListDetailsViewModel(val deliveryId: Int, private val database: UserDao): ViewModel() {
+/**
+ * ViewModel for DeliveryUserListDetailsFragment.
+ *
+ * @param deliveryId - the key of the current delivery we are working on.
+ * @param dataSource - the reference to UniDatabase
+ */
+class DeliveryUserListDetailsViewModel(val deliveryId: Int, val dataSource: UserDao): ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -43,10 +56,11 @@ class DeliveryUserListDetailsViewModel(val deliveryId: Int, private val database
         }
     }
 
-    fun convertStringToAction(text: String) {
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(newText: String) {
         uiScope.launch {
-            Log.e("heh", text)
-            if (text.contains("go back"))
+            val text = newText.toLowerCase()
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else
                 _message.value = "Cannot recognise your command"

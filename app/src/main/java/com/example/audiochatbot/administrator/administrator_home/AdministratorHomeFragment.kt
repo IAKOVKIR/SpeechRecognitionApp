@@ -25,7 +25,7 @@ import com.example.audiochatbot.databinding.FragmentAdministratorHomeBinding
 import java.util.*
 
 /**
- * A simple [Fragment] subclass.
+ * A [Fragment] subclass that represent the administrator home view.
  */
 
 class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
@@ -39,6 +39,7 @@ class AdministratorHomeFragment : Fragment(), TextToSpeech.OnInitListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pref = requireActivity().getSharedPreferences("eaPreferences", Context.MODE_PRIVATE)
+        // Performs the decision making of this fragment.
         viewModel = ViewModelProvider(this).get(AdministratorHomeViewModel::class.java)
     }
 

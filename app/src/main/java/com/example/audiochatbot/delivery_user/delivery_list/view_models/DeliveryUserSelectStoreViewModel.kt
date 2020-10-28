@@ -12,8 +12,16 @@ import kotlinx.coroutines.launch
 
 /**
  * ViewModel for DeliveryUserSelectStoreFragment.
+ *
+ * @param userId - the key of the current user we are working on.
+ * @param dataSource - the reference to UniDatabase
  */
-class DeliveryUserSelectStoreViewModel(val userId: Int,val database: UserDao) : ViewModel() {
+class DeliveryUserSelectStoreViewModel(val userId: Int, val dataSource: UserDao) : ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
 
     /** Coroutine setup variables */
 

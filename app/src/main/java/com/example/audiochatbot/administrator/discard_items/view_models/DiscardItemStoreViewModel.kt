@@ -1,6 +1,6 @@
 package com.example.audiochatbot.administrator.discard_items.view_models
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -41,9 +41,11 @@ class DiscardItemStoreViewModel(val adminId: Int,val database: UserDao) : ViewMo
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
-    fun convertStringToAction(text: String) {
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(newText: String) {
         uiScope.launch {
-            if (text.contains("go back"))
+            val text = newText.toLowerCase()
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else {
                 val pattern = "store number".toRegex()
@@ -55,12 +57,10 @@ class DiscardItemStoreViewModel(val adminId: Int,val database: UserDao) : ViewMo
                     val result = str.filter { it.isDigit() }
 
                     val num = when {
-                        result != "" -> {
-                            Log.e("heh", result)
-                            result.toInt()
-                        }
+                        result != "" -> result.toInt()
                         str.contains("one") -> 1
                         str.contains("to") || str.contains("two") -> 2
+                        str.contains("three") -> 3
                         str.contains("for") -> 4
                         else -> -1
                     }

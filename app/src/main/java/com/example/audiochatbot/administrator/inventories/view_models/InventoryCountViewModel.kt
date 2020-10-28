@@ -1,7 +1,6 @@
 package com.example.audiochatbot.administrator.inventories.view_models
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -72,38 +71,40 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
     fun convertStringToAction(givenText: String) {
         uiScope.launch {
             val text = givenText.toLowerCase()
-            Log.e("heh", text)
             // if the command is go back
-            if (text.contains("go back"))
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
-            else if (text.contains("submit the inventory count") || text.contains("submit the inventor account")) {
+            else if (text.contains("submit the inventory count") || text.contains("submit the inventor account") ||
+                text.contains("submit inventory count") || text.contains("submit inventor account")) {
                 _submit.value = true
             } else {
                 // get the last indexes of the given substrings
                 val matchAddItems = "add".toRegex().find(text)
+                val matchAtItems = "at".toRegex().find(text)
                 val matchRemoveItems = "remove items of".toRegex().find(text)
                 val matchAmountOfEarnings = "the amount of earnings is".toRegex().find(text)
 
                 val indexAddItems = matchAddItems?.range?.last
+                val indexAtItems = matchAtItems?.range?.last
                 val indexRemoveItems = matchRemoveItems?.range?.last
                 val indexAmountOfEarnings = matchAmountOfEarnings?.range?.last
 
-                if (indexAddItems != null) {
+                if (indexAddItems != null || indexAtItems != null) {
                     // get the ranges of the given substrings
                     val matchSmallUnits = "small unit".toRegex().find(text)
                     val matchBigUnits = "big unit".toRegex().find(text)
                     val indexSmallUnits = matchSmallUnits?.range
                     val indexBigUnits = matchBigUnits?.range
+                    val indexNum = indexAddItems ?: indexAtItems
                     var smallQuantity = 0
                     var bigQuantity = 0
                     var id = -1
 
                     if (indexSmallUnits != null) {
-                        if (indexSmallUnits.first > indexAddItems) {
+                        if (indexSmallUnits.first > indexNum!!) {
                             var lastIndex = indexSmallUnits.last + 1
-                            val str = text.substring(indexAddItems + 1, indexAddItems + 7)
+                            val str = text.substring(indexNum + 1, indexNum + 7)
                             smallQuantity = textToInteger(str)
-                            Log.e("heh s", "$smallQuantity")
 
                             if (indexBigUnits != null) {
                                 if (indexBigUnits.first > indexSmallUnits.last) {
@@ -122,7 +123,6 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
                             if (smallQuantity > 0 || bigQuantity > 0) {
                                 if (indexProductId != null) {
                                     val strId = strProduct.substring(indexProductId.last + 1)
-                                    Log.e("heh", strId)
                                     val testId = textToInteger(strId)
                                     val list = products.value
 
@@ -149,7 +149,6 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
 
                                     if (list != null) {
                                         for (i in list) {
-                                            Log.e(i.name.toLowerCase(), strName)
                                             if (strName.contains(i.name.toLowerCase())) {
                                                 id = i.productId
                                                 break
@@ -172,10 +171,10 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
                         } else
                             _message.value = "I'm sorry, I cannot understand your command"
                     } else if (indexBigUnits != null) {
-                        if (indexBigUnits.first > indexAddItems) {
-                            val strBig = text.substring(indexAddItems, indexBigUnits.last + 1)
+                        val indexNum1 = indexAddItems ?: indexAtItems
+                        if (indexBigUnits.first > indexNum1!!) {
+                            val strBig = text.substring(indexNum1, indexBigUnits.last + 1)
                             bigQuantity = textToInteger(strBig)
-                            Log.e("heh b", "$bigQuantity")
 
                             val strProduct = text.substring(indexBigUnits.last + 1)
                             val matchProductName = "of".toRegex().find(strProduct)
@@ -213,7 +212,6 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
 
                                     if (list != null) {
                                         for (i in list) {
-                                            Log.e(i.name.toLowerCase(), strName)
                                             if (strName.contains(i.name.toLowerCase())) {
                                                 id = i.productId
                                                 break
@@ -277,7 +275,6 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
 
                         if (list != null) {
                             for (i in list) {
-                                Log.e(i.name.toLowerCase(), str)
                                 if (str.contains(i.name.toLowerCase())) {
                                     num1 = i.productId
                                     break
@@ -324,8 +321,6 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
 
             _l.value = smallBigQuantities.toList()
             _products.value = getItems()
-
-            Log.e("size", "${productObjects.size}")
         }
     }
 
@@ -344,8 +339,6 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
 
             _l.value = smallBigQuantities.toList()
             _products.value = getItems()
-
-            Log.e("size", "${productObjects.size}")
         }
     }
 
@@ -375,15 +368,12 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
                         if (difference >= 0) {
                             element.quantity = newQuantity
                             totalPrice += productObjects[j].price * difference * (1F - (element.sale / 100F))
-                            Log.e("seriouesly", "$totalPrice / ${element.productId}")
-                        } else {
-                            Log.e("seriouesly", "less")
                         }
                         break
                     }
                 }
             }
-            Log.e("seriouesly", "$totalPrice")
+
             if (totalPrice > 0) {
                 for (element in list) {
                     updateAssignedItem(element)
@@ -404,10 +394,7 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
         val result = str.filter { it.isDigit() }
 
         return when {
-            result != "" -> {
-                Log.e("heh", result)
-                result.toInt()
-            }
+            result != "" -> result.toInt()
             str.contains("zero") -> 0
             str.contains("one") -> 1
             str.contains("to") || str.contains("two") -> 2

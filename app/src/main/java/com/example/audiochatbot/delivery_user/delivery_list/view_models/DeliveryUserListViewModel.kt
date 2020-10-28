@@ -1,6 +1,6 @@
 package com.example.audiochatbot.delivery_user.delivery_list.view_models
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,7 +8,21 @@ import com.example.audiochatbot.database.Delivery
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val database: UserDao) : ViewModel() {
+/**
+ * ViewModel for DeliveryUserListFragment.
+ *
+ * @param userId - the key of the current user we are working on.
+ * @param storeId - the key of the current store we are working on.
+ * @param dataSource - the reference to UniDatabase
+ */
+class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSource: UserDao) : ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -48,9 +62,10 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val database:
         refreshTheList()
     }
 
-    fun convertStringToAction(text: String) {
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(newText: String) {
         uiScope.launch {
-            Log.e("heh", text)
+            val text = newText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else if (text.contains("add new delivery") || text.contains("create new delivery"))
@@ -184,12 +199,10 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val database:
         val result = str.filter { it.isDigit() }
 
         return when {
-            result != "" -> {
-                Log.e("heh", result)
-                result.toInt()
-            }
+            result != "" -> result.toInt()
             str.contains("one") -> 1
             str.contains("to") || str.contains("two") -> 2
+            str.contains("three") -> 3
             str.contains("for") -> 4
             else -> -1
         }

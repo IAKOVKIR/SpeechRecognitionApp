@@ -1,7 +1,6 @@
 package com.example.audiochatbot.administrator.discard_items.view_models
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,10 +38,10 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
     val closeFragment get() = _closeFragment
 
     @SuppressLint("DefaultLocale")
-    fun convertStringToAction(text: String) {
+    fun convertStringToAction(newText: String) {
         uiScope.launch {
-            Log.e("heh", text)
-            if (text.contains("go back"))
+            val text = newText.toLowerCase()
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else
                 _message.value = "I am sorry I cannot understand your command"

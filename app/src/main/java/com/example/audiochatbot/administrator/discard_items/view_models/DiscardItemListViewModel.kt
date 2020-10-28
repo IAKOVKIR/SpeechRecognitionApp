@@ -43,7 +43,7 @@ class DiscardItemListViewModel(val storeId: Int, val database: UserDao) : ViewMo
             Log.e("heh", text)
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
-            else if (text.contains("discard items") || text.contains("discard an item"))
+            else if (text.contains("discard items") || text.contains("discard an item") || text.contains("discard item"))
                 _navigateToDiscardItems.value = true
             else
                 _message.value = "Cannot understand your command"

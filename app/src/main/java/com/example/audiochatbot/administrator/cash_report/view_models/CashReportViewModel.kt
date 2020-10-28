@@ -1,6 +1,5 @@
 package com.example.audiochatbot.administrator.cash_report.view_models
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -52,8 +51,7 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
 
     fun convertStringToAction(text: String) {
         uiScope.launch {
-            Log.e("heh", text)
-            if (text.contains("go back"))
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else {
                 val matchDeposit = "deposit".toRegex().find(text)
@@ -80,8 +78,6 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
                                 depositOrWithdrawMoney(num, true)
                             else if (num == -1F)
                                 _message.value = "Can't understand your command"
-
-                            Log.e("final", "$num")
                         } else
                             _message.value = "Can't understand your command"
                     } else if (indexWithdraw != null) {
@@ -98,15 +94,12 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
                                 depositOrWithdrawMoney(num, false)
                             else if (num == -1F)
                                 _message.value = "Can't understand your command"
-
-                            Log.e("final", "$num")
                         } else
                             _message.value = "Can't understand your command"
                     } else
                         _message.value = "Can't understand your command"
                 } else if (indexDeposit != null) {
                     if (indexDeposit < text.length - 3) {
-                        Log.e("final", "${text[indexDeposit + 2]}")
                         if (text[indexDeposit + 2] == '$') {
                             val str = text.substring(indexDeposit + 3)
                             val num = try {
@@ -120,8 +113,6 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
                                 depositOrWithdrawMoney(num, true)
                             else if (num == -1F)
                                 _message.value = "Can't understand your command"
-
-                            Log.e("final", "$num")
                         } else
                             _message.value = "Can't understand your command"
                     } else
@@ -141,8 +132,6 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
                                 depositOrWithdrawMoney(num, false)
                             else if (num == -1F)
                                 _message.value = "Can't understand your command"
-
-                            Log.e("final", "$num")
                         } else
                             _message.value = "Can't understand your command"
                     } else
@@ -187,7 +176,8 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
     private fun convertTextToNumber(text: String): Float {
         return when {
             text.contains("one") -> 1F
-            text.contains("to") -> 2F
+            text.contains("to") || text.contains("two") -> 2F
+            text.contains("three") -> 3F
             text.contains("for") -> 4F
             else -> -1F
         }

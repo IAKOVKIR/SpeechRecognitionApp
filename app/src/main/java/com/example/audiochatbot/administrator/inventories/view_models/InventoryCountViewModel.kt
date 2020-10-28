@@ -374,13 +374,17 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
                 }
             }
 
-            if (totalPrice > 0) {
-                for (element in list) {
-                    updateAssignedItem(element)
-                }
+            for (element in list) {
+                updateAssignedItem(element)
             }
+
+            val storeObj = getStore(storeId)
+            storeObj.cashOnHand = storeObj.cashOnHand + totalPrice
+
+            updateStore(storeObj)
+
             val lastId = getLastId()
-            finishCount(InventoryCount(lastId + 1, storeId, adminId, totalPrice, currentEarnings, "20/09/2020", "14:00"))
+            finishCount(InventoryCount(lastId + 1, storeId, adminId, storeObj.cashOnHand, currentEarnings, "20/09/2020", "14:00"))
 
             _isDone.value = true
         }
@@ -437,6 +441,18 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
     private suspend fun getLastId(): Int {
         return withContext(Dispatchers.IO) {
             database.getLastInventoryCountId()
+        }
+    }
+
+    private suspend fun getStore(id: Int): Store {
+        return withContext(Dispatchers.IO) {
+            database.getStoreWithId(id)
+        }
+    }
+
+    private suspend fun updateStore(store: Store) {
+        withContext(Dispatchers.IO) {
+            database.updateStore(store)
         }
     }
 

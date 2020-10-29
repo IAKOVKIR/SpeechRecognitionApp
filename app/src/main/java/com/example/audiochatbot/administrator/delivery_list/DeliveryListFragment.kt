@@ -59,7 +59,7 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            DeliveryListViewModelFactory(storeId, dataSource)
+            DeliveryListViewModelFactory(adminId, storeId, dataSource)
 
         testViewModel =
             ViewModelProvider(
@@ -67,7 +67,6 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         val adapter =
             DeliveryListRecyclerViewAdapter(
-                adminId,
                 DeliveryListener { deliveryId ->
                     testViewModel.onDeliveryClicked(deliveryId)
                 }, CancelDeliveryListener { delivery ->

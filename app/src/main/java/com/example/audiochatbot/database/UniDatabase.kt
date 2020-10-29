@@ -87,8 +87,8 @@ abstract class UniDatabase: RoomDatabase() {
         )
 
         private val deliveries = listOf(
-            Delivery(1, 1, 1, "Waiting", "18/07/2020", "13:00"),
-            Delivery(2, 1, 1, "Delivered", "19/07/2020", "12:00"))
+            Delivery(1, 1, 1, "In Transit", "18/07/2020", "13:00"),
+            Delivery(2, 1, 1, "In Transit", "19/07/2020", "12:00"))
 
         private val deliveryItems = listOf(
             DeliveryProduct(1, 1, 1, 10, 4),
@@ -99,10 +99,10 @@ abstract class UniDatabase: RoomDatabase() {
             DeliveryProduct(6, 2, 5, 14, 3)
         )
 
-        private val deliveryProductStatuses = listOf(
+            /**private val deliveryProductStatuses = listOf(
             DeliveryProductStatus(1, 1, "Accepted", "18/07/2020", "13:00"),
             DeliveryProductStatus(2, 2, "Accepted", "18/07/2020", "13:00")
-        )
+        )*/
 
         private val inventories = listOf(
             InventoryCount(1, 1, 1, 700F, 700F, "18/07/2020", "12:00"),
@@ -161,7 +161,7 @@ abstract class UniDatabase: RoomDatabase() {
             userDao.discardItems(discardedItems)
             userDao.insertDeliveries(deliveries)
             userDao.insertDeliveryProducts(deliveryItems)
-            userDao.insertDeliveryProductStatuses(deliveryProductStatuses)
+            //userDao.insertDeliveryProductStatuses(deliveryProductStatuses)
             userDao.insertInventoryCount(inventories)
             userDao.insertCashOperations(cashOperations)
         }

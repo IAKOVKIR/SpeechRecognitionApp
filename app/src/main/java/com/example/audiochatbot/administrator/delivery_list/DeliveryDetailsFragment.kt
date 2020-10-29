@@ -18,8 +18,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.AcceptDeliveryProductsListener
-import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.DeclineDeliveryProductsListener
 import com.example.audiochatbot.administrator.delivery_list.recycler_view_adapters.DeliveryDetailsRecyclerViewAdapter
 import com.example.audiochatbot.administrator.delivery_list.view_models.DeliveryDetailsViewModel
 import com.example.audiochatbot.administrator.delivery_list.view_models.DeliveryDetailsViewModelFactory
@@ -71,12 +69,7 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
         binding.lifecycleOwner = this
 
         val adapter =
-            DeliveryDetailsRecyclerViewAdapter(args.deliveryId
-                , AcceptDeliveryProductsListener { product ->
-                    testViewModel.acceptItems(product)
-                }, DeclineDeliveryProductsListener { product ->
-                    testViewModel.declineItems(product)
-                }, dataSource)
+            DeliveryDetailsRecyclerViewAdapter(args.deliveryId, dataSource)
         binding.deliveryList.adapter = adapter
 
         testViewModel.deliveryProducts.observe(viewLifecycleOwner, {

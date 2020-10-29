@@ -21,7 +21,6 @@ import com.example.audiochatbot.R
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentDeliveryUserListBinding
 import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserListCancelDeliveryListener
-import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserListDeliveredDeliveryListener
 import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserListListener
 import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserListRecyclerViewAdapter
 import com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserListViewModel
@@ -72,8 +71,6 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
                     testViewModel.onDeliveryClicked(deliveryId)
                 }, DeliveryUserListCancelDeliveryListener { delivery ->
                     testViewModel.cancelDelivery(delivery)
-                }, DeliveryUserListDeliveredDeliveryListener { delivery ->
-                    testViewModel.deliveredDelivery(delivery)
                 })
         binding.deliveryList.adapter = adapter
 

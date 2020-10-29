@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.Delivery
 import com.example.audiochatbot.databinding.FragmentDeliveryListRecyclerViewAdapterBinding
 
-class DeliveryListRecyclerViewAdapter(private val adminId: Int, private val clickListener: DeliveryListener,
+class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListener,
                                       private val cancelDeliveryListener: CancelDeliveryListener,
                                       private val adminDeliveredListener: AdminDeliveredListener
 ) : ListAdapter<Delivery,
@@ -19,7 +19,7 @@ class DeliveryListRecyclerViewAdapter(private val adminId: Int, private val clic
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(adminId, clickListener, cancelDeliveryListener, adminDeliveredListener, item)
+        holder.bind(clickListener, cancelDeliveryListener, adminDeliveredListener, item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,7 +29,7 @@ class DeliveryListRecyclerViewAdapter(private val adminId: Int, private val clic
     class ViewHolder private constructor(val binding: FragmentDeliveryListRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(adminId: Int, clickListener: DeliveryListener, cancelDeliveryListener: CancelDeliveryListener,
+        fun bind(clickListener: DeliveryListener, cancelDeliveryListener: CancelDeliveryListener,
                  adminDeliveredListener: AdminDeliveredListener, item: Delivery) {
             binding.delivery = item
             binding.clickListener = clickListener
@@ -37,11 +37,10 @@ class DeliveryListRecyclerViewAdapter(private val adminId: Int, private val clic
             binding.status.text = "Status: ${item.status}"
 
             when {
-                item.status != "Waiting" -> {
+                item.status != "In Transit" -> {
                     binding.cancelButton.isEnabled = false
                     binding.deliveredButton.isEnabled = false
                 }
-                item.userId != adminId -> binding.deliveredButton.isEnabled = false
                 else -> {
                     binding.cancelButton.isEnabled = true
                     binding.deliveredButton.isEnabled = true

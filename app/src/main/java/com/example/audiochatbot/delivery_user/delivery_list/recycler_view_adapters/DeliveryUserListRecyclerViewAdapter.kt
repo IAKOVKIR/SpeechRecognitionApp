@@ -9,8 +9,7 @@ import com.example.audiochatbot.database.Delivery
 import com.example.audiochatbot.databinding.FragmentDeliveryUserListRecyclerViewAdapterBinding
 
 class DeliveryUserListRecyclerViewAdapter(private val clickListener: DeliveryUserListListener,
-                                              private val cancelDeliveryListener: DeliveryUserListCancelDeliveryListener,
-                                          private val deliveredDeliveryListener: DeliveryUserListDeliveredDeliveryListener
+                                              private val cancelDeliveryListener: DeliveryUserListCancelDeliveryListener
 ) : ListAdapter<Delivery,
         DeliveryUserListRecyclerViewAdapter.ViewHolder>(
     DeliveryUserListDiffCallback()
@@ -19,7 +18,7 @@ class DeliveryUserListRecyclerViewAdapter(private val clickListener: DeliveryUse
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(clickListener, cancelDeliveryListener, deliveredDeliveryListener, item)
+        holder.bind(clickListener, cancelDeliveryListener, item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,24 +28,16 @@ class DeliveryUserListRecyclerViewAdapter(private val clickListener: DeliveryUse
     class ViewHolder private constructor(val binding: FragmentDeliveryUserListRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: DeliveryUserListListener, cancelDeliveryListener: DeliveryUserListCancelDeliveryListener,
-                 deliveredDeliveryListener: DeliveryUserListDeliveredDeliveryListener, item: Delivery) {
+        fun bind(clickListener: DeliveryUserListListener, cancelDeliveryListener: DeliveryUserListCancelDeliveryListener, item: Delivery) {
             binding.delivery = item
             binding.clickListener = clickListener
             binding.deliveryName.text = "Delivery ${item.deliveryId}"
             binding.status.text = "Status: ${item.status}"
 
-            if (item.status != "Waiting") {
-                binding.cancelButton.isEnabled = false
-                binding.deliveredButton.isEnabled = false
-            }
+            binding.cancelButton.isEnabled = item.status == "In Transit"
 
             binding.cancelButton.setOnClickListener {
                 cancelDeliveryListener.onClick(item)
-            }
-
-            binding.deliveredButton.setOnClickListener {
-                deliveredDeliveryListener.onClick(item)
             }
 
         }
@@ -77,9 +68,5 @@ class DeliveryUserListListener(val clickListener: (deliveryId: Int) -> Unit) {
 }
 
 class DeliveryUserListCancelDeliveryListener(val clickListener: (delivery: Delivery) -> Unit) {
-    fun onClick(delivery: Delivery) = clickListener(delivery)
-}
-
-class DeliveryUserListDeliveredDeliveryListener(val clickListener: (delivery: Delivery) -> Unit) {
     fun onClick(delivery: Delivery) = clickListener(delivery)
 }

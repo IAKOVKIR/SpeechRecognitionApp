@@ -18,8 +18,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
+import com.example.audiochatbot.database.Delivery
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentEmployeeDeliveryListBinding
+import com.example.audiochatbot.employee.delivery_list.recycler_view_adapters.EmployeeDeliveredDeliveryListener
 import com.example.audiochatbot.employee.delivery_list.recycler_view_adapters.EmployeeDeliveryListRecyclerViewAdapter
 import com.example.audiochatbot.employee.delivery_list.recycler_view_adapters.EmployeeDeliveryListener
 import com.example.audiochatbot.employee.delivery_list.view_models.EmployeeDeliveryListViewModel
@@ -66,6 +68,8 @@ class EmployeeDeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
             EmployeeDeliveryListRecyclerViewAdapter(
                 EmployeeDeliveryListener { deliveryId ->
                     testViewModel.onDeliveryClicked(deliveryId)
+                }, EmployeeDeliveredDeliveryListener { delivery: Delivery ->
+                    testViewModel.deliveredDelivery(delivery)
                 })
         binding.deliveryList.adapter = adapter
 

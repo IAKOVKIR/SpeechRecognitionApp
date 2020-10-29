@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.Delivery
+import com.example.audiochatbot.database.DeliveryProductStatus
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
@@ -73,18 +74,12 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
             else {
                 val pattern = "open delivery number".toRegex()
                 val patternCancelDelivery = "cancel delivery number".toRegex()
-                val patternDeliveryNumber = "delivery number".toRegex()
-                val patternDeliveryIsDelivered = "is delivered".toRegex()
 
                 val match = pattern.find(text)
                 val matchCancelDelivery = patternCancelDelivery.find(text)
-                val matchDeliveryNumber = patternDeliveryNumber.find(text)
-                val matchDeliveryIsDelivered = patternDeliveryIsDelivered.find(text)
 
                 val index = match?.range?.last
                 val indexCancelDelivery = matchCancelDelivery?.range?.last
-                val indexDeliveryNumber = matchDeliveryNumber?.range?.last
-                val indexDeliveryIsDelivered = matchDeliveryIsDelivered?.range?.first
 
                 if (index != null) {
                     val num = textToInteger(text, index)
@@ -125,45 +120,14 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
                             }
 
                             if (delivery != null)
-                                if (delivery.status == "On the way")
+                                if (delivery.status == "In Transit")
                                     cancelDelivery(delivery)
                                 else
-                                    _message.value = "The delivery is already cancelled or delivered"
+                                    _message.value = "The delivery is already canceled or delivered"
                             else
                                 _message.value = "You do not have an access to this delivery"
                         } else
                             _message.value = "The store does not have any deliveries"
-                    } else
-                        _message.value = "Cannot understand your command"
-                } else if (indexDeliveryNumber != null && indexDeliveryIsDelivered != null) {
-                    if (indexDeliveryNumber < indexDeliveryIsDelivered) {
-                        val subStr = text.substring(indexDeliveryNumber, indexDeliveryIsDelivered)
-                        val num = textToInteger(subStr, 0)
-
-                        if (num > 0) {
-                            val list = deliveries.value
-                            var delivery: Delivery? = null
-
-                            if (list != null) {
-                                for (i in list) {
-                                    if (i.deliveryId == num) {
-                                        delivery = i
-                                        break
-                                    }
-                                }
-
-                                if (delivery != null)
-                                    if (delivery.status == "On the way")
-                                        deliveredDelivery(delivery)
-                                    else
-                                        _message.value = "The delivery is already cancelled or delivered"
-                                else
-                                    _message.value = "You do not have an access to this delivery"
-                            } else
-                                _message.value = "The store does not have any deliveries"
-                        } else
-                            _message.value = "Cannot understand your command"
-
                     } else
                         _message.value = "Cannot understand your command"
                 } else
@@ -174,17 +138,22 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
 
     fun cancelDelivery(delivery: Delivery) {
         uiScope.launch {
-            delivery.status = "Cancelled"
+            delivery.status = "Canceled"
             updateDelivery(delivery)
+
+            val idList = getIDs(delivery.deliveryId)
+            for (i in idList) {
+                declineItems(i)
+            }
+
             _deliveries.value = getItems()
         }
     }
 
-    fun deliveredDelivery(delivery: Delivery) {
+    private fun declineItems(deliveryProductId: Int) {
         uiScope.launch {
-            delivery.status = "Delivered"
-            updateDelivery(delivery)
-            _deliveries.value = getItems()
+            val newDeliveryProductStatus = DeliveryProductStatus(deliveryProductId, userId, "Canceled", "13/07/2020", "13:00")
+            addDProductStatus(newDeliveryProductStatus)
         }
     }
 
@@ -217,6 +186,18 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
     private suspend fun getItems(): List<Delivery> {
         return withContext(Dispatchers.IO) {
             database.getAllDeliveriesWithDeliveryUserAndStoreID(userId, storeId)
+        }
+    }
+
+    private suspend fun getIDs(deliveryId: Int): List<Int> {
+        return withContext(Dispatchers.IO) {
+            database.getAllDeliveryProductIDs(deliveryId)
+        }
+    }
+
+    private suspend fun addDProductStatus(deliveryProductStatus: DeliveryProductStatus) {
+        withContext(Dispatchers.IO) {
+            database.insertDeliveryProductStatus(deliveryProductStatus)
         }
     }
 

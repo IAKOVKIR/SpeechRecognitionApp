@@ -303,6 +303,9 @@ interface UserDao {
     @Query("SELECT * FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId ORDER BY AssignedProductID DESC")
     fun getAllDeliveryProducts(deliveryId: Int): List<DeliveryProduct>
 
+    @Query("SELECT DeliveryProductID FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId ORDER BY AssignedProductID DESC")
+    fun getAllDeliveryProductIDs(deliveryId: Int): List<Int>
+
     @Query("SELECT DeliveryProductID FROM DELIVERY_PRODUCT ORDER BY DeliveryProductID DESC LIMIT 1")
     fun getLastDeliveryProductId(): Int
 
@@ -316,6 +319,9 @@ interface UserDao {
 
     @Query("SELECT * FROM DELIVERY_PRODUCT_STATUS WHERE DeliveryProductID =:deliveryProductID")
     fun getDeliveryProductStatus(deliveryProductID: Int): DeliveryProductStatus?
+
+    @Query("UPDATE DELIVERY_PRODUCT_STATUS SET Status =:status WHERE EXISTS (SELECT * FROM DELIVERY_PRODUCT WHERE (DELIVERY_PRODUCT_STATUS.DeliveryProductID = DELIVERY_PRODUCT.DeliveryProductID))")
+    fun updateDeliveryProducts(status: String)
 
 
     //Inventory Count

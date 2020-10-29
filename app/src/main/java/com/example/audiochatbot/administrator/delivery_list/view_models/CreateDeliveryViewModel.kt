@@ -1,7 +1,6 @@
 package com.example.audiochatbot.administrator.delivery_list.view_models
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -62,7 +61,6 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
     fun convertStringToAction(givenText: String) {
         uiScope.launch {
             val text = givenText.toLowerCase()
-            Log.e("heh", text)
             // if the command is go back
             if (text.contains("go back"))
                 _closeFragment.value = true
@@ -91,7 +89,6 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
                             var lastIndex = indexSmallUnits.last + 1
                             val str = text.substring(indexAddItems + 1, indexAddItems + 7)
                             smallQuantity = textToInteger(str)
-                            Log.e("heh s", "$smallQuantity")
 
                             if (indexBigUnits != null) {
                                 if (indexBigUnits.first > indexSmallUnits.last) {
@@ -110,7 +107,6 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
                             if (smallQuantity > 0 || bigQuantity > 0) {
                                 if (indexProductId != null) {
                                     val strId = strProduct.substring(indexProductId.last + 1)
-                                    Log.e("heh", strId)
                                     val testId = textToInteger(strId)
                                     val list = products.value
 
@@ -137,7 +133,6 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
 
                                     if (list != null) {
                                         for (i in list) {
-                                            Log.e(i.name.toLowerCase(), strName)
                                             if (strName.contains(i.name.toLowerCase())) {
                                                 id = i.productId
                                                 break
@@ -163,7 +158,6 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
                         if (indexBigUnits.first > indexAddItems) {
                             val strBig = text.substring(indexAddItems, indexBigUnits.last + 1)
                             bigQuantity = textToInteger(strBig)
-                            Log.e("heh b", "$bigQuantity")
 
                             val strProduct = text.substring(indexBigUnits.last + 1)
                             val matchProductName = "of".toRegex().find(strProduct)
@@ -201,7 +195,6 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
 
                                     if (list != null) {
                                         for (i in list) {
-                                            Log.e(i.name.toLowerCase(), strName)
                                             if (strName.contains(i.name.toLowerCase())) {
                                                 id = i.productId
                                                 break
@@ -265,7 +258,6 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
 
                         if (list != null) {
                             for (i in list) {
-                                Log.e(i.name.toLowerCase(), str)
                                 if (str.contains(i.name.toLowerCase())) {
                                     num1 = i.productId
                                     break
@@ -352,7 +344,7 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
             }
 
             if (itemList.size != 0) {
-                val delivery = Delivery(deliveryId, storeId, adminId, "Waiting", "18/07/2020", "13:00")
+                val delivery = Delivery(deliveryId, storeId, adminId, "In Transit", "18/07/2020", "13:00")
                 addNewDelivery(delivery)
 
                 val newList = itemList.toList()
@@ -376,10 +368,7 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
         val result = str.filter { it.isDigit() }
 
         return when {
-            result != "" -> {
-                Log.e("heh", result)
-                result.toInt()
-            }
+            result != "" -> result.toInt()
             str.contains("one") -> 1
             str.contains("to") || str.contains("two") -> 2
             str.contains("three") -> 3

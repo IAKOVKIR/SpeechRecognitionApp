@@ -4,8 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.database.Delivery
-import com.example.audiochatbot.database.UserDao
+import com.example.audiochatbot.database.*
 import kotlinx.coroutines.*
 
 class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val database: UserDao) : ViewModel() {
@@ -54,8 +53,12 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
                 _closeFragment.value = true
             else {
                 val match = "open delivery number".toRegex().find(text)
+                val matchDeliveryNumber = "delivery number".toRegex().find(text)
+                val matchDeliveryIsDelivered = "is delivered".toRegex().find(text)
 
                 val index = match?.range?.last
+                val indexDeliveryNumber = matchDeliveryNumber?.range?.last
+                val indexDeliveryIsDelivered = matchDeliveryIsDelivered?.range?.first
 
                 if (index != null) {
                     val num = textToInteger(text, index)
@@ -80,9 +83,80 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
                             _message.value = "The store does not have any deliveries"
                     } else
                         _message.value = "Cannot understand your command"
+                } else if (indexDeliveryNumber != null && indexDeliveryIsDelivered != null) {
+                    if (indexDeliveryNumber < indexDeliveryIsDelivered) {
+                        val subStr = text.substring(indexDeliveryNumber, indexDeliveryIsDelivered)
+                        val num = textToInteger(subStr, 0)
+
+                        if (num > 0) {
+                            val list = deliveries.value
+                            var delivery: Delivery? = null
+
+                            if (list != null) {
+                                for (i in list) {
+                                    if (i.deliveryId == num) {
+                                        delivery = i
+                                        break
+                                    }
+                                }
+
+                                if (delivery != null)
+                                    if (delivery.status == "In Transit")
+                                        deliveredDelivery(delivery)
+                                    else
+                                        _message.value = "The delivery is already canceled or delivered"
+                                else
+                                    _message.value = "You do not have an access to this delivery"
+                            } else
+                                _message.value = "The store does not have any deliveries"
+                        } else
+                            _message.value = "Cannot understand your command"
+
+                    } else
+                        _message.value = "Cannot understand your command"
                 } else
                     _message.value = "Cannot understand your command"
             }
+        }
+    }
+
+    fun deliveredDelivery(delivery: Delivery) {
+        uiScope.launch {
+            delivery.status = "Delivered"
+            updateDelivery(delivery)
+
+            val idList = getDeliveryProducts(delivery.deliveryId)
+            for (i in idList) {
+                acceptItems(i)
+            }
+
+            _deliveries.value = getItems()
+        }
+    }
+
+    private fun acceptItems(deliveryProduct: DeliveryProduct) {
+        uiScope.launch {
+            val conversion = getConversion(deliveryProduct.assignedProductId)
+            var smallQuantity = 0
+            var bigQuantity = 0
+
+            for (i in conversion.indices) {
+                if (conversion[i] == ':') {
+                    smallQuantity = conversion.substring(0, i).toInt()
+                    bigQuantity = conversion.substring(i + 1).toInt()
+                    break
+                }
+            }
+
+            Log.d("s / b", "$smallQuantity / $bigQuantity")
+
+            val newDeliveryProductStatus = DeliveryProductStatus(deliveryProduct.deliveryProductId, userId, "Delivered", "13/07/2020", "13:00")
+            addDProductStatus(newDeliveryProductStatus)
+
+            val assignedProduct = getAssignedProduct(deliveryProduct.assignedProductId)
+            assignedProduct!!.quantity = assignedProduct.quantity + ((deliveryProduct.smallUnitQuantity * smallQuantity) + (deliveryProduct.bigUnitQuantity * bigQuantity))
+            updateAssignedProduct(assignedProduct)
+            _deliveries.value = getItems()
         }
     }
 
@@ -110,7 +184,43 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
 
     private suspend fun getItems(): List<Delivery> {
         return withContext(Dispatchers.IO) {
-            database.getAllDeliveriesWithStoreIDAndStatus(storeId, "Delivered")
+            database.getAllDeliveriesWithStore(storeId)
+        }
+    }
+
+    private suspend fun updateDelivery(delivery: Delivery) {
+        withContext(Dispatchers.IO) {
+            database.updateDelivery(delivery)
+        }
+    }
+
+    private suspend fun addDProductStatus(deliveryProductStatus: DeliveryProductStatus) {
+        withContext(Dispatchers.IO) {
+            database.insertDeliveryProductStatus(deliveryProductStatus)
+        }
+    }
+
+    private suspend fun getConversion(productId: Int): String {
+        return withContext(Dispatchers.IO) {
+            database.getProductConversionWithAssignedProductId(productId)
+        }
+    }
+
+    private suspend fun getDeliveryProducts(deliveryId: Int): List<DeliveryProduct> {
+        return withContext(Dispatchers.IO) {
+            database.getAllDeliveryProducts(deliveryId)
+        }
+    }
+
+    private suspend fun getAssignedProduct(assignedProductId: Int): AssignedProduct? {
+        return withContext(Dispatchers.IO) {
+            database.getAssignedProduct(assignedProductId)
+        }
+    }
+
+    private suspend fun updateAssignedProduct(assignedProduct: AssignedProduct) {
+        withContext(Dispatchers.IO) {
+            database.updateAssignedProduct(assignedProduct)
         }
     }
 

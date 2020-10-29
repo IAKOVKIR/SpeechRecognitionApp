@@ -233,6 +233,9 @@ interface UserDao {
     @Query("SELECT Quantity FROM ASSIGNED_PRODUCT WHERE ProductID = :productId AND StoreID = :storeId")
     fun getQuantity(productId: Int, storeId: Int): Int
 
+    @Query("SELECT * FROM ASSIGNED_PRODUCT INNER JOIN DELIVERY_PRODUCT ON ASSIGNED_PRODUCT.AssignedProductID = DELIVERY_PRODUCT.AssignedProductID WHERE DeliveryID =:deliveryId")
+    fun getAssignedProductsWithDeliveryId(deliveryId: Int): List<AssignedProduct>
+
 
     //Discarded Items
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -308,6 +311,9 @@ interface UserDao {
 
     @Query("SELECT DeliveryProductID FROM DELIVERY_PRODUCT ORDER BY DeliveryProductID DESC LIMIT 1")
     fun getLastDeliveryProductId(): Int
+
+    @Query("DELETE FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId")
+    fun deleteDeliveryProductRecord(deliveryId: Int)
 
 
     //Delivery Product Status

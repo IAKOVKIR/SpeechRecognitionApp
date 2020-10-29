@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.DeliveryProduct
-import com.example.audiochatbot.database.DeliveryProductStatus
 import com.example.audiochatbot.database.Product
 import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentDeliveryDetailsRecyclerViewAdapterBinding
@@ -15,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private val userDao: UserDao
+class DeliveryDetailsRecyclerViewAdapter(private val userDao: UserDao
 ) : ListAdapter<DeliveryProduct,
         DeliveryDetailsRecyclerViewAdapter.ViewHolder>(
     DeliveryProductDiffCallback()) {
@@ -23,7 +22,7 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(deliveryId, item, userDao)
+        holder.bind(item, userDao)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,17 +32,13 @@ class DeliveryDetailsRecyclerViewAdapter(private val deliveryId: Int, private va
     class ViewHolder private constructor(val binding: FragmentDeliveryDetailsRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(deliveryId: Int, item: DeliveryProduct, userDao: UserDao) {
+        fun bind(item: DeliveryProduct, userDao: UserDao) {
             CoroutineScope(Dispatchers.Default).launch {
 
-                var status: String
                 lateinit var obj: Product
-                var obj2: DeliveryProductStatus?
 
                 withContext(Dispatchers.IO) {
                     obj = userDao.getProductWithAssignedProductId(item.assignedProductId)
-                    obj2 = userDao.getDeliveryProductStatus(item.deliveryProductId)
-                    status = userDao.getDeliveryStatus(deliveryId)
                 }
 
                 launch (Dispatchers.Main) {

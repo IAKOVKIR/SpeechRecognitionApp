@@ -63,8 +63,8 @@ class DeliveryUserListDiffCallback : DiffUtil.ItemCallback<Delivery>() {
     }
 }
 
-class DeliveryUserListListener(val clickListener: (deliveryId: Int) -> Unit) {
-    fun onClick(delivery: Delivery) = clickListener(delivery.deliveryId)
+class DeliveryUserListListener(val clickListener: (delivery: Delivery) -> Unit) {
+    fun onClick(delivery: Delivery) = clickListener(delivery)
 }
 
 class DeliveryUserListCancelDeliveryListener(val clickListener: (delivery: Delivery) -> Unit) {

@@ -20,7 +20,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentDeliveryUserListDetailsBinding
+import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserAddDeliveryProductListener
 import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserListDetailsRecyclerViewAdapter
+import com.example.audiochatbot.delivery_user.delivery_list.recycler_view_adapters.DeliveryUserRemoveDeliveryProductListener
 import com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserListDetailsViewModel
 import com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserListDetailsViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -56,28 +58,45 @@ class DeliveryUserListDetailsFragment : Fragment(), TextToSpeech.OnInitListener 
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            DeliveryUserListDetailsViewModelFactory(args.deliveryId, dataSource)
+            DeliveryUserListDetailsViewModelFactory(args.storeId, args.userId, args.deliveryId, dataSource)
 
         testViewModel =
             ViewModelProvider(
                 this, viewModelFactory).get(DeliveryUserListDetailsViewModel::class.java)
 
-        // To use the View Model with data binding, you have to explicitly
-        // give the binding object a reference to it.
-        binding.deliveryDetailViewModel = testViewModel
-
-        binding.lifecycleOwner = this
-
-        val adapter =
-            DeliveryUserListDetailsRecyclerViewAdapter(dataSource)
+        var adapter =
+            DeliveryUserListDetailsRecyclerViewAdapter(
+                DeliveryUserAddDeliveryProductListener { product, smallQuantity, bigQuantity ->
+                    testViewModel.addItem(product.productId, smallQuantity, bigQuantity)
+                },
+                DeliveryUserRemoveDeliveryProductListener {
+                    testViewModel.removeItem(it.productId)
+                }, List(100) { 0 }
+            )
         binding.deliveryList.adapter = adapter
 
-        testViewModel.deliveryProducts.observe(viewLifecycleOwner, {
+        testViewModel.products.observe(viewLifecycleOwner, {
             it?.let {
                 adapter.submitList(it)
-                adapter.notifyDataSetChanged()
             }
         })
+
+        testViewModel.l.observe(viewLifecycleOwner, { l ->
+            adapter =
+                DeliveryUserListDetailsRecyclerViewAdapter(
+                    DeliveryUserAddDeliveryProductListener { product, smallQuantity, bigQuantity ->
+                        testViewModel.addItem(product.productId, smallQuantity, bigQuantity)
+                    },
+                    DeliveryUserRemoveDeliveryProductListener {
+                        testViewModel.removeItem(it.productId)
+                    }, l
+                )
+            binding.deliveryList.adapter = adapter
+        })
+
+        binding.updateTheDelivery.setOnClickListener {
+            testViewModel.submitDelivery()
+        }
 
         binding.microphoneImage.setOnClickListener {
             // Get the Intent action
@@ -87,7 +106,7 @@ class DeliveryUserListDetailsFragment : Fragment(), TextToSpeech.OnInitListener 
             // Adding an extra language, you can use any language from the Locale class.
             sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             // Text that shows up on the Speech input prompt.
-            sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "go back | return back")
+            sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
             try {
                 // Start the intent for a result, and pass in our request code.
                 startActivityForResult(sttIntent, requestCodeStt)

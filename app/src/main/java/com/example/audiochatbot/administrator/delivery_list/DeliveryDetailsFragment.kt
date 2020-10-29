@@ -69,7 +69,7 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
         binding.lifecycleOwner = this
 
         val adapter =
-            DeliveryDetailsRecyclerViewAdapter(args.deliveryId, dataSource)
+            DeliveryDetailsRecyclerViewAdapter(dataSource)
         binding.deliveryList.adapter = adapter
 
         testViewModel.deliveryProducts.observe(viewLifecycleOwner, {

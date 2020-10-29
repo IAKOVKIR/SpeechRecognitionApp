@@ -49,7 +49,7 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
     val message: LiveData<String?>
         get() = _message
 
-    private val _navigateToDeliveryDetails = MutableLiveData<Int>()
+    private val _navigateToDeliveryDetails = MutableLiveData<Delivery>()
     val navigateToDeliveryDetails
         get() = _navigateToDeliveryDetails
 
@@ -83,21 +83,21 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
 
                 if (index != null) {
                     val num = textToInteger(text, index)
+                    var del: Delivery? = null
 
                     if (num > 0) {
                         val list = deliveries.value
-                        var res = false
 
                         if (list != null) {
                             for (i in list) {
                                 if (i.deliveryId == num) {
-                                    res = true
+                                    del = i
                                     break
                                 }
                             }
 
-                            if (res)
-                                _navigateToDeliveryDetails.value = num
+                            if (del != null)
+                                _navigateToDeliveryDetails.value = del
                             else
                                 _message.value = "You do not have an access to this delivery"
                         } else
@@ -201,8 +201,8 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
         }
     }
 
-    fun onDeliveryClicked(id: Int) {
-        _navigateToDeliveryDetails.value = id
+    fun onDeliveryClicked(delivery: Delivery) {
+        _navigateToDeliveryDetails.value = delivery
     }
 
     fun onStoreNavigated() {

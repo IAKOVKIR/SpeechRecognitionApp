@@ -67,8 +67,8 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         val adapter =
             DeliveryUserListRecyclerViewAdapter(
-                DeliveryUserListListener { deliveryId ->
-                    testViewModel.onDeliveryClicked(deliveryId)
+                DeliveryUserListListener { delivery ->
+                    testViewModel.onDeliveryClicked(delivery)
                 }, DeliveryUserListCancelDeliveryListener { delivery ->
                     testViewModel.cancelDelivery(delivery)
                 })
@@ -112,10 +112,22 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         })
 
-        testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { deliveryId ->
-            deliveryId?.let {
+        testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { delivery ->
+            delivery?.let {
                 // Redirect to delivery details view
-                this.findNavController().navigate(DeliveryUserListFragmentDirections.actionDeliveryUserListToDeliveryUserListDetails(deliveryId))
+                if (delivery.status == "In Transit") {
+                    this.findNavController().navigate(
+                        DeliveryUserListFragmentDirections.actionDeliveryUserListToDeliveryUserListDetails(
+                            args.storeId,
+                            args.userId,
+                            delivery.deliveryId
+                        )
+                    )
+                } else {
+                    this.findNavController().navigate(
+                        DeliveryUserListFragmentDirections.actionDeliveryUserListToDeliveryDetailsFragment(delivery.deliveryId, args.userId)
+                    )
+                }
                 testViewModel.onStoreNavigated()
             }
         })

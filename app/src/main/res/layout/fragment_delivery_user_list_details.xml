@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".delivery_user.delivery_list.DeliveryUserListDetailsFragment">
-
-    <data>
-        <variable
-            name="deliveryDetailViewModel"
-            type="com.example.audiochatbot.delivery_user.delivery_list.view_models.DeliveryUserListDetailsViewModel" />
-    </data>
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".delivery_user.delivery_list.DeliveryUserListDetailsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -21,21 +15,30 @@
             android:layout_marginTop="4dp"
             android:textSize="20sp"
             android:textColor="#000"
-            android:text="@{@string/delivery_detail_title(deliveryDetailViewModel.deliveryId)}"
+            android:text="Delivery Details"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Delivery Details"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/microphone_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:contentDescription="@string/microphone_icon"
+            android:layout_marginStart="12dp"
+            android:contentDescription="microphone icon"
             android:src="@drawable/ic_baseline_mic_24"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/update_the_delivery"
+            app:layout_constraintStart_toEndOf="@id/update_the_delivery"
+            app:layout_constraintTop_toTopOf="@+id/update_the_delivery" />
+
+        <Button
+            android:id="@+id/update_the_delivery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Update The Delivery"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/home_title" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -46,7 +49,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/microphone_image"
+            app:layout_constraintTop_toBottomOf="@id/update_the_delivery"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/fragment_delivery_user_list_details_recycler_view_adapter"/>
 

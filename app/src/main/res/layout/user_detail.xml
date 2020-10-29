@@ -29,67 +29,150 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="User Detail Title" />
 
-        <EditText
-            android:id="@+id/first_name"
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/microphone_image"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@{userDetailViewModel.user.firstName}"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/microphone_icon"
+            android:src="@drawable/ic_baseline_mic_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/create_user_title" />
 
+        <TextView
+            android:id="@+id/first_name_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="First Name"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/first_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/first_name" />
+
+        <EditText
+            android:id="@+id/first_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@{userDetailViewModel.user.firstName}"
+            app:layout_constraintEnd_toStartOf="@id/first_name_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/microphone_image" />
+
+        <TextView
+            android:id="@+id/last_name_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last Name"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/last_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/last_name" />
+
         <EditText
             android:id="@+id/last_name"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="@{userDetailViewModel.user.lastName}"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/last_name_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/first_name" />
 
+        <TextView
+            android:id="@+id/phone_number_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone Number"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/phone_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/phone_number" />
+
         <EditText
             android:id="@+id/phone_number"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:inputType="phone"
             android:text="@{userDetailViewModel.user.phoneNumber}"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/phone_number_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/last_name" />
 
+        <TextView
+            android:id="@+id/email_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/email"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/email" />
+
         <EditText
             android:id="@+id/email"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:inputType="textEmailAddress"
             android:text="@{userDetailViewModel.user.email}"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/email_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/phone_number" />
 
+        <TextView
+            android:id="@+id/password_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/password" />
+
         <EditText
             android:id="@+id/password"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:hint="Password"
             android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/password_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/email" />
 
+        <TextView
+            android:id="@+id/repeat_password_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repeat Password"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/repeat_password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/repeat_password" />
+
         <EditText
             android:id="@+id/repeat_password"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:hint="Repeat Password"
             android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/repeat_password_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/password" />
 

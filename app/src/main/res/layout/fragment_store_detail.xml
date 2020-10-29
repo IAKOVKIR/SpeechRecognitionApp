@@ -38,76 +38,147 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/create_user_title" />
 
+        <TextView
+            android:id="@+id/street_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Street"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/store_street"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/store_street" />
 
         <EditText
             android:id="@+id/store_street"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:text="@{storeDetailViewModel.store.street}"
             android:hint="Street"
             android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/street_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/microphone_image" />
 
+        <TextView
+            android:id="@+id/city_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="City"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/store_city"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/store_city" />
+
         <EditText
             android:id="@+id/store_city"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@{storeDetailViewModel.store.city}"
             android:hint="City"
             android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/city_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/store_street"/>
 
+        <TextView
+            android:id="@+id/state_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="State"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/store_state"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/store_state" />
+
         <EditText
             android:id="@+id/store_state"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@{storeDetailViewModel.store.state}"
             android:hint="State"
             android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/state_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/store_city"/>
 
+        <TextView
+            android:id="@+id/phone_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/store_phone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/store_phone" />
+
         <EditText
             android:id="@+id/store_phone"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@{storeDetailViewModel.store.phoneNumber}"
             android:hint="Phone"
             android:inputType="phone"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/phone_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/store_state"/>
 
+        <TextView
+            android:id="@+id/zip_code_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zip Code"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/zip_code"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/zip_code" />
+
         <EditText
             android:id="@+id/zip_code"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@{String.valueOf(storeDetailViewModel.store.zip_code)}"
             android:hint="Zip Code"
             android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/zip_code_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/store_phone"/>
 
+        <TextView
+            android:id="@+id/cash_on_hand_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cash on hand"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="@+id/cash_on_hand"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/cash_on_hand" />
+
         <EditText
             android:id="@+id/cash_on_hand"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@{String.valueOf(storeDetailViewModel.store.cashOnHand)}"
             android:hint="Cash on hand"
             android:inputType="numberDecimal"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cash_on_hand_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/zip_code"/>
 

@@ -307,7 +307,7 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
         uiScope.launch {
             // get the index of productId in the list
             val num = productIds.indexOf(productId)
-            if (smallBigQuantities[num * 2] > 0 || smallBigQuantities[num * 2] > 0) {
+            if (smallBigQuantities[num * 2] > 0 || smallBigQuantities[num * 2 + 1] > 0) {
                 // assign new values
                 smallBigQuantities[num * 2] = 0
                 smallBigQuantities[num * 2 + 1] = 0

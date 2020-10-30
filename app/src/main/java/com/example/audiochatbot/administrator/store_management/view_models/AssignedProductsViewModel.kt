@@ -1,7 +1,6 @@
 package com.example.audiochatbot.administrator.store_management.view_models
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -49,10 +48,10 @@ class AssignedProductsViewModel(val storeId: Int, private val database: UserDao)
     fun convertStringToAction(recordedText: String) {
         uiScope.launch {
             val text = recordedText.toLowerCase()
-            Log.e("heh", text)
-            if (text.contains("go back"))
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
-            else if (text.contains("assign products"))
+            else if (text.contains("assign products") || text.contains("assign product") || text.contains("assign a product")
+                || text.contains("assign the product"))
                 _navigateToAssignProducts.value = true
             else {
                 val matchRemoveProductNumber = "remove product number".toRegex().find(text)
@@ -114,10 +113,7 @@ class AssignedProductsViewModel(val storeId: Int, private val database: UserDao)
         val result = str.filter { it.isDigit() }
 
         return when {
-            result != "" -> {
-                Log.e("heh", result)
-                result.toInt()
-            }
+            result != "" -> result.toInt()
             str.contains("one") -> 1
             str.contains("to") || str.contains("two") -> 2
             str.contains("three") -> 3

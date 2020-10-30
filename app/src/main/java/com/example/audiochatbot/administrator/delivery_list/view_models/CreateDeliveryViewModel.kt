@@ -62,9 +62,9 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
         uiScope.launch {
             val text = givenText.toLowerCase()
             // if the command is go back
-            if (text.contains("go back"))
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
-            else if (text.contains("submit the delivery")) {
+            else if (text.contains("submit the delivery") || text.contains("submit delivery") || text.contains("submit")) {
                 submitDelivery()
             } else {
                 // get the last indexes of the given substrings

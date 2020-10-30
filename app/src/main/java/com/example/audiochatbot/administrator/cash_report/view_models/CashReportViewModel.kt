@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.cash_report.view_models
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -49,8 +50,10 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
         }
     }
 
-    fun convertStringToAction(text: String) {
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(givenText: String) {
         uiScope.launch {
+            val text = givenText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else {

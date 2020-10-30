@@ -1,7 +1,6 @@
 package com.example.audiochatbot.administrator.store_management.view_models
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -61,10 +60,10 @@ class StoreManagementViewModel(val adminId: Int,val dataSource: UserDao) : ViewM
     fun convertStringToAction(recordedText: String) {
         uiScope.launch {
             val text = recordedText.toLowerCase()
-            Log.e("heh", text)
-            if (text.contains("go back"))
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
-            else if (text.contains("add new store") || text.contains("create new store")) {
+            else if (text.contains("add new store") || text.contains("create new store") || text.contains("add a new store")
+                || text.contains("create a new store")) {
                 _navigateToCreateNewStore.value = true
             }  else {
                 val matchOpenStoreNumber = "open store number".toRegex().find(text)
@@ -104,12 +103,10 @@ class StoreManagementViewModel(val adminId: Int,val dataSource: UserDao) : ViewM
         val result = str.filter { it.isDigit() }
 
         return when {
-            result != "" -> {
-                Log.e("heh", result)
-                result.toInt()
-            }
+            result != "" -> result.toInt()
             str.contains("one") -> 1
             str.contains("to") || str.contains("two") -> 2
+            str.contains("three") -> 3
             str.contains("for") -> 4
             else -> -1
         }

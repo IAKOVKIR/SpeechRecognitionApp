@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.delivery_list.view_models
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -49,12 +50,14 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
         }
     }
 
-    fun convertStringToAction(text: String) {
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(givenText: String) {
         uiScope.launch {
-            Log.e("heh", text)
-            if (text.contains("go back"))
+            val text = givenText.toLowerCase()
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
-            else if (text.contains("add new delivery") || text.contains("create new delivery"))
+            else if (text.contains("add new delivery") || text.contains("create new delivery") ||
+                text.contains("add delivery") || text.contains("create delivery"))
                 _navigateToCreateNewDelivery.value = true
             else {
                 val pattern = "open delivery number".toRegex()

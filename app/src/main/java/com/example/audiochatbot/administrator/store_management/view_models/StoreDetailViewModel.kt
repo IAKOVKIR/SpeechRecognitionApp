@@ -51,11 +51,11 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
     fun convertStringToAction(recordedText: String) {
         uiScope.launch {
             when (recordedText.toLowerCase()) {
-                "go back" -> _closeFragment.value = true
-                "update details" -> _action.value = 1
-                "remove store" -> deleteRecord()
-                "assigned products", "open assigned items" -> _action.value = 2
-                "assigned users", "open assigned users" -> _action.value = 3
+                "go back", "return back" -> _closeFragment.value = true
+                "update details", "update" -> _action.value = 1
+                "remove store", "remove this store", "remove the store" -> deleteRecord()
+                "assigned products", "open assigned items", "open the assigned items" -> _action.value = 2
+                "assigned users", "open assigned users", "open the assigned users" -> _action.value = 3
                 else -> _message.value = "I am sorry, I cannot understand your command"
             }
         }

@@ -61,10 +61,10 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
     fun convertStringToAction(recordedText: String) {
         uiScope.launch {
             val text = recordedText.toLowerCase()
-            Log.e("heh", text)
             if (text.contains("go back"))
                 _closeFragment.value = true
-            else if (text.contains("add new product") || text.contains("create new product")) {
+            else if (text.contains("add new product") || text.contains("create new product") || text.contains("add product")
+                || text.contains("add a product") || text.contains("create product") || text.contains("create a product")) {
                 _navigateToCreateNewProduct.value = true
             } else {
                 val patternOpenProductNumber = "open product number".toRegex()

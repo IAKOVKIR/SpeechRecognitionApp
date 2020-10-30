@@ -67,8 +67,8 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         val adapter =
             DeliveryListRecyclerViewAdapter(
-                DeliveryListener { deliveryId ->
-                    testViewModel.onDeliveryClicked(deliveryId)
+                DeliveryListener { delivery ->
+                    testViewModel.onDeliveryClicked(delivery)
                 }, CancelDeliveryListener { delivery ->
                     testViewModel.updateDeliveryStatus(delivery, "Canceled")
                 }, AdminDeliveredListener { delivery ->
@@ -110,9 +110,19 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         })
 
-        testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { deliveryId ->
-            deliveryId?.let {
-                this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToDeliveryDetailsFragment(deliveryId, adminId))
+        testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { delivery ->
+            delivery?.let {
+                // Redirect to delivery details view
+                if (delivery.status == "In Transit") {
+                    this.findNavController().navigate(DeliveryListFragmentDirections.actionDeliveryListToDeliveryUserListDetailsFragment(storeId, adminId, delivery.deliveryId))
+                } else {
+                    this.findNavController().navigate(
+                        DeliveryListFragmentDirections.actionDeliveryListToDeliveryDetailsFragment(
+                            delivery.deliveryId,
+                            adminId
+                        )
+                    )
+                }
                 testViewModel.onStoreNavigated()
             }
         })

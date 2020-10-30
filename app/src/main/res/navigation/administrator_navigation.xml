@@ -290,6 +290,9 @@
         <argument
             android:name="businessId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_delivery_list_to_deliveryUserListDetailsFragment"
+            app:destination="@id/deliveryUserListDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/delivery_details"
@@ -375,6 +378,21 @@
             app:argType="integer" />
         <argument
             android:name="businessId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/deliveryUserListDetailsFragment"
+        android:name="com.example.audiochatbot.delivery_user.delivery_list.DeliveryUserListDetailsFragment"
+        android:label="fragment_delivery_user_list_details"
+        tools:layout="@layout/fragment_delivery_user_list_details" >
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+        <argument
+            android:name="deliveryId"
             app:argType="integer" />
     </fragment>
 </navigation>

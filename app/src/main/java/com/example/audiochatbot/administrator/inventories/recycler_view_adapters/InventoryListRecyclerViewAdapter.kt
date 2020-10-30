@@ -31,6 +31,7 @@ class InventoryListRecyclerViewAdapter : ListAdapter<InventoryCount,
         fun bind(item: InventoryCount) {
             binding.deliveryName.text = "Store: ${item.storeId}"
             binding.earnings.text = context.getString(R.string.expected_earned, item.expectedEarnings, item.totalEarnings)
+            binding.difference.text = context.getString(R.string.difference, item.expectedEarnings - item.totalEarnings)
             binding.countedBy.text = "Counted by: User ${item.userId}"
             binding.dateTime.text = "${item.date} / ${item.time}"
         }

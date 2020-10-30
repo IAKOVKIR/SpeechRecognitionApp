@@ -1,6 +1,6 @@
 package com.example.audiochatbot.employee.inventories.view_models
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -41,12 +41,13 @@ class EmployeeInventoryListViewModel(val userId: Int, val storeId: Int, val data
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
-    fun convertStringToAction(text: String) {
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(givenText: String) {
         uiScope.launch {
-            Log.e("heh", text)
+            val text = givenText.toLowerCase()
             when {
-                text.contains("go back") -> _closeFragment.value = true
-                text.contains("inventory count") -> _navigateToInventoryCount.value = true
+                text.contains("go back") || text.contains("return back") -> _closeFragment.value = true
+                text.contains("inventory count") || text.contains("inventor account") -> _navigateToInventoryCount.value = true
                 else -> _message.value = "I'm sorry, I cannot understand your command"
             }
         }

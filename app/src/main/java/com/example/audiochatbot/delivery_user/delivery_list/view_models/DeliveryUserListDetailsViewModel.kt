@@ -84,9 +84,10 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
         uiScope.launch {
             val text = givenText.toLowerCase()
             // if the command is go back
-            if (text.contains("go back"))
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
-            else if (text.contains("update the delivery") || text.contains("update delivery")) {
+            else if (text.contains("update the delivery") || text.contains("update delivery") || text.contains("update this delivery")
+                || text.contains("update a delivery")) {
                 submitDelivery()
             } else {
                 // get the last indexes of the given substrings

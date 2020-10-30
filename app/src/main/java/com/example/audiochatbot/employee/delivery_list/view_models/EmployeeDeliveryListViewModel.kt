@@ -1,6 +1,6 @@
 package com.example.audiochatbot.employee.delivery_list.view_models
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,10 +46,11 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
         }
     }
 
-    fun convertStringToAction(text: String) {
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(givenText: String) {
         uiScope.launch {
-            Log.e("heh", text)
-            if (text.contains("go back"))
+            val text = givenText.toLowerCase()
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else {
                 val match = "open delivery number".toRegex().find(text)
@@ -126,9 +127,8 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
             updateDelivery(delivery)
 
             val idList = getDeliveryProducts(delivery.deliveryId)
-            for (i in idList) {
+            for (i in idList)
                 acceptItems(i)
-            }
 
             _deliveries.value = getItems()
         }
@@ -147,8 +147,6 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
                     break
                 }
             }
-
-            Log.d("s / b", "$smallQuantity / $bigQuantity")
 
             val newDeliveryProductStatus = DeliveryProductStatus(deliveryProduct.deliveryProductId, userId, "Delivered", "13/07/2020", "13:00")
             addDProductStatus(newDeliveryProductStatus)
@@ -171,12 +169,10 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
         val result = str.filter { it.isDigit() }
 
         return when {
-            result != "" -> {
-                Log.e("heh", result)
-                result.toInt()
-            }
+            result != "" -> result.toInt()
             str.contains("one") -> 1
             str.contains("to") || str.contains("two") -> 2
+            str.contains("three") -> 3
             str.contains("for") -> 4
             else -> -1
         }

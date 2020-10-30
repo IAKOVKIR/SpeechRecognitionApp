@@ -1,6 +1,6 @@
 package com.example.audiochatbot.employee.discard_items.view_models
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -41,12 +41,13 @@ class EmployeeDiscardItemListViewModel(val userId: Int, val storeId: Int, val da
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
-    fun convertStringToAction(text: String) {
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(givenText: String) {
         uiScope.launch {
-            Log.e("heh", text)
+            val text = givenText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
-            else if (text.contains("discard items") || text.contains("discard an item"))
+            else if (text.contains("discard items") || text.contains("discard an item") || text.contains("discard item"))
                 _navigateToDiscardItems.value = true
             else
                 _message.value = "Cannot understand your command"

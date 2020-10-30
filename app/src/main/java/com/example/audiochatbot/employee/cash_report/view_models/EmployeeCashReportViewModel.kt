@@ -1,6 +1,6 @@
 package com.example.audiochatbot.employee.cash_report.view_models
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -49,10 +49,11 @@ class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database
         }
     }
 
-    fun convertStringToAction(text: String) {
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(givenText: String) {
         uiScope.launch {
-            Log.e("heh", text)
-            if (text.contains("go back"))
+            val text = givenText.toLowerCase()
+            if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else {
                 val matchDeposit = "deposit".toRegex().find(text)
@@ -79,8 +80,6 @@ class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database
                                 depositOrWithdrawMoney(num, true)
                             else if (num == -1F)
                                 _message.value = "Can't understand your command"
-
-                            Log.e("final", "$num")
                         } else
                             _message.value = "Can't understand your command"
                     } else if (indexWithdraw != null) {
@@ -97,15 +96,12 @@ class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database
                                 depositOrWithdrawMoney(num, false)
                             else if (num == -1F)
                                 _message.value = "Can't understand your command"
-
-                            Log.e("final", "$num")
                         } else
                             _message.value = "Can't understand your command"
                     } else
                         _message.value = "Can't understand your command"
                 } else if (indexDeposit != null) {
                     if (indexDeposit < text.length - 3) {
-                        Log.e("final", "${text[indexDeposit + 2]}")
                         if (text[indexDeposit + 2] == '$') {
                             val str = text.substring(indexDeposit + 3)
                             val num = try {
@@ -119,8 +115,6 @@ class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database
                                 depositOrWithdrawMoney(num, true)
                             else if (num == -1F)
                                 _message.value = "Can't understand your command"
-
-                            Log.e("final", "$num")
                         } else
                             _message.value = "Can't understand your command"
                     } else
@@ -140,8 +134,6 @@ class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database
                                 depositOrWithdrawMoney(num, false)
                             else if (num == -1F)
                                 _message.value = "Can't understand your command"
-
-                            Log.e("final", "$num")
                         } else
                             _message.value = "Can't understand your command"
                     } else
@@ -163,15 +155,13 @@ class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database
                     _store.value!!.cashOnHand = store.value!!.cashOnHand + amount
                     updateStore(store.value!!)
                     _store.value = retrieveStore(storeId)
-                } else {
-                    if (amount <= store.value!!.cashOnHand) {
-                        val newCashReport = CashOperation(id, userId, storeId, amount, false, "20/07/2020", "14:00")
-                        uploadCashReport(newCashReport)
+                } else if (amount <= store.value!!.cashOnHand) {
+                    val newCashReport = CashOperation(id, userId, storeId, amount, false, "20/07/2020", "14:00")
+                    uploadCashReport(newCashReport)
 
-                        _store.value!!.cashOnHand = store.value!!.cashOnHand - amount
-                        updateStore(store.value!!)
-                        _store.value = retrieveStore(storeId)
-                    }
+                    _store.value!!.cashOnHand = store.value!!.cashOnHand - amount
+                    updateStore(store.value!!)
+                    _store.value = retrieveStore(storeId)
                 }
             }
         }
@@ -186,7 +176,8 @@ class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database
     private fun convertTextToNumber(text: String): Float {
         return when {
             text.contains("one") -> 1F
-            text.contains("to") -> 2F
+            text.contains("to") || text.contains("two") -> 2F
+            text.contains("three") -> 3F
             text.contains("for") -> 4F
             else -> -1F
         }

@@ -69,7 +69,8 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
             val text = newText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
-            else if (text.contains("add new delivery") || text.contains("create new delivery"))
+            else if (text.contains("add new delivery") || text.contains("create new delivery") || text.contains("add a new delivery") || text.contains("add a delivery")
+                || text.contains("add delivery") || text.contains("create a delivery") || text.contains("create delivery") || text.contains("create a new delivery"))
                 _navigateToCreateNewDelivery.value = true
             else {
                 val pattern = "open delivery number".toRegex()

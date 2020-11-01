@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.Delivery
 import com.example.audiochatbot.database.DeliveryProductStatus
 import com.example.audiochatbot.database.UserDao
@@ -22,6 +23,8 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
      * Hold a reference to UniDatabase via its UserDao.
      */
     private val database = dataSource
+
+    private val time = Time()
 
     /** Coroutine setup variables */
 
@@ -153,7 +156,7 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
 
     private fun declineItems(deliveryProductId: Int) {
         uiScope.launch {
-            val newDeliveryProductStatus = DeliveryProductStatus(deliveryProductId, userId, "Canceled", "13/07/2020", "13:00")
+            val newDeliveryProductStatus = DeliveryProductStatus(deliveryProductId, userId, "Canceled", time.getDate(), time.getTime())
             addDProductStatus(newDeliveryProductStatus)
         }
     }

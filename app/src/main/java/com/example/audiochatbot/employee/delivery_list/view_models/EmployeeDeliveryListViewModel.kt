@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.*
 import kotlinx.coroutines.*
 
@@ -13,6 +14,8 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
+
+    private val time = Time()
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -148,7 +151,7 @@ class EmployeeDeliveryListViewModel(val userId: Int, val storeId: Int, val datab
                 }
             }
 
-            val newDeliveryProductStatus = DeliveryProductStatus(deliveryProduct.deliveryProductId, userId, "Delivered", "13/07/2020", "13:00")
+            val newDeliveryProductStatus = DeliveryProductStatus(deliveryProduct.deliveryProductId, userId, "Delivered", time.getDate(), time.getTime())
             addDProductStatus(newDeliveryProductStatus)
 
             val assignedProduct = getAssignedProduct(deliveryProduct.assignedProductId)

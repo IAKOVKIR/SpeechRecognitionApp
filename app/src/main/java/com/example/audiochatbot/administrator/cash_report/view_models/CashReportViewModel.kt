@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.CashOperation
 import com.example.audiochatbot.database.Store
 import com.example.audiochatbot.database.UserDao
@@ -19,6 +20,7 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
+    private val time = Time()
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -150,7 +152,7 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
             if (amount > 0) {
                 val id = getCashReportId() + 1
                 if (operation) {
-                    val newCashReport = CashOperation(id, adminId, storeId, amount, true, "20/07/2020", "14:00")
+                    val newCashReport = CashOperation(id, adminId, storeId, amount, true, time.getDate(), time.getTime())
                     uploadCashReport(newCashReport)
 
                     _store.value!!.cashOnHand = store.value!!.cashOnHand + amount
@@ -158,7 +160,7 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
                     _store.value = retrieveStore(storeId)
                 } else {
                     if (amount <= store.value!!.cashOnHand) {
-                        val newCashReport = CashOperation(id, adminId, storeId, amount, false, "20/07/2020", "14:00")
+                        val newCashReport = CashOperation(id, adminId, storeId, amount, false, time.getDate(), time.getTime())
                         uploadCashReport(newCashReport)
 
                         _store.value!!.cashOnHand = store.value!!.cashOnHand - amount

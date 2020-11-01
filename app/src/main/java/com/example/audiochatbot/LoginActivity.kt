@@ -32,6 +32,8 @@ class LoginActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     override fun onStart() {
         super.onStart()
+        val time = Time()
+        Log.e("time", "${time.getDate()} / ${time.getTime()}")
         getUser()
     }
 

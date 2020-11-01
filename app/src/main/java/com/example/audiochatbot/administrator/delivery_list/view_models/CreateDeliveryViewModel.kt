@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.*
 import kotlinx.coroutines.*
 
@@ -13,6 +14,8 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
+
+    private val time = Time()
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -64,7 +67,8 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
             // if the command is go back
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
-            else if (text.contains("submit the delivery") || text.contains("submit delivery") || text.contains("submit")) {
+            else if (text.contains("submit the delivery") || text.contains("submit delivery") || text.contains("submit") ||
+                    text.contains("submit this delivery") || text.contains("submit a delivery")) {
                 submitDelivery()
             } else {
                 // get the last indexes of the given substrings
@@ -344,7 +348,7 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
             }
 
             if (itemList.size != 0) {
-                val delivery = Delivery(deliveryId, storeId, adminId, "In Transit", "18/07/2020", "13:00")
+                val delivery = Delivery(deliveryId, storeId, adminId, "In Transit", time.getDate(), time.getTime())
                 addNewDelivery(delivery)
 
                 val newList = itemList.toList()

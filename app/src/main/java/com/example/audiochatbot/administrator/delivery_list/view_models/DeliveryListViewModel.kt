@@ -1,10 +1,10 @@
 package com.example.audiochatbot.administrator.delivery_list.view_models
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.*
 import kotlinx.coroutines.*
 
@@ -14,6 +14,8 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
+
+    private val time = Time()
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -57,7 +59,8 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else if (text.contains("add new delivery") || text.contains("create new delivery") ||
-                text.contains("add delivery") || text.contains("create delivery"))
+                text.contains("add delivery") || text.contains("create delivery") || text.contains("add a new delivery")
+                || text.contains("create a new delivery") || text.contains("add a delivery") || text.contains("create a delivery"))
                 _navigateToCreateNewDelivery.value = true
             else {
                 val pattern = "open delivery number".toRegex()
@@ -189,9 +192,7 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
                 }
             }
 
-            Log.d("s / b", "$smallQuantity / $bigQuantity")
-
-            val newDeliveryProductStatus = DeliveryProductStatus(deliveryProduct.deliveryProductId, adminId, "Delivered", "13/07/2020", "13:00")
+            val newDeliveryProductStatus = DeliveryProductStatus(deliveryProduct.deliveryProductId, adminId, "Delivered", time.getDate(), time.getTime())
             addDProductStatus(newDeliveryProductStatus)
 
             val assignedProduct = getAssignedProduct(deliveryProduct.assignedProductId)
@@ -220,10 +221,7 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
         val result = str.filter { it.isDigit() }
 
         return when {
-            result != "" -> {
-                Log.e("heh", result)
-                result.toInt()
-            }
+            result != "" -> result.toInt()
             str.contains("one") -> 1
             str.contains("to") || str.contains("two") -> 2
             str.contains("three") -> 3

@@ -1,7 +1,6 @@
 package com.example.audiochatbot.administrator.product_management.view_models
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -64,7 +63,8 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
             if (text.contains("go back"))
                 _closeFragment.value = true
             else if (text.contains("add new product") || text.contains("create new product") || text.contains("add product")
-                || text.contains("add a product") || text.contains("create product") || text.contains("create a product")) {
+                || text.contains("add a product") || text.contains("create product") || text.contains("create a product") ||
+                text.contains("add a new product") || text.contains("create a new product")) {
                 _navigateToCreateNewProduct.value = true
             } else {
                 val patternOpenProductNumber = "open product number".toRegex()
@@ -135,10 +135,7 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
         val result = str.filter { it.isDigit() }
 
         return when {
-            result != "" -> {
-                Log.e("heh", result)
-                result.toInt()
-            }
+            result != "" -> result.toInt()
             str.contains("one") -> 1
             str.contains("to") || str.contains("two") -> 2
             str.contains("for") -> 4

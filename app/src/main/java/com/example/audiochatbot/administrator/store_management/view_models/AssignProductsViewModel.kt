@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
@@ -14,6 +15,8 @@ class AssignProductsViewModel(val storeId: Int, val businessId: Int, val databas
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
+
+    private val time = Time()
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -132,7 +135,7 @@ class AssignProductsViewModel(val storeId: Int, val businessId: Int, val databas
     private suspend fun addRecordDb(productId: Int) {
         withContext(Dispatchers.IO) {
             val num = database.getLastAssignedProductId() + 1
-            database.assignProduct(AssignedProduct(num, productId, storeId, 0, 0, "30/07/2020", "12:40"))
+            database.assignProduct(AssignedProduct(num, productId, storeId, 0, 0, time.getDate(), time.getTime()))
         }
     }
 

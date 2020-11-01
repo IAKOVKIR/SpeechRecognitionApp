@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.AssignedUser
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
@@ -14,6 +15,8 @@ class AssignUsersViewModel(private val adminId: Int, val storeId: Int, val busin
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
+
+    private val time = Time()
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -136,7 +139,7 @@ class AssignUsersViewModel(private val adminId: Int, val storeId: Int, val busin
     private suspend fun addRecordDb(userId: Int) {
         withContext(Dispatchers.IO) {
             val num = database.getLastAssignedUserId() + 1
-            database.assignUser(AssignedUser(num, userId, adminId, storeId, "30/07/2020", "12:40"))
+            database.assignUser(AssignedUser(num, userId, adminId, storeId, time.getDate(), time.getTime()))
         }
     }
 

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.*
 import kotlinx.coroutines.*
 import java.lang.NumberFormatException
@@ -14,6 +15,8 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
+
+    private val time = Time()
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -75,7 +78,8 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else if (text.contains("submit the inventory count") || text.contains("submit the inventor account") ||
-                text.contains("submit inventory count") || text.contains("submit inventor account")) {
+                text.contains("submit inventory count") || text.contains("submit inventor account") ||
+                text.contains("submit an inventory count") || text.contains("submit an inventor account")) {
                 _submit.value = true
             } else {
                 // get the last indexes of the given substrings
@@ -384,7 +388,7 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
             updateStore(storeObj)
 
             val lastId = getLastId()
-            finishCount(InventoryCount(lastId + 1, storeId, adminId, storeObj.cashOnHand, currentEarnings, "20/09/2020", "14:00"))
+            finishCount(InventoryCount(lastId + 1, storeId, adminId, storeObj.cashOnHand, currentEarnings, time.getDate(), time.getTime()))
 
             _isDone.value = true
         }

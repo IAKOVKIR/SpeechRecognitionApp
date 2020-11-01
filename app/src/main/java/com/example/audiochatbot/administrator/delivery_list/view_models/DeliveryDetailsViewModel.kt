@@ -50,7 +50,7 @@ class DeliveryDetailsViewModel(val userId: Int, val deliveryId: Int, private val
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else
-                _message.value = "Cannot recognise your command"
+                _message.value = "I am sorry, I cannot recognise your command"
         }
     }
 

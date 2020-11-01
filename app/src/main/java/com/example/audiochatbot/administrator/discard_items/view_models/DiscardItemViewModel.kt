@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.AssignedProduct
 import com.example.audiochatbot.database.DiscardedItem
 import com.example.audiochatbot.database.UserDao
@@ -15,6 +16,8 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
+
+    private val time = Time()
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -69,7 +72,7 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
         return withContext(Dispatchers.IO) {
             val num = database.getLastDiscardedItemId() + 1
             val apId = database.getAssignedProductId(productId, storeId)
-            val item = DiscardedItem(num, apId, userId, quantity, comment, "30/07/2020", "12:40")
+            val item = DiscardedItem(num, apId, userId, quantity, comment, time.getDate(), time.getTime())
             database.discardItem(item)
             apId
         }

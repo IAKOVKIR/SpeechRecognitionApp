@@ -6,7 +6,7 @@
     <data>
         <variable
             name="delivery"
-            type="com.example.audiochatbot.database.Delivery" />
+            type="com.example.audiochatbot.database.models.Delivery" />
 
         <variable
             name="clickListener"
@@ -50,6 +50,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/delivery_name"
                 tools:text="Status" />
 
+            <TextView
+                android:id="@+id/created_by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/status"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/status"
+                app:layout_constraintTop_toBottomOf="@+id/status"
+                tools:text="Created by: User" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
@@ -57,6 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delivered"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

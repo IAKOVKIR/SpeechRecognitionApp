@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.R
-import com.example.audiochatbot.database.AssignedProduct
-import com.example.audiochatbot.database.Product
+import com.example.audiochatbot.database.models.AssignedProduct
+import com.example.audiochatbot.database.models.Product
 import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentAssignedProductsRecyclerViewAdapterBinding
 import kotlinx.coroutines.CoroutineScope

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.R
-import com.example.audiochatbot.database.Store
+import com.example.audiochatbot.database.models.Store
 import com.example.audiochatbot.databinding.FragmentDiscardItemStoreRecyclerViewAdapterBinding
 
 class DiscardItemStoreRecyclerViewAdapter(private val clickListener: ItemStoreListener) : ListAdapter<Store,
@@ -31,7 +31,7 @@ class DiscardItemStoreRecyclerViewAdapter(private val clickListener: ItemStoreLi
         fun bind(clickListener: ItemStoreListener, item: Store) {
             binding.store = item
             binding.clickListener = clickListener
-            binding.storeName.text = context.getString(R.string.store_business, item.storeId, item.businessId)
+            binding.storeName.text = context.getString(R.string.store_business, item.storeId)
             binding.storeAddress.text = context.getString(R.string.comma, item.street, item.city)
         }
 

@@ -2,6 +2,7 @@ package com.example.audiochatbot.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.audiochatbot.database.models.*
 
 @Dao
 interface UserDao {
@@ -253,6 +254,7 @@ interface UserDao {
     @Query("SELECT DiscardedItemID, DISCARDED_ITEM.AssignedProductID, UserID, DISCARDED_ITEM.Quantity, Comment, DISCARDED_ITEM.Date, DISCARDED_ITEM.Time FROM DISCARDED_ITEM INNER JOIN ASSIGNED_PRODUCT ON DISCARDED_ITEM.AssignedProductID = ASSIGNED_PRODUCT.AssignedProductID WHERE StoreID =:storeId AND DISCARDED_ITEM.UserID =:userId ORDER BY DiscardedItemID DESC")
     fun getDiscardedItemsWithStoreAndUserId(userId: Int, storeId: Int): LiveData<List<DiscardedItem>>
 
+
     //Delivery
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDelivery(delivery: Delivery)
@@ -262,6 +264,9 @@ interface UserDao {
 
     @Update
     fun updateDelivery(delivery: Delivery)
+
+    @Query("SELECT * FROM DELIVERY WHERE DeliveryID = :deliveryId")
+    fun getDeliveryWithDeliveryId(deliveryId: Int): Delivery
 
     @Query("SELECT * FROM DELIVERY INNER JOIN STORE ON DELIVERY.StoreID = STORE.StoreID WHERE STORE.BusinessID = :businessId ORDER BY DeliveryID  DESC")
     fun getAllDeliveries(businessId: Int): LiveData<List<Delivery>>
@@ -293,6 +298,7 @@ interface UserDao {
     @Query("SELECT DeliveryID FROM DELIVERY ORDER BY DeliveryID DESC LIMIT 1")
     fun getLastDeliveryId(): Int
 
+
     //Delivery product
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDeliveryProduct(deliveryProduct: DeliveryProduct)
@@ -323,11 +329,14 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDeliveryProductStatuses(list: List<DeliveryProductStatus>)
 
+    @Query("UPDATE DELIVERY_PRODUCT_STATUS SET Status =:status WHERE EXISTS (SELECT * FROM DELIVERY_PRODUCT WHERE (DELIVERY_PRODUCT_STATUS.DeliveryProductID = DELIVERY_PRODUCT.DeliveryProductID))")
+    fun updateDeliveryProducts(status: String)
+
     @Query("SELECT * FROM DELIVERY_PRODUCT_STATUS WHERE DeliveryProductID =:deliveryProductID")
     fun getDeliveryProductStatus(deliveryProductID: Int): DeliveryProductStatus?
 
-    @Query("UPDATE DELIVERY_PRODUCT_STATUS SET Status =:status WHERE EXISTS (SELECT * FROM DELIVERY_PRODUCT WHERE (DELIVERY_PRODUCT_STATUS.DeliveryProductID = DELIVERY_PRODUCT.DeliveryProductID))")
-    fun updateDeliveryProducts(status: String)
+    @Query("SELECT * FROM DELIVERY_PRODUCT_STATUS INNER JOIN DELIVERY_PRODUCT ON DELIVERY_PRODUCT_STATUS.DeliveryProductID = DELIVERY_PRODUCT.DeliveryProductID WHERE DeliveryID =:deliveryId LIMIT 1")
+    fun getFirstDeliveryProductStatus(deliveryId: Int): DeliveryProductStatus?
 
 
     //Inventory Count
@@ -348,6 +357,7 @@ interface UserDao {
 
     @Query("SELECT * FROM INVENTORY_COUNT WHERE UserID =:userId AND StoreID = :storeId ORDER BY InventoryCountID DESC")
     fun getAllInventoryCountsWithStoreAndUserID(userId: Int, storeId: Int): LiveData<List<InventoryCount>>
+
 
     //Cash Operation
     @Insert(onConflict = OnConflictStrategy.REPLACE)

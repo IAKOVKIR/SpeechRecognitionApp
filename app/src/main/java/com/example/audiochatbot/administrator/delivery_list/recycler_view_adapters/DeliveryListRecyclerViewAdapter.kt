@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.audiochatbot.database.Delivery
+import com.example.audiochatbot.database.models.Delivery
 import com.example.audiochatbot.databinding.FragmentDeliveryListRecyclerViewAdapterBinding
 
 class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListener,
@@ -30,7 +30,8 @@ class DeliveryListRecyclerViewAdapter(private val clickListener: DeliveryListene
         : RecyclerView.ViewHolder(binding.root){
 
         fun bind(clickListener: DeliveryListener, cancelDeliveryListener: CancelDeliveryListener,
-                 adminDeliveredListener: AdminDeliveredListener, item: Delivery) {
+                 adminDeliveredListener: AdminDeliveredListener, item: Delivery
+        ) {
             binding.delivery = item
             binding.clickListener = clickListener
             binding.deliveryName.text = "Delivery ${item.deliveryId}"

@@ -41,6 +41,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/home_title" />
 
+        <Button
+            android:id="@+id/download_the_report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Download The Report"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_the_delivery" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/delivery_list"
             android:layout_width="0dp"
@@ -49,7 +59,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/update_the_delivery"
+            app:layout_constraintTop_toBottomOf="@id/download_the_report"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/fragment_delivery_user_list_details_recycler_view_adapter"/>
 

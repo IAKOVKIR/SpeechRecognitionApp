@@ -5,10 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.audiochatbot.database.Delivery
+import com.example.audiochatbot.database.UserDao
+import com.example.audiochatbot.database.models.Delivery
+import com.example.audiochatbot.database.models.DeliveryProductStatus
 import com.example.audiochatbot.databinding.FragmentEmployeeDeliveryListRecyclerViewAdapterBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class EmployeeDeliveryListRecyclerViewAdapter(private val clickListener: EmployeeDeliveryListener,
+class EmployeeDeliveryListRecyclerViewAdapter(private val userDao: UserDao,
+                                              private val clickListener: EmployeeDeliveryListener,
                                               private val deliveredListener: EmployeeDeliveredDeliveryListener
 ) : ListAdapter<Delivery,
         EmployeeDeliveryListRecyclerViewAdapter.ViewHolder>(
@@ -18,7 +25,7 @@ class EmployeeDeliveryListRecyclerViewAdapter(private val clickListener: Employe
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(clickListener, deliveredListener, item)
+        holder.bind(clickListener, deliveredListener, item, userDao)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,13 +35,36 @@ class EmployeeDeliveryListRecyclerViewAdapter(private val clickListener: Employe
     class ViewHolder private constructor(val binding: FragmentEmployeeDeliveryListRecyclerViewAdapterBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(clickListener: EmployeeDeliveryListener, deliveredListener: EmployeeDeliveredDeliveryListener, item: Delivery) {
+        fun bind(clickListener: EmployeeDeliveryListener, deliveredListener: EmployeeDeliveredDeliveryListener,
+                 item: Delivery, userDao: UserDao) {
             binding.delivery = item
             binding.clickListener = clickListener
             binding.deliveryName.text = "Delivery ${item.deliveryId}"
-            binding.status.text = "Status: ${item.status}"
+            binding.createdBy.text = "Created by: User ${item.userId}"
 
-            binding.deliveredButton.isEnabled = item.status == "In Transit"
+            if (item.status == "In Transit") {
+                binding.status.text = "Status: ${item.status}"
+                binding.deliveredButton.isEnabled = true
+            } else {
+                CoroutineScope(Dispatchers.Default).launch {
+
+                    var line: String
+
+                    withContext(Dispatchers.IO) {
+                        val deliveryProductStatus = userDao.getFirstDeliveryProductStatus(item.deliveryId)
+                        line = if (deliveryProductStatus == null) {
+                            "Status: ${item.status} by User ${item.userId}"
+                        } else {
+                            "Status: ${item.status} by User ${deliveryProductStatus.userId}"
+                        }
+                    }
+
+                    launch (Dispatchers.Main) {
+                        binding.status.text = line
+                    }
+                }
+                binding.deliveredButton.isEnabled = false
+            }
 
             binding.deliveredButton.setOnClickListener {
                 deliveredListener.onClick(item)

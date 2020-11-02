@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-import com.example.audiochatbot.database.Delivery
+import com.example.audiochatbot.database.models.Delivery
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentEmployeeDeliveryListBinding
 import com.example.audiochatbot.employee.delivery_list.recycler_view_adapters.EmployeeDeliveredDeliveryListener
@@ -65,7 +65,7 @@ class EmployeeDeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
                 this, viewModelFactory).get(EmployeeDeliveryListViewModel::class.java)
 
         val adapter =
-            EmployeeDeliveryListRecyclerViewAdapter(
+            EmployeeDeliveryListRecyclerViewAdapter(dataSource,
                 EmployeeDeliveryListener { deliveryId ->
                     testViewModel.onDeliveryClicked(deliveryId)
                 }, EmployeeDeliveredDeliveryListener { delivery: Delivery ->

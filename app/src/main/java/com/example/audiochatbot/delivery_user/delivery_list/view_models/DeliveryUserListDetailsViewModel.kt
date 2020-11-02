@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.*
+import com.example.audiochatbot.database.models.*
 import kotlinx.coroutines.*
 
 /**
@@ -41,8 +42,13 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
     private var _products = MutableLiveData<List<Product>>()
     val products: LiveData<List<Product>> get() = _products
 
+    private var _reportList = MutableLiveData<List<String>>()
+    val reportList: LiveData<List<String>> get() = _reportList
+
     private var _l = MutableLiveData<List<Int>>()
     val l: LiveData<List<Int>> get() = _l
+
+    private var deliveryProducts: List<DeliveryProduct>? = null
 
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
@@ -54,7 +60,7 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
     init {
         uiScope.launch {
             _products.value = getItems()
-            val deliveryProducts = getDeliveryItems()
+            deliveryProducts = getDeliveryItems()
             val assignedProducts = getAssignedItemsWithDeliveryId()
             for (element in products.value!!) {
                 productIds.add(element.productId)
@@ -66,7 +72,7 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
             for (i in productIds) {
                 for (j in assignedProducts) {
                     if (i == j.productId) {
-                        for (k in deliveryProducts) {
+                        for (k in deliveryProducts!!) {
                             if (k.assignedProductId == j.assignedProductId) {
                                 addItem(i, k.smallUnitQuantity, k.bigUnitQuantity)
                                 break
@@ -383,6 +389,49 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
         }
     }
 
+    fun generateAReport() {
+        uiScope.launch {
+            val list = mutableListOf<String>()
+            val del = getDelivery()
+            val user = getUser(del.userId)
+            val delStatus = getFirstRecord()
+
+            list.add("Delivery $deliveryId Report")
+            list.add("Created by: ${user.firstName} ${user.lastName} {id : ${user.userId}}")
+            list.add("Date created: ${del.dateModified} | ${del.timeModified}")
+            list.add("Status: ${del.status}")
+
+            if (del.status == "Canceled") {
+                if (delStatus != null && delStatus.userId != user.userId) {
+                    val anotherUser = getUser(delStatus.userId)
+                    list.add("Canceled by: ${anotherUser.firstName} ${anotherUser.lastName} {id : ${anotherUser.userId}}")
+                } else {
+                    list.add("Canceled by: ${user.firstName} ${user.lastName} {id : ${user.userId}}")
+                }
+            }
+
+            list.add("Items:")
+
+            val listAI = getAssignedItems()
+
+            for (element in listAI) {
+                for (j in products.value!!) {
+                    if (element.productId == j.productId) {
+                        for (m in deliveryProducts!!) {
+                            if (m.assignedProductId == element.assignedProductId && (m.smallUnitQuantity != 0 || m.bigUnitQuantity != 0)) {
+                                list.add("${j.name} {id : ${j.productId}} - [${j.smallUnitName}: ${m.smallUnitQuantity}], [${j.bigUnitName}: ${m.bigUnitQuantity}]")
+                                break
+                            }
+                        }
+                        break
+                    }
+                }
+            }
+
+            _reportList.value = list
+        }
+    }
+
     /**
      * Method textToInteger that returns the int value from the given string
      */
@@ -470,6 +519,28 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
         withContext(Dispatchers.IO) {
             database.deleteDeliveryProductRecord(deliveryId)
         }
+    }
+
+    private suspend fun getDelivery(): Delivery {
+        return withContext(Dispatchers.IO) {
+            database.getDeliveryWithDeliveryId(deliveryId)
+        }
+    }
+
+    private suspend fun getUser(userId: Int): User {
+        return withContext(Dispatchers.IO) {
+            database.getUserWithId(userId)
+        }
+    }
+
+    private suspend fun getFirstRecord(): DeliveryProductStatus? {
+        return withContext(Dispatchers.IO) {
+            database.getFirstDeliveryProductStatus(deliveryId)
+        }
+    }
+
+    fun setMessage(txt: String) {
+        _message.value = txt
     }
 
     /**

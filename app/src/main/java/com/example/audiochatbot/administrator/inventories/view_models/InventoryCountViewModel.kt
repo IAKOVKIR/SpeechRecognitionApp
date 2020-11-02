@@ -6,6 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.*
+import com.example.audiochatbot.database.models.AssignedProduct
+import com.example.audiochatbot.database.models.InventoryCount
+import com.example.audiochatbot.database.models.Product
+import com.example.audiochatbot.database.models.Store
 import kotlinx.coroutines.*
 import java.lang.NumberFormatException
 

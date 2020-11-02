@@ -3,8 +3,8 @@ package com.example.audiochatbot.administrator.product_management.view_models
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.database.AssignedProduct
-import com.example.audiochatbot.database.Product
+import com.example.audiochatbot.database.models.AssignedProduct
+import com.example.audiochatbot.database.models.Product
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 

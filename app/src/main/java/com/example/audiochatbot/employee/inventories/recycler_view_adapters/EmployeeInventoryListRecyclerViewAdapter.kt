@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.R
-import com.example.audiochatbot.database.InventoryCount
+import com.example.audiochatbot.database.models.InventoryCount
 import com.example.audiochatbot.databinding.FragmentEmployeeInventoryListRecyclerViewAdapterBinding
 
 class EmployeeInventoryListRecyclerViewAdapter : ListAdapter<InventoryCount,

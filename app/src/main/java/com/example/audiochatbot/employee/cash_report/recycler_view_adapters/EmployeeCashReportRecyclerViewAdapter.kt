@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.R
-import com.example.audiochatbot.database.CashOperation
+import com.example.audiochatbot.database.models.CashOperation
 import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.databinding.FragmentEmployeeCashReportRecyclerViewAdapterBinding
 import kotlinx.coroutines.CoroutineScope

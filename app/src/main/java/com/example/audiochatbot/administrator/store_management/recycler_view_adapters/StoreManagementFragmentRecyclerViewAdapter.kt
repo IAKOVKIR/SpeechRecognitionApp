@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.R
-import com.example.audiochatbot.database.Store
+import com.example.audiochatbot.database.models.Store
 import com.example.audiochatbot.databinding.StoreManagementItemViewBinding
 
 class StoreManagementFragmentRecyclerViewAdapter(private val clickListener: StoreListener) : ListAdapter<Store,

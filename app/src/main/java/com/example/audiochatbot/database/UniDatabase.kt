@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.audiochatbot.database.models.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -88,7 +89,8 @@ abstract class UniDatabase: RoomDatabase() {
 
         private val deliveries = listOf(
             Delivery(1, 1, 1, "In Transit", "18/07/2020", "13:00"),
-            Delivery(2, 1, 1, "In Transit", "19/07/2020", "12:00"))
+            Delivery(2, 1, 1, "In Transit", "19/07/2020", "12:00")
+        )
 
         private val deliveryItems = listOf(
             DeliveryProduct(1, 1, 1, 10, 4),

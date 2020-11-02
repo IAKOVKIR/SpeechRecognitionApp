@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.Time
-import com.example.audiochatbot.database.Delivery
-import com.example.audiochatbot.database.DeliveryProductStatus
+import com.example.audiochatbot.database.models.Delivery
+import com.example.audiochatbot.database.models.DeliveryProductStatus
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 

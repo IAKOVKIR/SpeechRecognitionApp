@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.R
-import com.example.audiochatbot.database.User
+import com.example.audiochatbot.database.models.User
 import com.example.audiochatbot.databinding.FragmentAssignUsersRecyclerViewAdapterBinding
 
 class AssignUsersRecyclerViewAdapter(private val clickListener: AssignedUserListener,

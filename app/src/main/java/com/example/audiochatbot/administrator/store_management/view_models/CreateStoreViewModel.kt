@@ -2,7 +2,7 @@ package com.example.audiochatbot.administrator.store_management.view_models
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.database.Store
+import com.example.audiochatbot.database.models.Store
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 

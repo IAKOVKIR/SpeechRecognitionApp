@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.database.Store
+import com.example.audiochatbot.database.models.Store
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 

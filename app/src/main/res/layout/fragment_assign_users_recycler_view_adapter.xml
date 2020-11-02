@@ -6,7 +6,7 @@
     <data>
         <variable
             name="user"
-            type="com.example.audiochatbot.database.User" />
+            type="com.example.audiochatbot.database.models.User" />
 
         <variable
             name="clickListener"

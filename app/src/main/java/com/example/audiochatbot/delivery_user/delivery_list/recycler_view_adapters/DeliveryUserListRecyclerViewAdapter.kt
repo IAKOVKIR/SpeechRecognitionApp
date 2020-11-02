@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.audiochatbot.database.Delivery
+import com.example.audiochatbot.database.models.Delivery
 import com.example.audiochatbot.databinding.FragmentDeliveryUserListRecyclerViewAdapterBinding
 
 class DeliveryUserListRecyclerViewAdapter(private val clickListener: DeliveryUserListListener,

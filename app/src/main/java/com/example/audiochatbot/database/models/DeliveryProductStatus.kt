@@ -1,4 +1,4 @@
-package com.example.audiochatbot.database
+package com.example.audiochatbot.database.models
 
 import androidx.room.*
 

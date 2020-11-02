@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.audiochatbot.database.Product
+import com.example.audiochatbot.database.models.Product
 import com.example.audiochatbot.databinding.FragmentDeliveryUserListDetailsRecyclerViewAdapterBinding
 
 class DeliveryUserListDetailsRecyclerViewAdapter(private val addDeliveryProductListener: DeliveryUserAddDeliveryProductListener,

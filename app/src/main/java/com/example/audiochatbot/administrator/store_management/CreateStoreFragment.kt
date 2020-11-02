@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
 import com.example.audiochatbot.administrator.store_management.view_models.CreateStoreViewModel
 import com.example.audiochatbot.administrator.store_management.view_models.CreateStoreViewModelFactory
-import com.example.audiochatbot.database.Store
+import com.example.audiochatbot.database.models.Store
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentCreateStoreBinding
 import kotlinx.coroutines.CoroutineScope

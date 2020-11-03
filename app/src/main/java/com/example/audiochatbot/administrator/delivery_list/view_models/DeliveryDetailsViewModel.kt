@@ -52,6 +52,8 @@ class DeliveryDetailsViewModel(val userId: Int, val storeId: Int, val deliveryId
             val text = givenText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
+            else if (text.contains("download a report") || text.contains("download report") || text.contains("download the report"))
+                generateAReport()
             else
                 _message.value = "I am sorry, I cannot recognise your command"
         }

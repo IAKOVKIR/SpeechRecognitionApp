@@ -98,6 +98,8 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
             else if (text.contains("update the delivery") || text.contains("update delivery") || text.contains("update this delivery")
                 || text.contains("update a delivery")) {
                 submitDelivery()
+            } else if (text.contains("download a report") || text.contains("download report") || text.contains("download the report")) {
+                    generateAReport()
             } else {
                 // get the last indexes of the given substrings
                 val matchAddItems = "add".toRegex().find(text)

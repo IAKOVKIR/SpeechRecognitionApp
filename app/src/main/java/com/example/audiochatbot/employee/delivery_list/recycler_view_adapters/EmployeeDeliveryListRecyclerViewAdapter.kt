@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.database.models.Delivery
-import com.example.audiochatbot.database.models.DeliveryProductStatus
 import com.example.audiochatbot.databinding.FragmentEmployeeDeliveryListRecyclerViewAdapterBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,10 +51,20 @@ class EmployeeDeliveryListRecyclerViewAdapter(private val userDao: UserDao,
 
                     withContext(Dispatchers.IO) {
                         val deliveryProductStatus = userDao.getFirstDeliveryProductStatus(item.deliveryId)
-                        line = if (deliveryProductStatus == null) {
-                            "Status: ${item.status} by User ${item.userId}"
+                        line = if (item.status == "Canceled") {
+                            if (deliveryProductStatus == null) {
+                                "Status: ${item.status} by User ${item.userId}"
+                            } else {
+                                "Status: ${item.status} by User ${deliveryProductStatus.userId}"
+                            }
+                        } else if (item.status == "Delivered") {
+                            if (deliveryProductStatus == null) {
+                                "Status: Received by User ${item.userId}"
+                            } else {
+                                "Status: Received by User ${deliveryProductStatus.userId}"
+                            }
                         } else {
-                            "Status: ${item.status} by User ${deliveryProductStatus.userId}"
+                            "Status: ${item.status}"
                         }
                     }
 

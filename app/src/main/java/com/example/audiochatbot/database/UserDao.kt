@@ -318,6 +318,9 @@ interface UserDao {
     @Query("SELECT DeliveryProductID FROM DELIVERY_PRODUCT ORDER BY DeliveryProductID DESC LIMIT 1")
     fun getLastDeliveryProductId(): Int
 
+    @Query("SELECT DeliveryProductID FROM DELIVERY_PRODUCT WHERE DeliveryID =:deliveryId")
+    fun getDeliveryProductId(deliveryId: Int): Int
+
     @Query("DELETE FROM DELIVERY_PRODUCT WHERE DeliveryID = :deliveryId")
     fun deleteDeliveryProductRecord(deliveryId: Int)
 

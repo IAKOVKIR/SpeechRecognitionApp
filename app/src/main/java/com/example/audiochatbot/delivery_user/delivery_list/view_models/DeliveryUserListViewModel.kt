@@ -146,9 +146,7 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
             updateDelivery(delivery)
 
             val idList = getIDs(delivery.deliveryId)
-            for (i in idList) {
-                declineItems(i)
-            }
+            declineItems(idList[0])
 
             _deliveries.value = getItems()
         }

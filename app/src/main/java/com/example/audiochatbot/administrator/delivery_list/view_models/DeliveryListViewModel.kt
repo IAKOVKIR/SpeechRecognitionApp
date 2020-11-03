@@ -210,6 +210,11 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
         uiScope.launch {
             delivery.status = status
             updateDelivery(delivery)
+
+            val delId = getDeliverProductId(delivery.deliveryId)
+            val newDeliveryProductStatus = DeliveryProductStatus(delId, adminId, status, time.getDate(), time.getTime())
+            addDProductStatus(newDeliveryProductStatus)
+
             _deliveries.value = getItems()
         }
     }
@@ -255,6 +260,12 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
     private suspend fun getAssignedProduct(assignedProductId: Int): AssignedProduct? {
         return withContext(Dispatchers.IO) {
             database.getAssignedProduct(assignedProductId)
+        }
+    }
+
+    private suspend fun getDeliverProductId(deliveryId: Int): Int {
+        return withContext(Dispatchers.IO) {
+            database.getDeliveryProductId(deliveryId)
         }
     }
 

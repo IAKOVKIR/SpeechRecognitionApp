@@ -4,11 +4,11 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.audiochatbot.database.models.DeliveryProduct
 import com.example.audiochatbot.database.UserDao
+import com.example.audiochatbot.database.models.*
 import kotlinx.coroutines.*
 
-class DeliveryDetailsViewModel(val userId: Int, val deliveryId: Int, private val database: UserDao): ViewModel() {
+class DeliveryDetailsViewModel(val userId: Int, val storeId: Int, val deliveryId: Int, private val database: UserDao): ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -29,6 +29,9 @@ class DeliveryDetailsViewModel(val userId: Int, val deliveryId: Int, private val
 
     private var _deliveryProducts = MutableLiveData<List<DeliveryProduct>>()
     val deliveryProducts: LiveData<List<DeliveryProduct>> get() = _deliveryProducts
+
+    private var _reportList = MutableLiveData<List<String>>()
+    val reportList: LiveData<List<String>> get() = _reportList
 
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
@@ -54,9 +57,96 @@ class DeliveryDetailsViewModel(val userId: Int, val deliveryId: Int, private val
         }
     }
 
+    fun generateAReport() {
+        uiScope.launch {
+            val list = mutableListOf<String>()
+            val del = getDelivery()
+            val user = getUser(del.userId)
+            val delStatus = getFirstRecord()
+
+            list.add("Delivery $deliveryId Report")
+            list.add("Created by: ${user.firstName} ${user.lastName} {id : ${user.userId}}")
+            list.add("Date created: ${del.dateModified} | ${del.timeModified}")
+            list.add("Status: ${del.status}")
+
+            if (del.status == "Canceled") {
+                if (delStatus != null && delStatus.userId != user.userId) {
+                    val anotherUser = getUser(delStatus.userId)
+                    list.add("Canceled by: ${anotherUser.firstName} ${anotherUser.lastName} {id : ${anotherUser.userId}}")
+                } else {
+                    list.add("Canceled by: ${user.firstName} ${user.lastName} {id : ${user.userId}}")
+                }
+            } else if (del.status == "Delivered") {
+                if (delStatus != null && delStatus.userId != user.userId) {
+                    val anotherUser = getUser(delStatus.userId)
+                    list.add("Received by: ${anotherUser.firstName} ${anotherUser.lastName} {id : ${anotherUser.userId}}")
+                } else {
+                    list.add("Received by: ${user.firstName} ${user.lastName} {id : ${user.userId}}")
+                }
+            }
+
+            list.add("Items:")
+
+            val listAI = getAssignedItems()
+            val products = getItemsDelivery()
+
+            for (element in listAI) {
+                for (j in products) {
+                    if (element.productId == j.productId) {
+                        for (m in deliveryProducts.value!!) {
+                            if (m.assignedProductId == element.assignedProductId && (m.smallUnitQuantity != 0 || m.bigUnitQuantity != 0)) {
+                                list.add("${j.name} {id : ${j.productId}} - [${j.smallUnitName}: ${m.smallUnitQuantity}], [${j.bigUnitName}: ${m.bigUnitQuantity}]")
+                                break
+                            }
+                        }
+                        break
+                    }
+                }
+            }
+
+            _reportList.value = list
+        }
+    }
+
+    /**
+     * Suspending method getAssignedItems that retrieves a list of the assigned items with storeId from database
+     */
+    private suspend fun getAssignedItems(): List<AssignedProduct> {
+        return withContext(Dispatchers.IO) {
+            database.getAssignedProductsList(storeId)
+        }
+    }
+
     private suspend fun getItems(): List<DeliveryProduct> {
         return withContext(Dispatchers.IO) {
             database.getAllDeliveryProducts(deliveryId)
+        }
+    }
+
+    private suspend fun getDelivery(): Delivery {
+        return withContext(Dispatchers.IO) {
+            database.getDeliveryWithDeliveryId(deliveryId)
+        }
+    }
+
+    private suspend fun getUser(userId: Int): User {
+        return withContext(Dispatchers.IO) {
+            database.getUserWithId(userId)
+        }
+    }
+
+    private suspend fun getFirstRecord(): DeliveryProductStatus? {
+        return withContext(Dispatchers.IO) {
+            database.getFirstDeliveryProductStatus(deliveryId)
+        }
+    }
+
+    /**
+     * Suspending method getItems that retrieves a list of the products with storeId from database
+     */
+    private suspend fun getItemsDelivery(): List<Product> {
+        return withContext(Dispatchers.IO) {
+            database.getAllProductsWithStoreID(storeId)
         }
     }
 

@@ -31,11 +31,21 @@
             android:id="@+id/microphone_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
             android:contentDescription="@string/microphone_icon"
             android:src="@drawable/ic_baseline_mic_24"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/download_the_report"
+            app:layout_constraintTop_toTopOf="@+id/download_the_report"
+            app:layout_constraintBottom_toBottomOf="@+id/download_the_report"/>
+
+        <Button
+            android:id="@+id/download_the_report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Download The Report"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/home_title" />
 
         <androidx.recyclerview.widget.RecyclerView

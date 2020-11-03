@@ -104,7 +104,7 @@ class EmployeeDeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
 
         testViewModel.navigateToDeliveryDetails.observe(viewLifecycleOwner, { deliveryId ->
             deliveryId?.let {
-                this.findNavController().navigate(EmployeeDeliveryListFragmentDirections.actionEmployeeDeliveryListToDeliveryDetailsFragment(deliveryId, args.userId))
+                this.findNavController().navigate(EmployeeDeliveryListFragmentDirections.actionEmployeeDeliveryListToDeliveryDetailsFragment(deliveryId, args.userId, args.storeId))
                 testViewModel.onStoreNavigated()
             }
         })

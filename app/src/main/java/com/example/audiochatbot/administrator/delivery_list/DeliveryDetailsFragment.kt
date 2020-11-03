@@ -1,11 +1,15 @@
 package com.example.audiochatbot.administrator.delivery_list
 
+import android.Manifest
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.util.Log
@@ -14,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -23,8 +28,13 @@ import com.example.audiochatbot.administrator.delivery_list.view_models.Delivery
 import com.example.audiochatbot.administrator.delivery_list.view_models.DeliveryDetailsViewModelFactory
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentDeliveryDetailsBinding
+import com.itextpdf.text.Document
+import com.itextpdf.text.Paragraph
+import com.itextpdf.text.pdf.PdfWriter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -36,6 +46,8 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
     private var response = false
     private lateinit var testViewModel: DeliveryDetailsViewModel
     private val requestCodeStt = 1
+    private val STORAGE_CODE: Int = 100
+    var list: List<String>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,7 +68,7 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            DeliveryDetailsViewModelFactory(args.userId, args.deliveryId, dataSource)
+            DeliveryDetailsViewModelFactory(args.userId, args.storeId, args.deliveryId, dataSource)
 
         testViewModel =
             ViewModelProvider(
@@ -78,6 +90,37 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
                 adapter.notifyDataSetChanged()
             }
         })
+
+        testViewModel.reportList.observe(viewLifecycleOwner, { result ->
+            if (result != null) {
+                list = result
+                savePdf()
+            }
+        })
+
+        binding.downloadTheReport.setOnClickListener {
+            //we need to handle runtime permission for devices with marshmallow and above
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
+                //system OS >= Marshmallow(6.0), check permission is enabled or not
+                if (ContextCompat.checkSelfPermission(
+                        requireActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                    == PackageManager.PERMISSION_DENIED){
+                    //permission was not granted, request it
+                    val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    requestPermissions(permissions, STORAGE_CODE)
+                }
+                else{
+                    //permission already granted, call savePdf() method
+                    testViewModel.generateAReport()
+                }
+            }
+            else{
+                //system OS < marshmallow, call savePdf() method
+                testViewModel.generateAReport()
+            }
+        }
 
         binding.microphoneImage.setOnClickListener {
             // Get the Intent action
@@ -118,6 +161,66 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
         })
 
         return binding.root
+    }
+
+    private fun savePdf() {
+        //create object of Document class
+        val mDoc = Document()
+        //pdf file name
+        val mFileName = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())
+        //pdf file path
+        val mFilePath = requireContext().getExternalFilesDir(Environment.DIRECTORY_DCIM).toString() + "/" + mFileName +".pdf"
+        try {
+            //create instance of PdfWriter class
+            PdfWriter.getInstance(mDoc, FileOutputStream(mFilePath))
+
+            //open the document for writing
+            mDoc.open()
+
+            for (i in list!!) {
+                mDoc.add(Paragraph(i))
+                //mDoc.add(Paragraph())
+            }
+
+            /**get text from EditText i.e. textEt
+            val mText = "text blyat"
+
+            //add author of the document (metadata)
+            mDoc.addAuthor("Speech Recognition App")
+
+            //add paragraph to the document
+            mDoc.add(Paragraph(mText))
+            //add paragraph to the document
+            mDoc.add(Paragraph("Lel"))
+            //add paragraph to the document
+            mDoc.add(Paragraph("ohuel"))*/
+
+
+            //close document
+            mDoc.close()
+
+            //show file saved message with file name and path
+            Toast.makeText(requireActivity(), "$mFileName.pdf\nis saved to\n$mFilePath", Toast.LENGTH_SHORT).show()
+        }
+        catch (e: Exception){
+            //if anything goes wrong causing exception, get and show exception message
+            Toast.makeText(requireActivity(), e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when(requestCode){
+            STORAGE_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    //permission from popup was granted, call savePdf() method
+                    savePdf()
+                }
+                else {
+                    //permission from popup was denied, show error message
+                    Toast.makeText(requireActivity(), "Permission denied...!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

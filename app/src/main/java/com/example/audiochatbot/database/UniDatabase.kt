@@ -49,7 +49,7 @@ abstract class UniDatabase: RoomDatabase() {
                 "0498629805", "12345678", 'E'),
             User(6, 2,   "Lavar", "Ball", "ball@gmail.com",
                 "0498629806", "12345678", 'E'),
-            User(7, 1,   "Saddam", "Hussein", "saddam@gmail.com",
+            User(7, 1,   "Karl", "Malone", "saddam@gmail.com",
                 "0492121396", "12345678", 'D'),
         )
 

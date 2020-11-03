@@ -103,25 +103,28 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
             } else {
                 // get the last indexes of the given substrings
                 val matchAddItems = "add".toRegex().find(text)
+                val matchAtItems = "at".toRegex().find(text)
                 val matchRemoveItems = "remove items of".toRegex().find(text)
                 val indexAddItems = matchAddItems?.range?.last
+                val indexAtItems = matchAtItems?.range?.last
                 val indexRemoveItems = matchRemoveItems?.range?.last
 
 
-                if (indexAddItems != null) {
+                if (indexAddItems != null || indexAtItems != null) {
                     // get the ranges of the given substrings
                     val matchSmallUnits = "small unit".toRegex().find(text)
                     val matchBigUnits = "big unit".toRegex().find(text)
                     val indexSmallUnits = matchSmallUnits?.range
                     val indexBigUnits = matchBigUnits?.range
+                    val indexNum = indexAddItems ?: indexAtItems
                     var smallQuantity = 0
                     var bigQuantity = 0
                     var id = -1
 
                     if (indexSmallUnits != null) {
-                        if (indexSmallUnits.first > indexAddItems) {
+                        if (indexSmallUnits.first > indexNum!!) {
                             var lastIndex = indexSmallUnits.last + 1
-                            val str = text.substring(indexAddItems + 1, indexAddItems + 7)
+                            val str = text.substring(indexNum + 1, indexNum + 7)
                             smallQuantity = textToInteger(str)
 
                             if (indexBigUnits != null) {
@@ -189,8 +192,8 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
                         } else
                             _message.value = "I'm sorry, I cannot understand your command"
                     } else if (indexBigUnits != null) {
-                        if (indexBigUnits.first > indexAddItems) {
-                            val strBig = text.substring(indexAddItems, indexBigUnits.last + 1)
+                        if (indexBigUnits.first > indexNum!!) {
+                            val strBig = text.substring(indexNum, indexBigUnits.last + 1)
                             bigQuantity = textToInteger(strBig)
 
                             val strProduct = text.substring(indexBigUnits.last + 1)

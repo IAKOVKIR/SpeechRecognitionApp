@@ -1,8 +1,12 @@
 package com.example.audiochatbot.administrator.product_management
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -28,6 +32,9 @@ import java.util.*
 class ProductDetailFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
+    private var response = false
+    private lateinit var productDetailViewModel: ProductDetailViewModel
+    private val requestCodeStt = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,7 +63,7 @@ class ProductDetailFragment : Fragment(), TextToSpeech.OnInitListener {
             ProductDetailViewModelFactory(arguments.productKey, storeId, dataSource)
 
         // Get a reference to the ViewModel associated with this fragment.
-        val productDetailViewModel =
+        productDetailViewModel =
             ViewModelProvider(
                 this, viewModelFactory).get(ProductDetailViewModel::class.java)
 
@@ -86,6 +93,26 @@ class ProductDetailFragment : Fragment(), TextToSpeech.OnInitListener {
                 productDetailViewModel.submitProduct(name, smallUnitName, bigUnitName, conversion, price)
         }
 
+        binding.microphoneImage.setOnClickListener {
+            // Get the Intent action
+            val sttIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            // Language model defines the purpose, there are special models for other use cases, like search.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            // Adding an extra language, you can use any language from the Locale class.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            // Text that shows up on the Speech input prompt.
+            sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Update the details")
+            try {
+                // Start the intent for a result, and pass in our request code.
+                startActivityForResult(sttIntent, requestCodeStt)
+            } catch (e: ActivityNotFoundException) {
+                // Handling error when the service is not available.
+                e.printStackTrace()
+
+                Toast.makeText(requireContext(), "Your device does not support STT.", Toast.LENGTH_LONG).show()
+            }
+        }
+
         binding.deleteRecord.setOnClickListener {
             productDetailViewModel.deleteRecord()
         }
@@ -105,7 +132,7 @@ class ProductDetailFragment : Fragment(), TextToSpeech.OnInitListener {
                 // 0 - 15 are usually available on any device
                 val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
 
-                if (musicVolume == 0)
+                if (musicVolume == 0 || !response)
                     Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
                 else
                     textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH,
@@ -113,16 +140,58 @@ class ProductDetailFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         })
 
-        productDetailViewModel.isUploaded.observe(viewLifecycleOwner, {result ->
-            if (result)
-                this.findNavController().popBackStack()
-            else {
-                //update the message
-                productDetailViewModel.setMessage("Something went wrong!")
+        productDetailViewModel.action.observe(viewLifecycleOwner, { num ->
+            if (num != null) {
+                if (num == 1) {
+                    val name = binding.name.text.toString().trim()
+                    val smallUnitName = binding.smallUnitName.text.toString().trim()
+                    val bigUnitName = binding.bigUnitName.text.toString().trim()
+                    val conversion = binding.conversion.text.toString().trim()
+                    val priceText = binding.price.text.toString()
+                    var price = 0F
+
+                    if (priceText != "") {
+                        price = binding.price.text.toString().toFloat()
+                    }
+
+                    if (storeId != -1) {
+                        val sale = binding.sale.text.toString().toInt()
+                        val quantity = binding.quantity.text.toString().toInt()
+                        productDetailViewModel.updateProduct(name, smallUnitName, bigUnitName, conversion, price, sale, quantity)
+                    } else
+                        productDetailViewModel.submitProduct(name, smallUnitName, bigUnitName, conversion, price)
+                }
             }
         })
 
+        productDetailViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result)
+                    this.findNavController().popBackStack()
+        })
+
         return binding.root
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            // Handle the result for our request code.
+            requestCodeStt -> {
+                // Safety checks to ensure data is available.
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    // Retrieve the result array.
+                    val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    // Ensure result array is not null or empty to avoid errors.
+                    if (!result.isNullOrEmpty()) {
+                        // Recognized text is in the first position.
+                        val recognizedText = result[0]
+                        // Do what you want with the recognized text.
+                        productDetailViewModel.convertStringToAction(recognizedText)
+                    }
+                }
+            }
+        }
     }
 
     override fun onInit(status: Int) {
@@ -132,6 +201,8 @@ class ProductDetailFragment : Fragment(), TextToSpeech.OnInitListener {
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
                 Log.e("TTS", "The Language specified is not supported!")
+            else
+                response = true
         } else
             Log.e("TTS", "Initialization Failed!")
     }

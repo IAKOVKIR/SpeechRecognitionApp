@@ -84,7 +84,7 @@ class DeliveryListFragment : Fragment(), TextToSpeech.OnInitListener {
             // Adding an extra language, you can use any language from the Locale class.
             sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             // Text that shows up on the Speech input prompt.
-            sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now!")
+            sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Cancel delivery number {number}")
             try {
                 // Start the intent for a result, and pass in our request code.
                 startActivityForResult(sttIntent, requestCodeStt)

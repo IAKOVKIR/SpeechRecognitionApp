@@ -52,7 +52,7 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
         uiScope.launch {
             when (recordedText.toLowerCase()) {
                 "go back", "return back" -> _closeFragment.value = true
-                "update details", "update" -> _action.value = 1
+                "update details", "update", "update the details" -> _action.value = 1
                 "remove store", "remove this store", "remove the store" -> deleteRecord()
                 "assigned products", "open assigned items", "open the assigned items" -> _action.value = 2
                 "assigned users", "open assigned users", "open the assigned users" -> _action.value = 3

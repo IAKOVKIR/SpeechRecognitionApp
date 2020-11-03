@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.product_management.view_models
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,13 +29,28 @@ class CreateProductViewModel(
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    private val _isUploaded = MutableLiveData<Boolean>()
-    val isUploaded
-        get() = _isUploaded
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
+
+    private val _action = MutableLiveData<Int>()
+    val action get() = _action
 
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
+
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(givenText: String) {
+        uiScope.launch {
+            val text = givenText.toLowerCase()
+            if (text.contains("go back") || text.contains("return back"))
+                _closeFragment.value = true
+            else if (text.contains("submit the details") || text.contains("submit") || text.contains("submit details"))
+                _action.value = 1
+            else
+                _message.value = "Cannot understand your command"
+        }
+    }
 
     fun submitProduct(product: Product) {
         uiScope.launch {
@@ -44,7 +60,10 @@ class CreateProductViewModel(
                 product.productId = uLast!!.productId + 1
                 addProductToDb(product)
                 val u = getProductIdWithId(product.productId)
-                _isUploaded.value = u == 1
+                if (u == 1)
+                    _closeFragment.value = true
+                else
+                    _message.value = "Something went wrong!"
             }
         }
     }
@@ -116,10 +135,6 @@ class CreateProductViewModel(
             }
         }
         return true
-    }
-
-    fun emptyTheMessage() {
-        _message.value = null
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.product_management.view_models
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -51,12 +52,14 @@ class ProductDetailViewModel(
     private var _assignedProduct = MutableLiveData<AssignedProduct>()
     val assignedProduct: LiveData<AssignedProduct> get() = _assignedProduct
 
-    private val _isUploaded = MutableLiveData<Boolean>()
-    val isUploaded
-        get() = _isUploaded
-
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage get() = _errorMessage
+
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
+
+    private val _action = MutableLiveData<Int>()
+    val action get() = _action
 
     init {
         uiScope.launch {
@@ -65,8 +68,19 @@ class ProductDetailViewModel(
         }
     }
 
-    fun setMessage(message: String) {
-        _errorMessage.value = message
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(givenText: String) {
+        uiScope.launch {
+            val text = givenText.toLowerCase()
+            if (text.contains("go back") || text.contains("return back"))
+                _closeFragment.value = true
+            else if (text.contains("delete the product") || text.contains("delete product") || text.contains("delete this product"))
+                deleteRecord()
+            else if (text.contains("update the details") || text.contains("update") || text.contains("update details"))
+                _action.value = 1
+            else
+                _errorMessage.value = "Cannot understand your command"
+        }
     }
 
      fun submitProduct(name: String, smallUnitName: String, bigUnitName: String, conversion: String, price: Float) {
@@ -80,7 +94,10 @@ class ProductDetailViewModel(
                                     name, smallUnitName, bigUnitName, conversion, price)
                                 addProductToDb(newProduct)
                                 val u = retrieveProduct(productId)
-                                _isUploaded.value = u == newProduct
+                                if (u == newProduct)
+                                    _closeFragment.value = true
+                                else
+                                    _errorMessage.value = "Something went wrong!"
                             } else
                                 _errorMessage.value = "price value has to be higher than zero"
                         } else
@@ -113,7 +130,10 @@ class ProductDetailViewModel(
         uiScope.launch {
             deleteRecordDb()
             val u = retrieveProduct(productId)
-            _isUploaded.value = u == null
+            if (u == null)
+                _closeFragment.value = true
+            else
+                _errorMessage.value = "Something went wrong!"
         }
     }
 

@@ -1,5 +1,7 @@
 package com.example.audiochatbot.administrator.store_management.view_models
 
+import android.annotation.SuppressLint
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.models.Store
@@ -27,9 +29,26 @@ class CreateStoreViewModel(private val database: UserDao
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
 
-    private val _isUploaded = MutableLiveData<Boolean>()
-    val isUploaded
-        get() = _isUploaded
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String?>
+        get() = _message
+
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
+
+    private val _action = MutableLiveData<Int>()
+    val action get() = _action
+
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(recordedText: String) {
+        uiScope.launch {
+            when (recordedText.toLowerCase()) {
+                "go back", "return back" -> _closeFragment.value = true
+                "submit details", "submit", "submit the details" -> _action.value = 1
+                else -> _message.value = "I am sorry, I cannot understand your command"
+            }
+        }
+    }
 
     fun submitStore(store: Store, adminId: Int) {
         uiScope.launch {
@@ -38,7 +57,11 @@ class CreateStoreViewModel(private val database: UserDao
             store.businessId = getBusinessId(adminId)
             addStoreToDb(store)
             val u = getLastStore()
-            _isUploaded.value = u != null
+            if (u != null) {
+                _closeFragment.value = true
+            } else {
+                _message.value = "Something went wrong"
+            }
         }
     }
 

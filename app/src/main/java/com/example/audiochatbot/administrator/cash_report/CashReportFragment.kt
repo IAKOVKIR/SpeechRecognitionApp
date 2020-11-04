@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.Bundle
+import android.os.Environment
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.util.Log
@@ -21,10 +23,16 @@ import com.example.audiochatbot.R
 import com.example.audiochatbot.administrator.cash_report.view_models.CashReportViewModel
 import com.example.audiochatbot.administrator.cash_report.view_models.CashReportViewModelFactory
 import com.example.audiochatbot.administrator.cash_report.recycler_view_adapters.CashReportRecyclerViewAdapter
+import com.example.audiochatbot.administrator.cash_report.recycler_view_adapters.DownloadTheCashReportListener
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentCashReportBinding
+import com.itextpdf.text.Document
+import com.itextpdf.text.Paragraph
+import com.itextpdf.text.pdf.PdfWriter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -36,6 +44,8 @@ class CashReportFragment : Fragment() , TextToSpeech.OnInitListener {
     private var response = false
     private lateinit var testViewModel: CashReportViewModel
     private val requestCodeStt = 1
+    private val storageCode: Int = 100
+    var list: List<String>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -97,6 +107,13 @@ class CashReportFragment : Fragment() , TextToSpeech.OnInitListener {
                     this.findNavController().popBackStack()
         })
 
+        testViewModel.reportList.observe(viewLifecycleOwner, { result ->
+            if (result != null) {
+                list = result
+                savePdf()
+            }
+        })
+
         testViewModel.message.observe(viewLifecycleOwner, { result ->
             if (result != null) {
                 // 0 - 15 are usually available on any device
@@ -110,7 +127,9 @@ class CashReportFragment : Fragment() , TextToSpeech.OnInitListener {
         })
 
         val adapter =
-            CashReportRecyclerViewAdapter(dataSource)
+            CashReportRecyclerViewAdapter(dataSource, DownloadTheCashReportListener { cashOperation ->
+                testViewModel.generateAReport(cashOperation)
+            })
         binding.cashReportList.adapter = adapter
 
         testViewModel.cashReports.observe(viewLifecycleOwner, {
@@ -136,6 +155,51 @@ class CashReportFragment : Fragment() , TextToSpeech.OnInitListener {
         }
 
         return binding.root
+    }
+
+    private fun savePdf() {
+        //create object of Document class
+        val mDoc = Document()
+        //pdf file name
+        val mFileName = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())
+        //pdf file path
+        val mFilePath = requireContext().getExternalFilesDir(Environment.DIRECTORY_DCIM).toString() + "/inventory_count_" + mFileName +".pdf"
+        try {
+            //create instance of PdfWriter class
+            PdfWriter.getInstance(mDoc, FileOutputStream(mFilePath))
+
+            //open the document for writing
+            mDoc.open()
+
+            //add content from the list
+            for (i in list!!)
+                mDoc.add(Paragraph(i))
+
+            //close document
+            mDoc.close()
+
+            //show file saved message with file name and path
+            Toast.makeText(requireActivity(), "$mFileName.pdf\nis saved to\n$mFilePath", Toast.LENGTH_SHORT).show()
+        }
+        catch (e: Exception){
+            //if anything goes wrong causing exception, get and show exception message
+            Toast.makeText(requireActivity(), e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when(requestCode){
+            storageCode -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    //permission from popup was granted, call savePdf() method
+                    savePdf()
+                }
+                else {
+                    //permission from popup was denied, show error message
+                    Toast.makeText(requireActivity(), "Permission denied...!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

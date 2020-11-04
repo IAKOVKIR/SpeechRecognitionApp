@@ -18,9 +18,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.audiochatbot.R
-import com.example.audiochatbot.administrator.cash_report.recycler_view_adapters.CashReportRecyclerViewAdapter
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentEmployeeCashReportBinding
+import com.example.audiochatbot.employee.cash_report.recycler_view_adapters.EmployeeCashReportRecyclerViewAdapter
 import com.example.audiochatbot.employee.cash_report.view_models.EmployeeCashReportViewModel
 import com.example.audiochatbot.employee.cash_report.view_models.EmployeeCashReportViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -110,7 +110,7 @@ class EmployeeCashReportFragment : Fragment() , TextToSpeech.OnInitListener {
         })
 
         val adapter =
-            CashReportRecyclerViewAdapter(dataSource)
+            EmployeeCashReportRecyclerViewAdapter(dataSource)
         binding.cashReportList.adapter = adapter
 
         testViewModel.cashReports.observe(viewLifecycleOwner, {

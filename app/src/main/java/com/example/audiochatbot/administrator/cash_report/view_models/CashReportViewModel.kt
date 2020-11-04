@@ -8,6 +8,7 @@ import com.example.audiochatbot.Time
 import com.example.audiochatbot.database.models.CashOperation
 import com.example.audiochatbot.database.models.Store
 import com.example.audiochatbot.database.UserDao
+import com.example.audiochatbot.database.models.User
 import kotlinx.coroutines.*
 import java.lang.NumberFormatException
 import kotlin.math.round
@@ -46,6 +47,9 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    private var _reportList = MutableLiveData<List<String>>()
+    val reportList: LiveData<List<String>> get() = _reportList
+
     init {
         uiScope.launch {
             _store.value = retrieveStore(storeId)
@@ -63,9 +67,19 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
                 val matchWithdraw = "withdraw".toRegex().find(text)
                 val matchDollar = "dollar".toRegex().find(text)
 
+                val match = "download report number".toRegex().find(text)
+                val match1 = "download a report number".toRegex().find(text)
+                val match2 = "download the report number".toRegex().find(text)
+
                 val indexDeposit = matchDeposit?.range?.last
                 val indexWithdraw = matchWithdraw?.range?.last
                 val indexDollar = matchDollar?.range?.first
+
+                val index = match?.range?.last
+                val index1 = match1?.range?.last
+                val index2 = match2?.range?.last
+
+                val indexNum = index ?: (index1 ?: index2)
 
                 if (indexDollar != null) {
                     if (indexDeposit != null) {
@@ -141,9 +155,58 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
                             _message.value = "Can't understand your command"
                     } else
                         _message.value = "Can't understand your command"
+                } else if (indexNum != null) {
+
+                    val str = text.substring(indexNum + 1)
+                    val result = str.filter { it.isDigit() }
+
+                    val num = when {
+                        result != "" -> result.toInt()
+                        str.contains("one") -> 1
+                        str.contains("to") || str.contains("two") -> 2
+                        str.contains("three") -> 3
+                        str.contains("for") -> 4
+                        else -> -1
+                    }
+
+                    if (num > 0) {
+                        val list = cashReports.value
+                        var res: CashOperation? = null
+
+                        if (list != null) {
+                            for (i in list) {
+                                if (i.cashOperationId == num) {
+                                    res = i
+                                    break
+                                }
+                            }
+
+                            if (res != null)
+                                generateAReport(res)
+                            else
+                                _message.value = "You do not have an access to this store"
+                        } else
+                            _message.value = "Cannot understand your command"
+                    } else
+                        _message.value = "Cannot understand your command"
                 } else
                     _message.value = "Can't understand your command"
             }
+        }
+    }
+
+    fun generateAReport(cashOperation: CashOperation) {
+        uiScope.launch {
+            val list = mutableListOf<String>()
+            val user = getUser(cashOperation.userId)
+
+            list.add("Cash Operations ${cashOperation.cashOperationId} Report")
+            list.add("Store: ${cashOperation.storeId}")
+            list.add("${cashOperation.operationType}: ${cashOperation.amount}")
+            list.add("Done by: ${user.firstName} ${user.lastName} {id : ${user.userId}}")
+            list.add("Date of report: ${cashOperation.date} | ${cashOperation.time}")
+
+            _reportList.value = list
         }
     }
 
@@ -209,6 +272,12 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
     private suspend fun updateStore(newStore: Store) {
         withContext(Dispatchers.IO) {
             database.updateStore(newStore)
+        }
+    }
+
+    private suspend fun getUser(userId: Int): User {
+        return withContext(Dispatchers.IO) {
+            database.getUserWithId(userId)
         }
     }
 

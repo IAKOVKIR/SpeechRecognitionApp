@@ -15,7 +15,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CashReportRecyclerViewAdapter(private val database: UserDao) : ListAdapter<CashOperation,
+class CashReportRecyclerViewAdapter(private val database: UserDao,
+                                    private val clickListener: DownloadTheCashReportListener
+) : ListAdapter<CashOperation,
         CashReportRecyclerViewAdapter.ViewHolder>(
     CashOperationDiffCallback()
 ) {
@@ -23,7 +25,7 @@ class CashReportRecyclerViewAdapter(private val database: UserDao) : ListAdapter
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        holder.bind(item, database)
+        holder.bind(clickListener, item, database)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,7 +35,9 @@ class CashReportRecyclerViewAdapter(private val database: UserDao) : ListAdapter
     class ViewHolder private constructor(val binding: FragmentCashReportRecyclerViewAdapterBinding, val context: Context)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(item: CashOperation, database: UserDao) {
+        fun bind(clickListener: DownloadTheCashReportListener, item: CashOperation, database: UserDao) {
+            binding.cashReport = item
+            binding.clickListener = clickListener
             CoroutineScope(Dispatchers.Default).launch {
 
                 var fullName: String
@@ -74,4 +78,8 @@ class CashOperationDiffCallback : DiffUtil.ItemCallback<CashOperation>() {
     override fun areContentsTheSame(oldItem: CashOperation, newItem: CashOperation): Boolean {
         return oldItem == newItem
     }
+}
+
+class DownloadTheCashReportListener(val clickListener: (cashOperation: CashOperation) -> Unit) {
+    fun onClick(cashOperation: CashOperation) = clickListener(cashOperation)
 }

@@ -1,14 +1,13 @@
 package com.example.audiochatbot.administrator.inventories.view_models
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.UserDao
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import java.util.*
+import com.example.audiochatbot.database.models.InventoryCount
+import com.example.audiochatbot.database.models.User
+import kotlinx.coroutines.*
 
 class InventoryListViewModel(val storeId: Int, val database: UserDao) : ViewModel() {
 
@@ -41,14 +40,84 @@ class InventoryListViewModel(val storeId: Int, val database: UserDao) : ViewMode
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    private var _reportList = MutableLiveData<List<String>>()
+    val reportList: LiveData<List<String>> get() = _reportList
+
+    @SuppressLint("DefaultLocale")
     fun convertStringToAction(newText: String) {
         uiScope.launch {
-            val text = newText.toLowerCase(Locale.ROOT)
+            val text = newText.toLowerCase()
             when {
-                text.contains("go back") || text.contains("return back") -> _closeFragment.value = true
-                text.contains("inventory count") || text.contains("inventor account") -> _navigateToInventoryCount.value = true
-                else -> _message.value = "I'm sorry, I cannot understand your command"
+                text.contains("go back") || text.contains("return back") -> _closeFragment.value =
+                    true
+                text.contains("inventory count") || text.contains("inventor account") -> _navigateToInventoryCount.value =
+                    true
+                else -> {
+                    val match = "download report number".toRegex().find(text)
+                    val match1 = "download a report number".toRegex().find(text)
+                    val match2 = "download the report number".toRegex().find(text)
+
+                    val index = match?.range?.last
+                    val index1 = match1?.range?.last
+                    val index2 = match2?.range?.last
+
+                    val indexNum = index ?: (index1 ?: index2)
+
+                    if (indexNum != null) {
+
+                        val str = text.substring(indexNum + 1)
+                        val result = str.filter { it.isDigit() }
+
+                        val num = when {
+                            result != "" -> result.toInt()
+                            str.contains("one") -> 1
+                            str.contains("to") || str.contains("two") -> 2
+                            str.contains("three") -> 3
+                            str.contains("for") -> 4
+                            else -> -1
+                        }
+
+                        if (num > 0) {
+                            val list = inventories.value
+                            var res: InventoryCount? = null
+
+                            if (list != null) {
+                                for (i in list) {
+                                    if (i.inventoryCountId == num) {
+                                        res = i
+                                        break
+                                    }
+                                }
+
+                                if (res != null)
+                                    generateAReport(res)
+                                else
+                                    _message.value = "You do not have an access to this store"
+                            } else
+                                _message.value = "Cannot understand your command"
+                        } else
+                            _message.value = "Cannot understand your command"
+                    } else
+                        _message.value = "Cannot understand your command"
+                }
             }
+        }
+    }
+
+    fun generateAReport(inventoryCount: InventoryCount) {
+        uiScope.launch {
+            val list = mutableListOf<String>()
+            val user = getUser(inventoryCount.userId)
+
+            list.add("Inventory Count ${inventoryCount.inventoryCountId} Report")
+            list.add("Store: ${inventoryCount.storeId}")
+            list.add("Counted by: ${user.firstName} ${user.lastName} {id : ${user.userId}}")
+            list.add("Date of count: ${inventoryCount.date} | ${inventoryCount.time}")
+            list.add("Expected count: A$${inventoryCount.expectedEarnings}")
+            list.add("Actual count: A$${inventoryCount.totalEarnings}")
+            list.add("Difference: A$${inventoryCount.expectedEarnings - inventoryCount.totalEarnings}")
+
+            _reportList.value = list
         }
     }
 
@@ -56,6 +125,12 @@ class InventoryListViewModel(val storeId: Int, val database: UserDao) : ViewMode
         _message.value = null
         _closeFragment.value = null
         _navigateToInventoryCount.value = null
+    }
+
+    private suspend fun getUser(userId: Int): User {
+        return withContext(Dispatchers.IO) {
+            database.getUserWithId(userId)
+        }
     }
 
     /**

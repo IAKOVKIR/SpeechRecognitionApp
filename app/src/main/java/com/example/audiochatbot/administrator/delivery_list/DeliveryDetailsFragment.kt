@@ -46,7 +46,7 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
     private var response = false
     private lateinit var testViewModel: DeliveryDetailsViewModel
     private val requestCodeStt = 1
-    private val STORAGE_CODE: Int = 100
+    private val storageCode: Int = 100
     var list: List<String>? = null
 
     override fun onCreateView(
@@ -109,7 +109,7 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
                     == PackageManager.PERMISSION_DENIED){
                     //permission was not granted, request it
                     val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    requestPermissions(permissions, STORAGE_CODE)
+                    requestPermissions(permissions, storageCode)
                 }
                 else{
                     //permission already granted, call savePdf() method
@@ -177,24 +177,9 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
             //open the document for writing
             mDoc.open()
 
-            for (i in list!!) {
+            //add content from the list
+            for (i in list!!)
                 mDoc.add(Paragraph(i))
-                //mDoc.add(Paragraph())
-            }
-
-            /**get text from EditText i.e. textEt
-            val mText = "text blyat"
-
-            //add author of the document (metadata)
-            mDoc.addAuthor("Speech Recognition App")
-
-            //add paragraph to the document
-            mDoc.add(Paragraph(mText))
-            //add paragraph to the document
-            mDoc.add(Paragraph("Lel"))
-            //add paragraph to the document
-            mDoc.add(Paragraph("ohuel"))*/
-
 
             //close document
             mDoc.close()
@@ -210,7 +195,7 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when(requestCode){
-            STORAGE_CODE -> {
+            storageCode -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     //permission from popup was granted, call savePdf() method
                     savePdf()

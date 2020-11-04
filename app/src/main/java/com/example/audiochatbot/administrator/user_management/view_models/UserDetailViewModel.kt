@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.user_management.view_models
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -50,12 +51,14 @@ class UserDetailViewModel(
 
     private var position = 'E'
 
-    private val _isUploaded = MutableLiveData<Boolean>()
-    val isUploaded
-        get() = _isUploaded
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage get() = _errorMessage
+
+    private val _action = MutableLiveData<Int>()
+    val action get() = _action
 
     init {
         uiScope.launch {
@@ -63,12 +66,19 @@ class UserDetailViewModel(
         }
     }
 
-    fun setPos(pos: Int) {
-        position = positionCharArray[pos]
-    }
-
-    fun setMessage(message: String) {
-        _errorMessage.value = message
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(givenText: String) {
+        uiScope.launch {
+            val text = givenText.toLowerCase()
+            if (text.contains("go back") || text.contains("return back"))
+                _closeFragment.value = true
+            else if (text.contains("delete the user") || text.contains("delete user") || text.contains("delete this user"))
+                deleteRecord()
+            else if (text.contains("update the details") || text.contains("update") || text.contains("update details"))
+                _action.value = 1
+            else
+                _errorMessage.value = "Cannot understand your command"
+        }
     }
 
     fun updateUser(
@@ -77,38 +87,52 @@ class UserDetailViewModel(
         email: String,
         phoneNumber: String,
         password: String,
-        repeatPassword: String
-    ) {
-        if (password == repeatPassword) {
-            if (firstName.isNotEmpty()) {
-                if (lastName.isNotEmpty()) {
-                    if (email.isNotEmpty()) {
-                        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                            if (checkPhone(phoneNumber)) {
-                                if (password.length > 7) {
-                                    val updatedUser = User(userId, user.value!!.businessId, firstName, lastName, email, phoneNumber, password, position)
-                                    submitUser(updatedUser)
+        repeatPassword: String) {
+        uiScope.launch {
+            if (password == repeatPassword) {
+                if (firstName.isNotEmpty()) {
+                    if (lastName.isNotEmpty()) {
+                        if (email.isNotEmpty()) {
+                            if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                                if (checkPhone(phoneNumber)) {
+                                    if (password.length > 7) {
+                                        val updatedUser = User(
+                                            userId,
+                                            user.value!!.businessId,
+                                            firstName,
+                                            lastName,
+                                            email,
+                                            phoneNumber,
+                                            password,
+                                            position
+                                        )
+                                        submitUser(updatedUser)
+                                    } else
+                                        _errorMessage.value =
+                                            "password's length is less than 8 symbols"
                                 } else
-                                    _errorMessage.value = "password's length is less than 8 symbols"
+                                    _errorMessage.value = "wrong phone format"
                             } else
-                                _errorMessage.value = "wrong phone format"
+                                _errorMessage.value = "wrong email format"
                         } else
-                            _errorMessage.value = "wrong email format"
+                            _errorMessage.value = "email field is empty"
                     } else
-                        _errorMessage.value = "email field is empty"
+                        _errorMessage.value = "Last name field is empty"
                 } else
-                    _errorMessage.value = "Last name field is empty"
+                    _errorMessage.value = "First name field is empty"
             } else
-                _errorMessage.value = "First name field is empty"
-        } else
-            _errorMessage.value = "Passwords do not match"
+                _errorMessage.value = "Passwords do not match"
+        }
     }
 
     private fun submitUser(user: User) {
         uiScope.launch {
             addUserToDb(user)
             val u = retrieveUser(user.userId)
-            _isUploaded.value = u!!.userId == user.userId
+            if (u!!.userId == user.userId) {
+                _closeFragment.value = true
+            } else
+                _errorMessage.value = "Something went wrong"
         }
     }
 
@@ -116,7 +140,10 @@ class UserDetailViewModel(
         uiScope.launch {
             deleteRecordDb()
             val u = retrieveUser(userId)
-            _isUploaded.value = u == null
+            if (u == null) {
+                _closeFragment.value = true
+            } else
+                _errorMessage.value = "Something went wrong"
         }
     }
 
@@ -142,6 +169,10 @@ class UserDetailViewModel(
         val pattern: Pattern = Pattern.compile("^\\d{10}$")
         val matcher: Matcher = pattern.matcher(d)
         return matcher.matches()
+    }
+
+    fun setPos(pos: Int) {
+        position = positionCharArray[pos]
     }
 
     /**

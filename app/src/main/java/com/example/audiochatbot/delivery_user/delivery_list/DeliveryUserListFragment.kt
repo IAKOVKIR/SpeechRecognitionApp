@@ -125,7 +125,7 @@ class DeliveryUserListFragment : Fragment(), TextToSpeech.OnInitListener {
                     )
                 } else {
                     this.findNavController().navigate(
-                        DeliveryUserListFragmentDirections.actionDeliveryUserListToDeliveryDetailsFragment(delivery.deliveryId, args.userId)
+                        DeliveryUserListFragmentDirections.actionDeliveryUserListToDeliveryDetailsFragment(delivery.deliveryId, args.userId, args.storeId)
                     )
                 }
                 testViewModel.onStoreNavigated()

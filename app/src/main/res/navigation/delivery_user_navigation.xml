@@ -84,5 +84,8 @@
         <argument
             android:name="userId"
             app:argType="integer" />
+        <argument
+            android:name="storeId"
+            app:argType="integer" />
     </fragment>
 </navigation>

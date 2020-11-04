@@ -1,5 +1,6 @@
 package com.example.audiochatbot.administrator.user_management.view_models
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.models.User
@@ -37,15 +38,30 @@ class CreateUserViewModel(val dataSource: UserDao) : ViewModel() {
 
     private var position = positionCharArray[0]
 
-    private val _isUploaded = MutableLiveData<Boolean>()
-    val isUploaded
-        get() = _isUploaded
-
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage get() = _errorMessage
 
+    private val _closeFragment = MutableLiveData<Boolean>()
+    val closeFragment get() = _closeFragment
+
+    private val _action = MutableLiveData<Int>()
+    val action get() = _action
+
     fun setPos(pos: Int) {
         position = positionCharArray[pos]
+    }
+
+    @SuppressLint("DefaultLocale")
+    fun convertStringToAction(givenText: String) {
+        uiScope.launch {
+            val text = givenText.toLowerCase()
+            if (text.contains("go back") || text.contains("return back"))
+                _closeFragment.value = true
+            else if (text.contains("submit the details") || text.contains("submit") || text.contains("submit details"))
+                _action.value = 1
+            else
+                _errorMessage.value = "Cannot understand your command"
+        }
     }
 
     fun submitUser(firstName: String, lastName: String, email: String, phoneNumber: String,
@@ -68,7 +84,11 @@ class CreateUserViewModel(val dataSource: UserDao) : ViewModel() {
 
                                     addUserToDb(newUser)
 
-                                    _isUploaded.value = getUser(userId) != null
+                                    if (getUser(userId) != null) {
+                                        _closeFragment.value = true
+                                    } else {
+                                        _errorMessage.value = "Something went wrong"
+                                    }
                                 } else
                                     _errorMessage.value = "password's length is less than 8 symbols"
                             } else

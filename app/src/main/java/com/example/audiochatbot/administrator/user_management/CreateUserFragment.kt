@@ -1,8 +1,12 @@
 package com.example.audiochatbot.administrator.user_management
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,6 +34,9 @@ import java.util.*
 class CreateUserFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
+    private var response = false
+    private lateinit var viewModel: CreateUserViewModel
+    private val requestCodeStt = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +57,7 @@ class CreateUserFragment : Fragment(), TextToSpeech.OnInitListener {
         val viewModelFactory =
             CreateUserViewModelFactory(userDataSource)
 
-        val viewModel =
+        viewModel =
             ViewModelProvider(
                 this, viewModelFactory).get(CreateUserViewModel::class.java)
 
@@ -67,8 +74,9 @@ class CreateUserFragment : Fragment(), TextToSpeech.OnInitListener {
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
-        binding.submit.setOnClickListener {
-            binding.apply {
+
+        binding.apply {
+            submit.setOnClickListener {
                 val firstName = firstName.text.trim().toString()
                 val lastName = lastName.text.trim().toString()
                 val email = email.text.trim().toString()
@@ -76,6 +84,33 @@ class CreateUserFragment : Fragment(), TextToSpeech.OnInitListener {
                 val password = password.text.trim().toString()
 
                 viewModel.submitUser(firstName, lastName, email, phoneNumber, password, adminId)
+            }
+
+            microphoneImage.setOnClickListener {
+                // Get the Intent action
+                val sttIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                // Language model defines the purpose, there are special models for other use cases, like search.
+                sttIntent.putExtra(
+                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                )
+                // Adding an extra language, you can use any language from the Locale class.
+                sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+                // Text that shows up on the Speech input prompt.
+                sttIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Submit the details")
+                try {
+                    // Start the intent for a result, and pass in our request code.
+                    startActivityForResult(sttIntent, requestCodeStt)
+                } catch (e: ActivityNotFoundException) {
+                    // Handling error when the service is not available.
+                    e.printStackTrace()
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Your device does not support STT.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
 
@@ -87,7 +122,7 @@ class CreateUserFragment : Fragment(), TextToSpeech.OnInitListener {
                 // 0 - 15 are usually available on any device
                 val musicVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC)
 
-                if (musicVolume == 0)
+                if (musicVolume == 0 || !response)
                     Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
                 else
                     textToSpeech!!.speak(result, TextToSpeech.QUEUE_FLUSH,
@@ -95,14 +130,48 @@ class CreateUserFragment : Fragment(), TextToSpeech.OnInitListener {
             }
         })
 
-        viewModel.isUploaded.observe(viewLifecycleOwner, {result ->
-            if (result)
-                this.findNavController().popBackStack()
-            else
-                Toast.makeText(context, "Something went wrong :(", Toast.LENGTH_SHORT).show()
+        viewModel.closeFragment.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result)
+                    this.findNavController().popBackStack()
+        })
+
+        viewModel.action.observe(viewLifecycleOwner, { num ->
+            if (num != null) {
+                if (num == 1) {
+                    val firstName = binding.firstName.text.trim().toString()
+                    val lastName = binding.lastName.text.trim().toString()
+                    val email = binding.email.text.trim().toString()
+                    val phoneNumber = binding.phoneNumber.text.trim().toString()
+                    val password = binding.password.text.trim().toString()
+
+                    viewModel.submitUser(firstName, lastName, email, phoneNumber, password, adminId)
+                }
+            }
         })
 
         return binding.root
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            // Handle the result for our request code.
+            requestCodeStt -> {
+                // Safety checks to ensure data is available.
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    // Retrieve the result array.
+                    val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    // Ensure result array is not null or empty to avoid errors.
+                    if (!result.isNullOrEmpty()) {
+                        // Recognized text is in the first position.
+                        val recognizedText = result[0]
+                        // Do what you want with the recognized text.
+                        viewModel.convertStringToAction(recognizedText)
+                    }
+                }
+            }
+        }
     }
 
     override fun onInit(status: Int) {

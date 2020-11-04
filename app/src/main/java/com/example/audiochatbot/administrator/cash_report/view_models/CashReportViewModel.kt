@@ -202,7 +202,11 @@ class CashReportViewModel(val adminId: Int, val storeId: Int,val database: UserD
 
             list.add("Cash Operations ${cashOperation.cashOperationId} Report")
             list.add("Store: ${cashOperation.storeId}")
-            list.add("${cashOperation.operationType}: ${cashOperation.amount}")
+            if (cashOperation.operationType) {
+                list.add("Deposited: ${cashOperation.amount}")
+            } else {
+                list.add("Withdrawn: ${cashOperation.amount}")
+            }
             list.add("Done by: ${user.firstName} ${user.lastName} {id : ${user.userId}}")
             list.add("Date of report: ${cashOperation.date} | ${cashOperation.time}")
 

@@ -387,12 +387,13 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
             }
 
             val storeObj = getStore(storeId)
-            storeObj.cashOnHand = storeObj.cashOnHand + totalPrice
+            val expected = storeObj.cashOnHand + totalPrice
+            storeObj.cashOnHand = currentEarnings
 
             updateStore(storeObj)
 
             val lastId = getLastId()
-            finishCount(InventoryCount(lastId + 1, storeId, adminId, storeObj.cashOnHand, currentEarnings, time.getDate(), time.getTime()))
+            finishCount(InventoryCount(lastId + 1, storeId, adminId, expected, currentEarnings, time.getDate(), time.getTime()))
 
             _isDone.value = true
         }

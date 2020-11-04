@@ -67,7 +67,7 @@ class CreateUserViewModel(val dataSource: UserDao) : ViewModel() {
     fun submitUser(firstName: String, lastName: String, email: String, phoneNumber: String,
                    password: String, adminId: Int) {
         uiScope.launch {
-            val userId = getLastUserId()
+            val userId = getLastUserId() + 1
             val businessId = getAdminBusinessId(adminId)
 
             if (firstName.isNotEmpty()) {

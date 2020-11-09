@@ -68,7 +68,7 @@ class UserManagementViewModel(private val businessId: Int, val dataSource: UserD
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else if (text.contains("add new user") || text.contains("create new user") || text.contains("create a new user")
-                || text.contains("add a new user")) {
+                || text.contains("add a new user") || text.contains("create a user") || text.contains("add a user")) {
                 _navigateToCreateNewUser.value = true
             } else {
                 val patternOpenProductNumber = "open user number".toRegex()

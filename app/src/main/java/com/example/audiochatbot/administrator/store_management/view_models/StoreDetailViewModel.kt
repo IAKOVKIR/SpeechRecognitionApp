@@ -54,7 +54,7 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
                 "go back", "return back" -> _closeFragment.value = true
                 "update details", "update", "update the details" -> _action.value = 1
                 "remove store", "remove this store", "remove the store" -> deleteRecord()
-                "assigned products", "open assigned items", "open the assigned items" -> _action.value = 2
+                "assigned products", "open assigned products", "open the assigned products" -> _action.value = 2
                 "assigned users", "open assigned users", "open the assigned users" -> _action.value = 3
                 else -> _message.value = "I am sorry, I cannot understand your command"
             }

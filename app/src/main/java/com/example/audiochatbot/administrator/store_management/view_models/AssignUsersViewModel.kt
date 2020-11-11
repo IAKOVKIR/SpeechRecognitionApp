@@ -9,7 +9,22 @@ import com.example.audiochatbot.database.models.AssignedUser
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class AssignUsersViewModel(private val adminId: Int, val storeId: Int, val businessId: Int, private val database: UserDao): ViewModel() {
+/**
+ * ViewModel for AssignUsersFragment.
+ *
+ * @param adminId - the key of the current admin user we are working on.
+ * @param storeId - the key of the current store we are working on.
+ * @param businessId - the key of the current business we are working on.
+ * @param dataSource - UserDao reference.
+ */
+class AssignUsersViewModel(private val adminId: Int, val storeId: Int, val businessId: Int, private val dataSource: UserDao): ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -30,21 +45,37 @@ class AssignUsersViewModel(private val adminId: Int, val storeId: Int, val busin
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the List of AssignedUsers
+     */
     val users = database.getNotAssignedUsers(storeId, businessId, 'A')
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _navigateToUserDetails = MutableLiveData<Int>()
     val navigateToUserDetails
         get() = _navigateToUserDetails
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(recordedText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = recordedText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -108,6 +139,9 @@ class AssignUsersViewModel(private val adminId: Int, val storeId: Int, val busin
         }
     }
 
+    /**
+     * method that converts the text to number
+     */
     private fun textToInteger(text: String, lastIndex: Int): Int {
         val str = text.substring(lastIndex + 1)
         val result = str.filter { it.isDigit() }
@@ -122,20 +156,33 @@ class AssignUsersViewModel(private val adminId: Int, val storeId: Int, val busin
         }
     }
 
+    /**
+     * method that sets a value of clicked User
+     */
     fun onUserClicked(id: Int) {
         _navigateToUserDetails.value = id
     }
 
+    /**
+     * method that sets a value of null for _navigateToUserDetails LiveData
+     */
     fun onUserNavigated() {
         _navigateToUserDetails.value = null
     }
 
+    /**
+     * method that assigns the User
+     */
     fun addRecord(userId: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             addRecordDb(userId)
         }
     }
 
+    /**
+     * Suspending method that inserts the AssignedUser record
+     */
     private suspend fun addRecordDb(userId: Int) {
         withContext(Dispatchers.IO) {
             val num = database.getLastAssignedUserId() + 1

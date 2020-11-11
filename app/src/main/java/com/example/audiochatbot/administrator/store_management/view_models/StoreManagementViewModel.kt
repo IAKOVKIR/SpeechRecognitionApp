@@ -12,6 +12,9 @@ import kotlinx.coroutines.launch
 
 /**
  * ViewModel for StoreManagementFragment.
+ *
+ * @param adminId - the key of the current admin user we are working on.
+ * @param dataSource - UserDao reference.
  */
 class StoreManagementViewModel(val adminId: Int,val dataSource: UserDao) : ViewModel() {
 
@@ -40,24 +43,43 @@ class StoreManagementViewModel(val adminId: Int,val dataSource: UserDao) : ViewM
 
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the List of Store
+     */
     val stores = database.getAllAdminStores(adminId)
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _navigateToStoreDetails = MutableLiveData<Int>()
     val navigateToStoreDetails
         get() = _navigateToStoreDetails
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _navigateToCreateNewStore = MutableLiveData<Boolean>()
     val navigateToCreateNewUser get() = _navigateToCreateNewStore
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(recordedText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = recordedText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -98,6 +120,9 @@ class StoreManagementViewModel(val adminId: Int,val dataSource: UserDao) : ViewM
         }
     }
 
+    /**
+     * method that converts text to number
+     */
     private fun textToInteger(text: String, lastIndex: Int): Int {
         val str = text.substring(lastIndex + 1)
         val result = str.filter { it.isDigit() }
@@ -112,10 +137,16 @@ class StoreManagementViewModel(val adminId: Int,val dataSource: UserDao) : ViewM
         }
     }
 
+    /**
+     * method that sets a value of clicked Store
+     */
     fun onStoreClicked(id: Int) {
         _navigateToStoreDetails.value = id
     }
 
+    /**
+     * method that sets a value of null for all LiveData values except for the list of Store
+     */
     fun onStoreNavigated() {
         _navigateToStoreDetails.value = null
         _navigateToCreateNewStore.value = null

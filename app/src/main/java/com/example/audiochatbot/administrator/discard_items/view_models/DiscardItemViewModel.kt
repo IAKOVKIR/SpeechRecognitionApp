@@ -10,7 +10,21 @@ import com.example.audiochatbot.database.models.DiscardedItem
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, val database: UserDao) : ViewModel() {
+/**
+ * ViewModel for DiscardItemFragment.
+ *
+ * @param adminId - the key of the current admin user we are working on.
+ * @param storeId - the key of the current store we are working on.
+ * @param dataSource - UserDao reference.
+ */
+class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, val dataSource: UserDao) : ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -33,15 +47,25 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
 
     val products = database.getAllProductsLiveWithStoreID(storeId)
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(newText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = newText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -51,7 +75,11 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
         }
     }
 
+    /**
+     * method that discards the items
+     */
     fun discardItem(productId: Int, quantity: Int, comment: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             if (quantity > 0) {
                 val num = getQuantity(productId)
@@ -68,6 +96,9 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
         }
     }
 
+    /**
+     * Suspending method that discards the item and returns the AssignedProduct Id
+     */
     private suspend fun dItem(productId: Int, userId: Int, quantity: Int, comment: String): Int {
         return withContext(Dispatchers.IO) {
             val num = database.getLastDiscardedItemId() + 1
@@ -78,18 +109,27 @@ class DiscardItemViewModel(private val adminId: Int, private val storeId: Int, v
         }
     }
 
+    /**
+     * Suspending method that returns the quantity of the assigned product
+     */
     private suspend fun getQuantity(productId: Int): Int {
         return withContext(Dispatchers.IO) {
             database.getAssignedProductQuantity(productId, storeId)
         }
     }
 
+    /**
+     * Suspending method that retrieves the AssignedProduct
+     */
     private suspend fun getAssignedProduct(id: Int): AssignedProduct? {
         return withContext(Dispatchers.IO) {
             database.getAssignedProduct(id)
         }
     }
 
+    /**
+     * Suspending method that updates the AssignedProduct record
+     */
     private suspend fun updateAssignedItem(aItem: AssignedProduct) {
         withContext(Dispatchers.IO) {
             database.updateAssignedProduct(aItem)

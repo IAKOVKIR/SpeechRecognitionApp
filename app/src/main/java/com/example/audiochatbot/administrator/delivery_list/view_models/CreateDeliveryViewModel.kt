@@ -12,7 +12,21 @@ import com.example.audiochatbot.database.models.DeliveryProduct
 import com.example.audiochatbot.database.models.Product
 import kotlinx.coroutines.*
 
-class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val database: UserDao): ViewModel() {
+/**
+ * ViewModel for DeliveryDetailsFragment.
+ *
+ * @param adminId - the key of the current admin user we are working on.
+ * @param storeId - the key of the current store we are working on.
+ * @param dataSource - UserDao reference.
+ */
+class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val dataSource: UserDao): ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -33,24 +47,44 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private var productIds: MutableList<Int> = arrayListOf()
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private var smallBigQuantities: MutableList<Int> = arrayListOf()
 
+    /**
+     * Lifecycle-aware observable that stores the list of Product
+     */
     private var _products = MutableLiveData<List<Product>>()
     val products: LiveData<List<Product>> get() = _products
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private var _l = MutableLiveData<List<Int>>()
     val l: LiveData<List<Int>> get() = _l
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
     init {
+        //launch a new coroutine in background and continue
         uiScope.launch {
+            //prepopulate the lists
             _products.value = getItems()
             for (element in products.value!!) {
                 productIds.add(element.productId)
@@ -66,6 +100,7 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
      */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = givenText.toLowerCase()
             // if the command is go back
@@ -293,6 +328,7 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
      * Method addItem updates the item of the list with entered quantities
      */
     fun addItem(productId: Int, smallQuantity: Int, bigQuantity: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             // Items will be added if the entered total quantity
             // (small unit and big unit quantities combined) is higher than zero.
@@ -315,6 +351,7 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
      * Method removeItem removes the quantities of the product
      */
     fun removeItem(productId: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             // get the index of productId in the list
             val num = productIds.indexOf(productId)
@@ -335,6 +372,7 @@ class CreateDeliveryViewModel(val storeId: Int, val adminId: Int, private val da
      * Method submitDelivery inserts a new delivery with all added items
      */
     fun submitDelivery() {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             // declare a mutable list for items that has a total quantity higher than zero
             val itemList: MutableList<DeliveryProduct> = arrayListOf()

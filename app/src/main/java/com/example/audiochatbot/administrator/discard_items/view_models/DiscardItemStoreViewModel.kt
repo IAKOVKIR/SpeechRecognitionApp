@@ -10,7 +10,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class DiscardItemStoreViewModel(val adminId: Int,val database: UserDao) : ViewModel() {
+/**
+ * ViewModel for DiscardItemStoreFragment.
+ *
+ * @param adminId - the key of the current user we are working on.
+ * @param dataSource - UserDao reference.
+ */
+class DiscardItemStoreViewModel(val adminId: Int,val dataSource: UserDao) : ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
+
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
@@ -28,21 +42,37 @@ class DiscardItemStoreViewModel(val adminId: Int,val database: UserDao) : ViewMo
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the List of Store
+     */
     val stores = database.getAllAdminStores(adminId)
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _navigateToDiscardItem = MutableLiveData<Int>()
     val navigateToDiscardItem
         get() = _navigateToDiscardItem
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(newText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = newText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -91,10 +121,16 @@ class DiscardItemStoreViewModel(val adminId: Int,val database: UserDao) : ViewMo
         }
     }
 
+    /**
+     * method that updates the LiveData by assigning the id of the selected Store
+     */
     fun onStoreClicked(id: Int) {
         _navigateToDiscardItem.value = id
     }
 
+    /**
+     * method that sets the values of LiveData to null except for the Store List
+     */
     fun onStoreNavigated() {
         _navigateToDiscardItem.value = null
         _message.value = null

@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.audiochatbot.database.models.*
 
+/**
+ * Defines methods for using all the model classes with Room.
+ */
 @Dao
 interface UserDao {
 

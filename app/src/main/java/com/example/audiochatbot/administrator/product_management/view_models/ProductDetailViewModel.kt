@@ -14,7 +14,7 @@ import kotlinx.coroutines.*
  *
  * @param productId - the key of the current product we are working on.
  * @param storeId - the key of the current store we are working on.
- * @param dataSource -
+ * @param dataSource - UserDao reference.
  */
 class ProductDetailViewModel(
     private val productId: Int,
@@ -46,30 +46,51 @@ class ProductDetailViewModel(
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the Product value
+     */
     private var _product = MutableLiveData<Product>()
     val product: LiveData<Product> get() = _product
 
+    /**
+     * Lifecycle-aware observable that stores the AssignedProduct value
+     */
     private var _assignedProduct = MutableLiveData<AssignedProduct>()
     val assignedProduct: LiveData<AssignedProduct> get() = _assignedProduct
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage get() = _errorMessage
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _action = MutableLiveData<Int>()
     val action get() = _action
 
     init {
+        //launch a new coroutine in background and continue
         uiScope.launch {
+            //prepopulate the LiveData
             _product.value = retrieveProduct(productId)
             _assignedProduct.value = retrieveAssignedProduct(productId, storeId)
         }
     }
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = givenText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -83,7 +104,11 @@ class ProductDetailViewModel(
         }
     }
 
+    /**
+     * method that validates the product
+     */
      fun submitProduct(name: String, smallUnitName: String, bigUnitName: String, conversion: String, price: Float) {
+         //launch a new coroutine in background and continue
         uiScope.launch {
             if (name.isNotEmpty()) {
                 if (smallUnitName.isNotEmpty()) {
@@ -111,13 +136,20 @@ class ProductDetailViewModel(
         }
     }
 
+    /**
+     * method that updates the product
+     */
     fun updateProduct(name: String, smallUnitName: String, bigUnitName: String, conversion: String,
                       price: Float, sale: Int, quantity: Int) {
         submitProduct(name, smallUnitName, bigUnitName, conversion, price)
         updateAssignedProduct(sale, quantity)
     }
 
+    /**
+     * method that the AssignedProduct
+     */
     private fun updateAssignedProduct(sale: Int, quantity: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val newAssignedProduct = retrieveAssignedProduct(productId, storeId)
             newAssignedProduct!!.sale = sale
@@ -126,7 +158,11 @@ class ProductDetailViewModel(
         }
     }
 
+    /**
+     * method that deletes the product
+     */
     fun deleteRecord() {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             deleteRecordDb()
             val u = retrieveProduct(productId)
@@ -137,30 +173,45 @@ class ProductDetailViewModel(
         }
     }
 
+    /**
+     * Suspending method that updates the product record
+     */
     private suspend fun addProductToDb(product: Product) {
         withContext(Dispatchers.IO) {
             database.update(product)
         }
     }
 
+    /**
+     * Suspending method that updates the AssignedProduct record
+     */
     private suspend fun updateAProduct(assignedProduct: AssignedProduct) {
         withContext(Dispatchers.IO) {
             database.updateAssignedProduct(assignedProduct)
         }
     }
 
+    /**
+     * Suspending method that retrieves the product with product Id
+     */
     private suspend fun retrieveProduct(productId: Int): Product? {
         return withContext(Dispatchers.IO) {
             database.getProductWithId(productId)
         }
     }
 
+    /**
+     * Suspending method that retrieves the AssignedProduct with product and store ids
+     */
     private suspend fun retrieveAssignedProduct(productId: Int, storeId: Int): AssignedProduct? {
         return withContext(Dispatchers.IO) {
             database.getAssignedProduct(productId, storeId)
         }
     }
 
+    /**
+     * Suspending method that deletes the record
+     */
     private suspend fun deleteRecordDb() {
         withContext(Dispatchers.IO) {
             database.deleteProductRecord(productId)

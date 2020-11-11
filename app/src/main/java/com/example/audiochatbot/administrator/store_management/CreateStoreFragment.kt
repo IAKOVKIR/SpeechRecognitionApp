@@ -51,9 +51,6 @@ class CreateStoreFragment : Fragment(), TextToSpeech.OnInitListener {
 
         textToSpeech = TextToSpeech(requireActivity(), this)
 
-        val args = CreateStoreFragmentArgs.fromBundle(requireArguments())
-        val adminId: Int = args.adminId
-
         val viewModelFactory =
             CreateStoreViewModelFactory(dataSource)
 
@@ -69,7 +66,7 @@ class CreateStoreFragment : Fragment(), TextToSpeech.OnInitListener {
             store.phoneNumber = binding.storePhone.text.trim().toString()
             store.zip_code = binding.zipCode.text.toString().toInt()
             store.cashOnHand = binding.cashOnHand.text.toString().toFloat()
-            testViewModel.submitStore(store, adminId)
+            testViewModel.submitStore(store)
         }
 
         binding.microphoneImage.setOnClickListener {
@@ -109,7 +106,7 @@ class CreateStoreFragment : Fragment(), TextToSpeech.OnInitListener {
                         store.phoneNumber = binding.storePhone.text.trim().toString()
                         store.zip_code = binding.zipCode.text.toString().toInt()
                         store.cashOnHand = binding.cashOnHand.text.toString().toFloat()
-                        testViewModel.submitStore(store, adminId)
+                        testViewModel.submitStore(store)
                     }
                 }
             }

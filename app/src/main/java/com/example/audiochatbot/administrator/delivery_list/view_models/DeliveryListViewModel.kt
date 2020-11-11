@@ -12,7 +12,21 @@ import com.example.audiochatbot.database.models.DeliveryProduct
 import com.example.audiochatbot.database.models.DeliveryProductStatus
 import kotlinx.coroutines.*
 
-class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: UserDao) : ViewModel() {
+/**
+ * ViewModel for DeliveryListFragment.
+ *
+ * @param adminId - the key of the current admin user we are working on.
+ * @param storeId - the key of the current store we are working on.
+ * @param dataSource - UserDao reference.
+ */
+class DeliveryListViewModel(val adminId: Int, val storeId: Int, val dataSource: UserDao) : ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -33,31 +47,52 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the List of Deliveries
+     */
     private var _deliveries = MutableLiveData<List<Delivery>>()
     val deliveries: LiveData<List<Delivery>> get() = _deliveries
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Delivery value
+     */
     private val _navigateToDeliveryDetails = MutableLiveData<Delivery>()
     val navigateToDeliveryDetails
         get() = _navigateToDeliveryDetails
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _navigateToCreateNewDelivery = MutableLiveData<Boolean>()
     val navigateToCreateNewDelivery get() = _navigateToCreateNewDelivery
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
     init {
+        //launch a new coroutine in background and continue
         uiScope.launch {
+            //prepopulate the list of deliveries
             _deliveries.value = getItems()
         }
     }
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = givenText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -168,7 +203,11 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
         }
     }
 
+    /**
+     * method that marks the delivery as delivered
+     */
     private fun deliveredDelivery(delivery: Delivery) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             delivery.status = "Delivered"
             updateDelivery(delivery)
@@ -182,7 +221,11 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
         }
     }
 
+    /**
+     * method that adds the items from the delivery to the store
+     */
     private fun acceptItems(deliveryProduct: DeliveryProduct) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val conversion = getConversion(deliveryProduct.assignedProductId)
             var smallQuantity = 0
@@ -206,7 +249,11 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
         }
     }
 
+    /**
+     * method that updates the delivery status
+     */
     fun updateDeliveryStatus(delivery: Delivery, status: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             delivery.status = status
             updateDelivery(delivery)
@@ -219,12 +266,19 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
         }
     }
 
+    /**
+     * method that refreshes the list of deliveries
+     */
     fun refreshTheList() {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             _deliveries.value = getItems()
         }
     }
 
+    /**
+     * method that converts text to number
+     */
     private fun textToInteger(text: String, lastIndex: Int): Int {
         val str = text.substring(lastIndex + 1)
         val result = str.filter { it.isDigit() }
@@ -239,58 +293,88 @@ class DeliveryListViewModel(val adminId: Int, val storeId: Int, val database: Us
         }
     }
 
+    /**
+     * method that updates the delivery
+     */
     private suspend fun updateDelivery(delivery: Delivery) {
         withContext(Dispatchers.IO) {
             database.updateDelivery(delivery)
         }
     }
 
+    /**
+     * method that retrieves the list of deliveries
+     */
     private suspend fun getItems(): List<Delivery> {
         return withContext(Dispatchers.IO) {
             database.getAllDeliveriesWithStore(storeId)
         }
     }
 
+    /**
+     * method that retrieves the list of delivery products
+     */
     private suspend fun getDeliveryProducts(deliveryId: Int): List<DeliveryProduct> {
         return withContext(Dispatchers.IO) {
             database.getAllDeliveryProducts(deliveryId)
         }
     }
 
+    /**
+     * method that retrieves the AssignedProduct with AssignedProductId
+     */
     private suspend fun getAssignedProduct(assignedProductId: Int): AssignedProduct? {
         return withContext(Dispatchers.IO) {
             database.getAssignedProduct(assignedProductId)
         }
     }
 
+    /**
+     * method that retrieves the Delivery Product ID
+     */
     private suspend fun getDeliverProductId(deliveryId: Int): Int {
         return withContext(Dispatchers.IO) {
             database.getDeliveryProductId(deliveryId)
         }
     }
 
+    /**
+     * method that updates the AssignedProduct record
+     */
     private suspend fun updateAssignedProduct(assignedProduct: AssignedProduct) {
         withContext(Dispatchers.IO) {
             database.updateAssignedProduct(assignedProduct)
         }
     }
 
+    /**
+     * method that uploads a new record of the DeliveryProductStatus
+     */
     private suspend fun addDProductStatus(deliveryProductStatus: DeliveryProductStatus) {
         withContext(Dispatchers.IO) {
             database.insertDeliveryProductStatus(deliveryProductStatus)
         }
     }
 
+    /**
+     * method that retrieves the conversion String of the AssignedProduct
+     */
     private suspend fun getConversion(productId: Int): String {
         return withContext(Dispatchers.IO) {
             database.getProductConversionWithAssignedProductId(productId)
         }
     }
 
+    /**
+     * method that sets a value of clicked delivery
+     */
     fun onDeliveryClicked(delivery: Delivery) {
         _navigateToDeliveryDetails.value = delivery
     }
 
+    /**
+     * method that sets a value of null for all LiveData values except for the list
+     */
     fun onStoreNavigated() {
         _navigateToDeliveryDetails.value = null
         _message.value = null

@@ -9,9 +9,22 @@ import com.example.audiochatbot.database.models.Product
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
+/**
+ * ViewModel for CreateProductFragment.
+ *
+ * @param dataSource - UserDao reference.
+ */
 class CreateProductViewModel(
-    private val database: UserDao
+    private val dataSource: UserDao
 ) : ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
+
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
@@ -29,18 +42,31 @@ class CreateProductViewModel(
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _action = MutableLiveData<Int>()
     val action get() = _action
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = givenText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -52,7 +78,11 @@ class CreateProductViewModel(
         }
     }
 
+    /**
+     * method that creates a new product record
+     */
     fun submitProduct(product: Product) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val result = validate(product)
             if (result) {
@@ -68,24 +98,36 @@ class CreateProductViewModel(
         }
     }
 
+    /**
+     * Suspending method that inserts a new product
+     */
     private suspend fun addProductToDb(product: Product) {
         withContext(Dispatchers.IO) {
             database.insertProduct(product)
         }
     }
 
+    /**
+     * Suspending method that retrieves the last Product
+     */
     private suspend fun getLastProduct(): Product? {
         return withContext(Dispatchers.IO) {
             database.getLastProduct()
         }
     }
 
+    /**
+     * Suspending method that retrieves the product with Id
+     */
     private suspend fun getProductIdWithId(productId: Int): Int {
         return withContext(Dispatchers.IO) {
             database.getProductIdWithId(productId)
         }
     }
 
+    /**
+     * method that validates the data entered in the fields
+     */
     private fun validate(product: Product): Boolean {
         when {
             product.name.isEmpty() -> {

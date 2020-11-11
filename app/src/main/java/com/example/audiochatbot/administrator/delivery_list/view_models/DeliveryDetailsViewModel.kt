@@ -8,7 +8,22 @@ import com.example.audiochatbot.database.UserDao
 import com.example.audiochatbot.database.models.*
 import kotlinx.coroutines.*
 
-class DeliveryDetailsViewModel(val userId: Int, val storeId: Int, val deliveryId: Int, private val database: UserDao): ViewModel() {
+/**
+ * ViewModel for DeliveryDetailsFragment.
+ *
+ * @param userId - the key of the current user we are working on.
+ * @param storeId - the key of the current store we are working on.
+ * @param deliveryId - the key of the current delivery we are working on.
+ * @param dataSource - UserDao reference.
+ */
+class DeliveryDetailsViewModel(val userId: Int, val storeId: Int, val deliveryId: Int, val dataSource: UserDao): ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -27,27 +42,45 @@ class DeliveryDetailsViewModel(val userId: Int, val storeId: Int, val deliveryId
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the List of DeliveryProduct
+     */
     private var _deliveryProducts = MutableLiveData<List<DeliveryProduct>>()
     val deliveryProducts: LiveData<List<DeliveryProduct>> get() = _deliveryProducts
 
+    /**
+     * Lifecycle-aware observable that stores the List of Strings for the report
+     */
     private var _reportList = MutableLiveData<List<String>>()
     val reportList: LiveData<List<String>> get() = _reportList
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
     init {
+        //launch a new coroutine in background and continue
         uiScope.launch {
+            //prepopulate the list of delivery products
             _deliveryProducts.value = getItems()
         }
     }
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = givenText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -59,7 +92,11 @@ class DeliveryDetailsViewModel(val userId: Int, val storeId: Int, val deliveryId
         }
     }
 
+    /**
+     * method that generates a report of the delivery
+     */
     fun generateAReport() {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val list = mutableListOf<String>()
             val del = getDelivery()
@@ -119,24 +156,36 @@ class DeliveryDetailsViewModel(val userId: Int, val storeId: Int, val deliveryId
         }
     }
 
+    /**
+     * Suspending method that retrieves the list of delivery products with delivery Id
+     */
     private suspend fun getItems(): List<DeliveryProduct> {
         return withContext(Dispatchers.IO) {
             database.getAllDeliveryProducts(deliveryId)
         }
     }
 
+    /**
+     * Suspending method that retrieves the delivery with delivery id
+     */
     private suspend fun getDelivery(): Delivery {
         return withContext(Dispatchers.IO) {
             database.getDeliveryWithDeliveryId(deliveryId)
         }
     }
 
+    /**
+     * Suspending method that retrieves a user object with user Id
+     */
     private suspend fun getUser(userId: Int): User {
         return withContext(Dispatchers.IO) {
             database.getUserWithId(userId)
         }
     }
 
+    /**
+     * method that retrieves the DeliveryProductStatus object
+     */
     private suspend fun getFirstRecord(): DeliveryProductStatus? {
         return withContext(Dispatchers.IO) {
             database.getFirstDeliveryProductStatus(deliveryId)

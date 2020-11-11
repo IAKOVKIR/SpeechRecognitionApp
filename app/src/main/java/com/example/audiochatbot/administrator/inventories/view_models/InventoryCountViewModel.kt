@@ -13,7 +13,21 @@ import com.example.audiochatbot.database.models.Store
 import kotlinx.coroutines.*
 import java.lang.NumberFormatException
 
-class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val database: UserDao): ViewModel() {
+/**
+ * ViewModel for InventoryCountFragment.
+ *
+ * @param adminId - the key of the current admin user we are working on.
+ * @param storeId - the key of the current store we are working on.
+ * @param dataSource - UserDao reference.
+ */
+class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val dataSource: UserDao): ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -34,25 +48,46 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the List of Product
+     */
     private var _products = MutableLiveData<List<Product>>()
     val products: LiveData<List<Product>> get() = _products
 
+    /**
+     * Lifecycle-aware observable that stores the List of Int
+     */
     private var _l = MutableLiveData<List<Int>>()
     val l: LiveData<List<Int>> get() = _l
 
+    /**
+     * Lifecycle-aware observable that stores the Float value
+     */
     private var _earnedAmount = MutableLiveData<Float>()
     val earnedAmount get() = _earnedAmount
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private var _submit = MutableLiveData<Boolean>()
     val submit get() = _submit
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _isDone = MutableLiveData<Boolean>()
     val isDone
         get() = _isDone
@@ -61,6 +96,7 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
     private var smallBigQuantities: MutableList<Int> = arrayListOf()
 
     init {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             _products.value = getItems()
             for (element in products.value!!) {
@@ -76,6 +112,7 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
      */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = givenText.toLowerCase()
             // if the command is go back
@@ -316,7 +353,11 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
         }
     }
 
+    /**
+     * method that adds a product and its quantity to the lists
+     */
     fun addItem(productId: Int, smallQuantity: Int, bigQuantity: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             if (smallQuantity != 0 || bigQuantity != 0) {
                 for (i in 0 until productObjects.size) {
@@ -332,7 +373,11 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
         }
     }
 
+    /**
+     * method that removes a product and its quantity to the lists
+     */
     fun removeItem(productId: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             var num = 0
             for (i in 0 until productObjects.size) {
@@ -350,7 +395,11 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
         }
     }
 
+    /**
+     * method that submits an Inventory count and updates the balance of the Store
+     */
     fun submitInventoryCount(currentEarnings: Float) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val list = getAssignedItems()
             var totalPrice = 0F
@@ -417,48 +466,72 @@ class InventoryCountViewModel(val adminId: Int, val storeId: Int, private val da
         }
     }
 
+    /**
+     * method that rounds to 2 decimal digits
+     */
     private fun Float.round(decimals: Int): Float {
         var multiplier = 1F
         repeat(decimals) { multiplier *= 10 }
         return kotlin.math.round(this * multiplier) / multiplier
     }
 
+    /**
+     * Suspending method that updates the AssignedProduct record
+     */
     private suspend fun updateAssignedItem(assignedProduct: AssignedProduct) {
         withContext(Dispatchers.IO) {
             database.updateAssignedProduct(assignedProduct)
         }
     }
 
+    /**
+     * Suspending method that retrieves the list of AssignedProduct
+     */
     private suspend fun getAssignedItems(): List<AssignedProduct> {
         return withContext(Dispatchers.IO) {
             database.getAssignedProductsList(storeId)
         }
     }
 
+    /**
+     * Suspending method that retrieves the list of Product
+     */
     private suspend fun getItems(): List<Product> {
         return withContext(Dispatchers.IO) {
             database.getAllProductsWithStoreID(storeId)
         }
     }
 
+    /**
+     * Suspending method that creates a new InventoryCount record
+     */
     private suspend fun finishCount(inventoryCount: InventoryCount) {
         withContext(Dispatchers.IO) {
             database.insertInventoryCount(inventoryCount)
         }
     }
 
+    /**
+     * Suspending method that retrieves the last InventoryCount id
+     */
     private suspend fun getLastId(): Int {
         return withContext(Dispatchers.IO) {
             database.getLastInventoryCountId()
         }
     }
 
+    /**
+     * Suspending method that retrieves the Store with store id
+     */
     private suspend fun getStore(id: Int): Store {
         return withContext(Dispatchers.IO) {
             database.getStoreWithId(id)
         }
     }
 
+    /**
+     * uspending method that updates the Store
+     */
     private suspend fun updateStore(store: Store) {
         withContext(Dispatchers.IO) {
             database.updateStore(store)

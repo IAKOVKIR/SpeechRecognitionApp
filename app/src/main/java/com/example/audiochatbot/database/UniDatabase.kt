@@ -10,23 +10,32 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * A database that stores User, Business, Store, AssignedUser, Product, AssignedProduct,
+ * DiscardedItem, Delivery, DeliveryProduct, DeliveryProductStatus, InventoryCount and CashOperation
+ * information.
+ * And a global method to get access to the database.
+ */
 @Database(entities = [User::class, Business::class, Store::class, AssignedUser::class, Product::class,
     AssignedProduct::class, DiscardedItem::class, Delivery::class, DeliveryProduct::class,
     DeliveryProductStatus::class, InventoryCount::class, CashOperation::class],
     version = 1, exportSchema = false)
 abstract class UniDatabase: RoomDatabase() {
 
+    /**
+     * Connects the database to the DAO.
+     */
     abstract val userDao: UserDao
 
+    /**
+     * Define a companion object, this allows us to add functions on the UniDatabase class.
+     */
     companion object {
 
         private val businesses = listOf(
             Business(1, "Walmart", "King St",
             "Melbourne", "Victoria", "0493959766", "Walmart@gmail.com",
-            3096),
-            Business(2, "7-eleven", "Malcolm St",
-                "Melbourne", "Victoria", "0493959556", "seveneleven@gmail.com",
-                3093)
+            3096)
         )
 
         private val stores = listOf(
@@ -118,31 +127,64 @@ abstract class UniDatabase: RoomDatabase() {
             CashOperation(4, 4, 1, 600F, false, "20/08/2020", "13:00"),
         )
 
+        /**
+         * INSTANCE will keep a reference to any database returned via getInstance.
+         *
+         * This will help us avoid repeatedly initializing the database, which is expensive.
+         *
+         *  The value of a volatile variable will never be cached, and all writes and
+         *  reads will be done to and from the main memory. It means that changes made by one
+         *  thread to shared data are visible to other threads.
+         */
         @Volatile
         private var INSTANCE: UniDatabase? = null
 
+        /**
+         * Helper function to get the database.
+         *
+         * If a database has already been retrieved, the previous database will be returned.
+         * Otherwise, create a new database.
+         *
+         * This function is threadsafe, and callers should cache the result for multiple database
+         * calls to avoid overhead.
+         *
+         * This is an example of a simple Singleton pattern that takes another Singleton as an
+         * argument in Kotlin.
+         *
+         * @param context The application context Singleton, used to get access to the filesystem.
+         * @param scope Defines a scope for new coroutines.
+         */
         fun getInstance(context: Context, scope: CoroutineScope): UniDatabase {
+            // Multiple threads can ask for the database at the same time, ensure we only initialize
+            // it once by using synchronized. Only one thread may enter a synchronized block at a
+            // time.
             synchronized(this) {
+                // Copy the current value of INSTANCE to a local variable so Kotlin can smart cast.
+                // Smart cast is only available to local variables.
                 var instance = INSTANCE
+                // If instance is `null` make a new database instance.
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         UniDatabase::class.java,
                         "uni_database")
+                        // Wipes and rebuilds instead of migrating if no Migration object.
                         .fallbackToDestructiveMigration()
                         .addCallback(DbCallback(scope))
                         .build()
-
+                    // Assign INSTANCE to the newly created database.
                     INSTANCE = instance
                 }
-
+                // Return instance; smart cast to be non-null.
                 return instance
             }
         }
 
+        // Executes scripts with Room after database has been created.
         private class DbCallback(
             private val scope: CoroutineScope
         ) : RoomDatabase.Callback(){
+            //onCreate method is called after database is created
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 INSTANCE?.let { database ->
@@ -153,6 +195,7 @@ abstract class UniDatabase: RoomDatabase() {
             }
         }
 
+        //inserts all test entries into all the tables
         private fun populateDb(userDao: UserDao) {
             userDao.insertBusinesses(businesses)
             userDao.insertStores(stores)

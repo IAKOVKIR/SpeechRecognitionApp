@@ -195,22 +195,7 @@ class DeliveryUserListDetailsFragment : Fragment(), TextToSpeech.OnInitListener 
 
             for (i in list!!) {
                 mDoc.add(Paragraph(i))
-                //mDoc.add(Paragraph())
             }
-
-            /**get text from EditText i.e. textEt
-            val mText = "text blyat"
-
-            //add author of the document (metadata)
-            mDoc.addAuthor("Speech Recognition App")
-
-            //add paragraph to the document
-            mDoc.add(Paragraph(mText))
-            //add paragraph to the document
-            mDoc.add(Paragraph("Lel"))
-            //add paragraph to the document
-            mDoc.add(Paragraph("ohuel"))*/
-
 
             //close document
             mDoc.close()

@@ -8,8 +8,21 @@ import com.example.audiochatbot.database.models.Store
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class StoreDetailViewModel(private val storeId: Int, private val database: UserDao
+/**
+ * ViewModel for StoreDetailFragment.
+ *
+ * @param storeId - the key of the current store we are working on.
+ * @param dataSource - UserDao reference.
+ */
+class StoreDetailViewModel(private val storeId: Int, private val dataSource: UserDao
 ) : ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -28,27 +41,44 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the Store value
+     */
     private var _store = MutableLiveData<Store>()
     val store: LiveData<Store> get() = _store
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _action = MutableLiveData<Int>()
     val action get() = _action
 
     init {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             _store.value = retrieveStore(storeId)
         }
     }
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(recordedText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             when (recordedText.toLowerCase()) {
                 "go back", "return back" -> _closeFragment.value = true
@@ -61,13 +91,20 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
         }
     }
 
+    /**
+     * method that assigns the store and business ids and updates the store
+     */
     fun updateStore(newStore: Store) {
         newStore.storeId = store.value!!.storeId
         newStore.businessId = store.value!!.businessId
         submitStore(newStore)
     }
 
+    /**
+     * method that updates the Store
+     */
     private fun submitStore(store: Store) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             updateStoreDb(store)
             val u = retrieveStore(storeId)
@@ -78,7 +115,11 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
         }
     }
 
+    /**
+     * method that deletes the Store
+     */
     fun deleteRecord() {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             deleteRecordDb()
             val u = retrieveStore(storeId)
@@ -89,24 +130,36 @@ class StoreDetailViewModel(private val storeId: Int, private val database: UserD
         }
     }
 
+    /**
+     * Suspending method that retrieves the Store with store id
+     */
     private suspend fun retrieveStore(storeKey: Int): Store? {
         return withContext(Dispatchers.IO) {
             database.getStoreWithId(storeKey)
         }
     }
 
+    /**
+     * Suspending method that updates the Store record
+     */
     private suspend fun updateStoreDb(store: Store) {
         withContext(Dispatchers.IO) {
             database.updateStore(store)
         }
     }
 
+    /**
+     * Suspending method that deletes the Store record
+     */
     private suspend fun deleteRecordDb() {
         withContext(Dispatchers.IO) {
             database.deleteStoreRecord(storeId)
         }
     }
 
+    /**
+     * method that sets a value of null for all LiveData values except for the Store LiveData
+     */
     fun onActionNavigated() {
         _action.value = null
         _message.value = null

@@ -8,7 +8,20 @@ import com.example.audiochatbot.database.models.AssignedProduct
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class AssignedProductsViewModel(val storeId: Int, private val database: UserDao): ViewModel() {
+/**
+ * ViewModel for AssignedProductsFragment.
+ *
+ * @param storeId - the key of the current store we are working on.
+ * @param dataSource - UserDao reference.
+ */
+class AssignedProductsViewModel(val storeId: Int, private val dataSource: UserDao): ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -27,25 +40,44 @@ class AssignedProductsViewModel(val storeId: Int, private val database: UserDao)
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the List of Products
+     */
     val products = database.getAllProductsLiveWithStoreID(storeId)
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _navigateToProductDetails = MutableLiveData<Int>()
     val navigateToProductDetails
         get() = _navigateToProductDetails
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _navigateToAssignProducts = MutableLiveData<Boolean>()
     val navigateToAssignProducts
         get() = _navigateToAssignProducts
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(recordedText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = recordedText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -108,6 +140,9 @@ class AssignedProductsViewModel(val storeId: Int, private val database: UserDao)
         }
     }
 
+    /**
+     * method that converts text to number
+     */
     private fun textToInteger(text: String, lastIndex: Int): Int {
         val str = text.substring(lastIndex + 1)
         val result = str.filter { it.isDigit() }
@@ -122,10 +157,16 @@ class AssignedProductsViewModel(val storeId: Int, private val database: UserDao)
         }
     }
 
+    /**
+     * method that sets a value of clicked product
+     */
     fun onProductClicked(id: Int) {
         _navigateToProductDetails.value = id
     }
 
+    /**
+     * method that sets a value of null for all LiveData values except for the list
+     */
     fun onProductNavigated() {
         _navigateToProductDetails.value = null
         _message.value = null
@@ -133,7 +174,11 @@ class AssignedProductsViewModel(val storeId: Int, private val database: UserDao)
         _navigateToAssignProducts.value = null
     }
 
+    /**
+     * method that deletes the record
+     */
     fun deleteRecord(productId: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             deleteRecordDb(productId)
             val deletedProducts = getRecordDb(productId)
@@ -144,12 +189,18 @@ class AssignedProductsViewModel(val storeId: Int, private val database: UserDao)
         }
     }
 
+    /**
+     * Suspending method that removes the AssignedProduct record
+     */
     private suspend fun deleteRecordDb(productId: Int) {
         withContext(Dispatchers.IO) {
             database.removeProductFromStore(productId, storeId)
         }
     }
 
+    /**
+     * Suspending method that retrieves the AssignedProduct
+     */
     private suspend fun getRecordDb(productId: Int) : AssignedProduct? {
         return withContext(Dispatchers.IO) {
             database.getAssignedProduct(productId, storeId)

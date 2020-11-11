@@ -10,10 +10,18 @@ import kotlinx.coroutines.*
 
 /**
  * ViewModel for ProductManagementFragment.
- * @param businessId - the key of the current business we are working on.
- * @param dataSource -
+ *
+ * @param businessId - the key of the current delivery we are working on.
+ * @param dataSource - UserDao reference.
  */
 class ProductManagementViewModel(private val businessId: Int, private val dataSource: UserDao): ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -33,31 +41,51 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
 
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the List of Product
+     */
     private var _products = MutableLiveData<List<Product>>()
     val products: LiveData<List<Product>> get() = _products
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _navigateToProductDetails = MutableLiveData<Int>()
     val navigateToProductDetails
         get() = _navigateToProductDetails
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _navigateToCreateNewProduct = MutableLiveData<Boolean>()
     val navigateToCreateNewProduct get() = _navigateToCreateNewProduct
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
     init {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             _products.value = getAllProducts(businessId)
         }
     }
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(recordedText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = recordedText.toLowerCase()
             if (text.contains("go back"))
@@ -130,6 +158,9 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
         }
     }
 
+    /**
+     * method that converts text to number
+     */
     private fun textToInteger(text: String, lastIndex: Int): Int {
         val str = text.substring(lastIndex + 1)
         val result = str.filter { it.isDigit() }
@@ -138,21 +169,32 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
             result != "" -> result.toInt()
             str.contains("one") -> 1
             str.contains("to") || str.contains("two") -> 2
+            str.contains("three") -> 3
             str.contains("for") -> 4
             else -> -1
         }
     }
 
+    /**
+     * method that retrieves the product list
+     */
     fun retrieveList(str: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             _products.value = getListWithString("%$str%", businessId)
         }
     }
 
+    /**
+     * method that sets a new value - id of the selected product
+     */
     fun onProductClicked(id: Int) {
         _navigateToProductDetails.value = id
     }
 
+    /**
+     * method that sets the values of LiveData to null except for the product list
+     */
     fun onProductNavigated() {
         _navigateToCreateNewProduct.value = null
         _navigateToProductDetails.value = null
@@ -160,15 +202,21 @@ class ProductManagementViewModel(private val businessId: Int, private val dataSo
         _closeFragment.value = null
     }
 
+    /**
+     * Suspending method that retrieves a list of the products
+     */
     private suspend fun getAllProducts(businessId: Int): List<Product> {
         return withContext(Dispatchers.IO) {
-            dataSource.getAllProductsWithBusinessId(businessId)
+            database.getAllProductsWithBusinessId(businessId)
         }
     }
 
+    /**
+     * Suspending method that retrieves a list of the products that contain line substring in their name
+     */
     private suspend fun getListWithString(line: String, businessId: Int): List<Product> {
         return withContext(Dispatchers.IO) {
-            dataSource.getAllProductsWithString(line, businessId)
+            database.getAllProductsWithString(line, businessId)
         }
     }
     

@@ -47,13 +47,13 @@ class AdministratorHomeViewModel: ViewModel() {
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     /**
-     * Lifecycle-aware observable that stores the value of the action
+     * Lifecycle-aware observable that stores the Int value
      */
     private var _action = MutableLiveData<Int>()
     val action: LiveData<Int> get() = _action
 
     /**
-     * method that checks a given string with all the available ones and then sets a new value for the action
+     * method that checks a given string with all the available ones and then chooses the action
      */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(text: String) {

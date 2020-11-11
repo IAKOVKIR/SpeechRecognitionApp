@@ -7,7 +7,20 @@ import androidx.lifecycle.ViewModel
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): ViewModel() {
+/**
+ * ViewModel for AssignedUsersFragment.
+ *
+ * @param storeId - the key of the current store we are working on.
+ * @param dataSource - UserDao reference.
+ */
+class AssignedUsersViewModel(val storeId: Int, private val dataSource: UserDao): ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -26,25 +39,44 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the List of Users
+     */
     val users = database.getAllUsersLiveWithStoreIDNoAdmins(storeId)
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _navigateToUserDetails = MutableLiveData<Int>()
     val navigateToUserDetails
         get() = _navigateToUserDetails
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _navigateToAssignUsers = MutableLiveData<Boolean>()
     val navigateToAssignUsers
         get() = _navigateToAssignUsers
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(recordedText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = recordedText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -85,6 +117,9 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
         }
     }
 
+    /**
+     * method that converts text to number
+     */
     private fun textToInteger(text: String, lastIndex: Int): Int {
         val str = text.substring(lastIndex + 1)
         val result = str.filter { it.isDigit() }
@@ -99,10 +134,16 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
         }
     }
 
+    /**
+     * method that sets a value of clicked user
+     */
     fun onUserClicked(id: Int) {
         _navigateToUserDetails.value = id
     }
 
+    /**
+     * method that sets a value of null for all LiveData values except for the list
+     */
     fun onUserNavigated() {
         _navigateToUserDetails.value = null
         _navigateToAssignUsers.value = null
@@ -110,7 +151,11 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
         _closeFragment.value = null
     }
 
+    /**
+     * method that deletes the record
+     */
     fun deleteRecord(userId: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             deleteRecordDb(userId)
             val deletedProducts = getRecordDb(userId)
@@ -121,12 +166,18 @@ class AssignedUsersViewModel(val storeId: Int, private val database: UserDao): V
         }
     }
 
+    /**
+     * Suspending method that removes the AssignedUser record
+     */
     private suspend fun deleteRecordDb(userId: Int) {
         withContext(Dispatchers.IO) {
             database.removeUserFromStore(userId, storeId)
         }
     }
 
+    /**
+     * Suspending method that retrieves the AssignedUser id
+     */
     private suspend fun getRecordDb(productId: Int) : Int {
         return withContext(Dispatchers.IO) {
             database.ifUserAssigned(productId, storeId)

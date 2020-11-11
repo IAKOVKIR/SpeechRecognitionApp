@@ -9,7 +9,21 @@ import com.example.audiochatbot.database.models.AssignedProduct
 import com.example.audiochatbot.database.UserDao
 import kotlinx.coroutines.*
 
-class AssignProductsViewModel(val storeId: Int, val businessId: Int, val database: UserDao): ViewModel() {
+/**
+ * ViewModel for AssignProductsFragment.
+ *
+ * @param storeId - the key of the current store we are working on.
+ * @param businessId - the key of the current business we are working on.
+ * @param dataSource - UserDao reference.
+ */
+class AssignProductsViewModel(val storeId: Int, val businessId: Int, val dataSource: UserDao): ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
@@ -30,21 +44,37 @@ class AssignProductsViewModel(val storeId: Int, val businessId: Int, val databas
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the List of AssignedProducts
+     */
     val products = database.getNotAssignedProducts(storeId, businessId)
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _navigateToProductDetails = MutableLiveData<Int>()
     val navigateToProductDetails
         get() = _navigateToProductDetails
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(recordedText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = recordedText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -104,6 +134,9 @@ class AssignProductsViewModel(val storeId: Int, val businessId: Int, val databas
         }
     }
 
+    /**
+     * method that converts the text to number
+     */
     private fun textToInteger(text: String, lastIndex: Int): Int {
         val str = text.substring(lastIndex + 1)
         val result = str.filter { it.isDigit() }
@@ -118,20 +151,33 @@ class AssignProductsViewModel(val storeId: Int, val businessId: Int, val databas
         }
     }
 
+    /**
+     * method that sets a value of clicked Product
+     */
     fun onProductClicked(id: Int) {
         _navigateToProductDetails.value = id
     }
 
+    /**
+     * method that sets a value of null for _navigateToProductDetails LiveData
+     */
     fun onProductNavigated() {
         _navigateToProductDetails.value = null
     }
 
+    /**
+     * method that assigns the Product
+     */
     fun addRecord(productId: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             addRecordDb(productId)
         }
     }
 
+    /**
+     * Suspending method that inserts the AssignedProduct record
+     */
     private suspend fun addRecordDb(productId: Int) {
         withContext(Dispatchers.IO) {
             val num = database.getLastAssignedProductId() + 1

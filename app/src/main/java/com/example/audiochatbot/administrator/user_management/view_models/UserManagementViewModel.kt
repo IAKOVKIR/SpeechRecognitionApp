@@ -10,6 +10,9 @@ import kotlinx.coroutines.*
 
 /**
  * ViewModel for UserManagementFragment.
+ *
+ * @param businessId - the key of the current business we are working on.
+ * @param dataSource - UserDao reference.
  */
 class UserManagementViewModel(private val businessId: Int, val dataSource: UserDao) : ViewModel() {
 
@@ -38,31 +41,51 @@ class UserManagementViewModel(private val businessId: Int, val dataSource: UserD
 
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the list of Product
+     */
     private var _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> get() = _users
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _navigateToUserDetails = MutableLiveData<Int>()
     val navigateToUserDetails
         get() = _navigateToUserDetails
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _navigateToCreateNewUser = MutableLiveData<Boolean>()
     val navigateToCreateNewUser get() = _navigateToCreateNewUser
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
     init {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             _users.value = getAllUsers(businessId)
         }
     }
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(recordedText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = recordedText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -134,15 +157,22 @@ class UserManagementViewModel(private val businessId: Int, val dataSource: UserD
         }
     }
 
+    /**
+     * method that refreshes the list of users
+     */
     fun retrieveList(str: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
-            if (str != "")
+            if (str.trim() != "")
                 _users.value = getListWithString("%$str%", businessId)
             else
                 _users.value = getAllUsers(businessId)
         }
     }
 
+    /**
+     * method that converts text to number
+     */
     private fun textToInteger(text: String, lastIndex: Int): Int {
         val str = text.substring(lastIndex + 1)
         val result = str.filter { it.isDigit() }
@@ -157,11 +187,16 @@ class UserManagementViewModel(private val businessId: Int, val dataSource: UserD
         }
     }
 
+    /**
+     * method that sets a value of clicked user
+     */
     fun onUserClicked(id: Int) {
         _navigateToUserDetails.value = id
     }
 
-
+    /**
+     * method that sets a value of null for all LiveData values except for the list
+     */
     fun onUserNavigated() {
         _navigateToUserDetails.value = null
         _navigateToCreateNewUser.value = null
@@ -169,12 +204,18 @@ class UserManagementViewModel(private val businessId: Int, val dataSource: UserD
         _closeFragment.value = null
     }
 
+    /**
+     * Suspending method that retrieves the list of the users
+     */
     private suspend fun getAllUsers(businessId: Int): List<User> {
         return withContext(Dispatchers.IO) {
             database.getAllUsersWithBusinessId(businessId)
         }
     }
 
+    /**
+     * Suspending method that retrieves the list of the users
+     */
     private suspend fun getListWithString(line: String, businessId: Int): List<User> {
         return withContext(Dispatchers.IO) {
             database.getAllUsersWithString(line, businessId)

@@ -9,6 +9,11 @@ import kotlinx.coroutines.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+/**
+ * ViewModel for CreateUserFragment.
+ *
+ * @param dataSource - UserDao reference.
+ */
 class CreateUserViewModel(val dataSource: UserDao) : ViewModel() {
     private val positionCharArray = arrayOf('E', 'A', 'D')
 
@@ -38,21 +43,37 @@ class CreateUserViewModel(val dataSource: UserDao) : ViewModel() {
 
     private var position = positionCharArray[0]
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage get() = _errorMessage
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _action = MutableLiveData<Int>()
     val action get() = _action
 
+    /**
+     * method that sets the position
+     */
     fun setPos(pos: Int) {
         position = positionCharArray[pos]
     }
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = givenText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -64,11 +85,15 @@ class CreateUserViewModel(val dataSource: UserDao) : ViewModel() {
         }
     }
 
+    /**
+     * Suspending method that submits the user details
+     */
     fun submitUser(firstName: String, lastName: String, email: String, phoneNumber: String,
-                   password: String, adminId: Int) {
+                   password: String) {
+
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val userId = getLastUserId() + 1
-            val businessId = getAdminBusinessId(adminId)
 
             if (firstName.isNotEmpty()) {
                 if (lastName.isNotEmpty()) {
@@ -77,7 +102,7 @@ class CreateUserViewModel(val dataSource: UserDao) : ViewModel() {
                             if (checkPhone(phoneNumber)) {
                                 if (password.length > 7) {
                                     val newUser = User(
-                                        userId, businessId,
+                                        userId, 1,
                                         firstName, lastName,
                                         email, phoneNumber,
                                         password, position)
@@ -104,30 +129,36 @@ class CreateUserViewModel(val dataSource: UserDao) : ViewModel() {
         }
     }
 
+    /**
+     * Suspending method that inserts a new user record
+     */
     private suspend fun addUserToDb(user: User) {
         withContext(Dispatchers.IO) {
             database.insertUser(user)
         }
     }
 
+    /**
+     * Suspending method that retrieves the last user id
+     */
     private suspend fun getLastUserId(): Int {
         return withContext(Dispatchers.IO) {
             database.getLastUserId()
         }
     }
 
+    /**
+     * Suspending method that retrieves a user record
+     */
     private suspend fun getUser(userId: Int): User? {
         return withContext(Dispatchers.IO) {
             database.getUserWithId(userId)
         }
     }
 
-    private suspend fun getAdminBusinessId(adminId: Int): Int {
-        return withContext(Dispatchers.IO) {
-            database.getAdminsBusinessId(adminId)
-        }
-    }
-
+    /**
+     * method that validates the phone
+     */
     private fun checkPhone(d: String): Boolean {
         val pattern: Pattern = Pattern.compile("^\\d{10}$")
         val matcher: Matcher = pattern.matcher(d)

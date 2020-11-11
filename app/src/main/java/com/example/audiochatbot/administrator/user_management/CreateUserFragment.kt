@@ -45,8 +45,6 @@ class CreateUserFragment : Fragment(), TextToSpeech.OnInitListener {
         // Inflate the layout for this fragment
         val binding: FragmentCreateUserBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_user, container, false)
         val application = requireNotNull(this.activity).application
-        val args = CreateUserFragmentArgs.fromBundle(requireArguments())
-        val adminId: Int = args.adminId
 
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
@@ -83,7 +81,7 @@ class CreateUserFragment : Fragment(), TextToSpeech.OnInitListener {
                 val phoneNumber = phoneNumber.text.trim().toString()
                 val password = password.text.trim().toString()
 
-                viewModel.submitUser(firstName, lastName, email, phoneNumber, password, adminId)
+                viewModel.submitUser(firstName, lastName, email, phoneNumber, password)
             }
 
             microphoneImage.setOnClickListener {
@@ -145,7 +143,7 @@ class CreateUserFragment : Fragment(), TextToSpeech.OnInitListener {
                     val phoneNumber = binding.phoneNumber.text.trim().toString()
                     val password = binding.password.text.trim().toString()
 
-                    viewModel.submitUser(firstName, lastName, email, phoneNumber, password, adminId)
+                    viewModel.submitUser(firstName, lastName, email, phoneNumber, password)
                 }
             }
         })

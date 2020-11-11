@@ -46,28 +46,46 @@ class UserDetailViewModel(
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the User value
+     */
     private var _user = MutableLiveData<User>()
     val user: LiveData<User> get() = _user
 
     private var position = 'E'
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage get() = _errorMessage
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _action = MutableLiveData<Int>()
     val action get() = _action
 
     init {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             _user.value = retrieveUser(userId)
         }
     }
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
+
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = givenText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -81,6 +99,9 @@ class UserDetailViewModel(
         }
     }
 
+    /**
+     * method that validates the user
+     */
     fun updateUser(
         firstName: String,
         lastName: String,
@@ -88,6 +109,8 @@ class UserDetailViewModel(
         phoneNumber: String,
         password: String,
         repeatPassword: String) {
+
+        //launch a new coroutine in background and continue
         uiScope.launch {
             if (password == repeatPassword) {
                 if (firstName.isNotEmpty()) {
@@ -125,7 +148,11 @@ class UserDetailViewModel(
         }
     }
 
+    /**
+     * method that updates the user
+     */
     private fun submitUser(user: User) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             addUserToDb(user)
             val u = retrieveUser(user.userId)
@@ -136,7 +163,11 @@ class UserDetailViewModel(
         }
     }
 
+    /**
+     * method that deletes the user
+     */
     fun deleteRecord() {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             deleteRecordDb()
             val u = retrieveUser(userId)
@@ -147,30 +178,45 @@ class UserDetailViewModel(
         }
     }
 
+    /**
+     * Suspending method that retrieves the user with user Id
+     */
     private suspend fun retrieveUser(userKey: Int): User? {
         return withContext(Dispatchers.IO) {
             database.getUserWithId(userKey)
         }
     }
 
+    /**
+     * Suspending method that updates the user record
+     */
     private suspend fun addUserToDb(user: User) {
         withContext(Dispatchers.IO) {
             database.update(user)
         }
     }
 
+    /**
+     * Suspending method that deletes the record
+     */
     private suspend fun deleteRecordDb() {
         withContext(Dispatchers.IO) {
             database.deleteUserRecord(userId)
         }
     }
 
+    /**
+     * method that validates the phone number
+     */
     private fun checkPhone(d: String): Boolean {
         val pattern: Pattern = Pattern.compile("^\\d{10}$")
         val matcher: Matcher = pattern.matcher(d)
         return matcher.matches()
     }
 
+    /**
+     * method that sets the user position
+     */
     fun setPos(pos: Int) {
         position = positionCharArray[pos]
     }

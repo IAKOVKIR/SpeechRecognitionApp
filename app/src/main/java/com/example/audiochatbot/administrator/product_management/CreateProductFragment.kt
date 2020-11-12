@@ -58,7 +58,7 @@ class CreateProductFragment : Fragment(), TextToSpeech.OnInitListener {
         val viewModelFactory =
             CreateProductViewModelFactory(userDataSource)
 
-        val productDetailViewModel =
+        productDetailViewModel =
             ViewModelProvider(
                 this, viewModelFactory).get(CreateProductViewModel::class.java)
 

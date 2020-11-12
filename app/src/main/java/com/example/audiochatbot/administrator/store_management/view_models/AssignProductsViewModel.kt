@@ -82,12 +82,21 @@ class AssignProductsViewModel(val storeId: Int, val businessId: Int, val dataSou
             else {
                 val matchRemoveProductNumber = "add product number".toRegex().find(text)
                 val matchRemoveProductName = "add".toRegex().find(text)
+                val matchRemoveProductNumber1 = "at product number".toRegex().find(text)
+                val matchRemoveProductName1 = "at".toRegex().find(text)
 
                 val indexRemoveProductNumber = matchRemoveProductNumber?.range?.last
                 val indexRemoveProductName = matchRemoveProductName?.range?.last
+                val indexRemoveProductNumber1 = matchRemoveProductNumber1?.range?.last
+                val indexRemoveProductName1 = matchRemoveProductName1?.range?.last
 
-                if (indexRemoveProductNumber != null) {
-                    val num = textToInteger(text, indexRemoveProductNumber)
+                if (indexRemoveProductNumber != null || indexRemoveProductNumber1 != null) {
+                    val num = when {
+                        indexRemoveProductNumber != null -> {
+                            textToInteger(text, indexRemoveProductNumber)
+                        }
+                        else -> textToInteger(text, indexRemoveProductNumber1!!)
+                    }
 
                     if (num > 0) {
                         val list = products.value
@@ -109,8 +118,14 @@ class AssignProductsViewModel(val storeId: Int, val businessId: Int, val dataSou
                             _message.value = "Product list is empty"
                     } else
                         _message.value = "Cannot understand your command"
-                } else if (indexRemoveProductName != null) {
-                    val str = text.substring(indexRemoveProductName + 1)
+                } else if (indexRemoveProductName != null || indexRemoveProductName1 != null) {
+                    val str = when {
+                        indexRemoveProductName != null -> {
+                            text.substring(indexRemoveProductName + 1)
+                        }
+                        else -> text.substring(indexRemoveProductName1!! + 1)
+                    }
+
                     val list = products.value
                     var num = -1
 
@@ -147,6 +162,7 @@ class AssignProductsViewModel(val storeId: Int, val businessId: Int, val dataSou
             str.contains("to") || str.contains("two") -> 2
             str.contains("three") -> 3
             str.contains("for") -> 4
+            str.contains("six") -> 6
             else -> -1
         }
     }

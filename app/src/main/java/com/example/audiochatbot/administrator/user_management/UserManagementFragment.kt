@@ -51,7 +51,6 @@ class UserManagementFragment : Fragment(), TextToSpeech.OnInitListener  {
         val application = requireNotNull(this.activity).application
         val args = UserManagementFragmentArgs.fromBundle(requireArguments())
         val adminId: Int = args.adminId
-        val businessId: Int = args.businessId
 
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
@@ -61,7 +60,7 @@ class UserManagementFragment : Fragment(), TextToSpeech.OnInitListener  {
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
-            UserManagementViewModelFactory(businessId, userDataSource)
+            UserManagementViewModelFactory(userDataSource)
 
         testViewModel =
             ViewModelProvider(

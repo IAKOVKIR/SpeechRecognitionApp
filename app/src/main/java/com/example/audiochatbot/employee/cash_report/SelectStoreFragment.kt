@@ -102,7 +102,7 @@ class SelectStoreFragment : Fragment(), TextToSpeech.OnInitListener {
         testViewModel.navigateToDiscardItem.observe(viewLifecycleOwner, { storeId ->
             storeId?.let {
                 when (args.directionId) {
-                    0 -> {
+                    2 -> {
                         this.findNavController().navigate(
                             SelectStoreFragmentDirections.actionSelectStoreToEmployeeDiscardItemList(userId, storeId, businessId)
                         )
@@ -112,7 +112,7 @@ class SelectStoreFragment : Fragment(), TextToSpeech.OnInitListener {
                             SelectStoreFragmentDirections.actionSelectStoreToEmployeeDeliveryListFragment(userId, storeId)
                         )
                     }
-                    2 -> {
+                    0 -> {
                         this.findNavController().navigate(SelectStoreFragmentDirections.actionSelectStoreToEmployeeInventoryList(userId, storeId, businessId))
                     }
 

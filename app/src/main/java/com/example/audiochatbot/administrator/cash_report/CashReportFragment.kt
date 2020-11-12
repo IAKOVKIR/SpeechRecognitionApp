@@ -36,7 +36,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * A simple [Fragment] subclass.
+ * A [Fragment] subclass.
  */
 class CashReportFragment : Fragment() , TextToSpeech.OnInitListener {
 
@@ -163,7 +163,7 @@ class CashReportFragment : Fragment() , TextToSpeech.OnInitListener {
         //pdf file name
         val mFileName = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())
         //pdf file path
-        val mFilePath = requireContext().getExternalFilesDir(Environment.DIRECTORY_DCIM).toString() + "/inventory_count_" + mFileName +".pdf"
+        val mFilePath = requireContext().getExternalFilesDir(Environment.DIRECTORY_DCIM).toString() + "/cash_report_" + mFileName +".pdf"
         try {
             //create instance of PdfWriter class
             PdfWriter.getInstance(mDoc, FileOutputStream(mFilePath))
@@ -180,6 +180,7 @@ class CashReportFragment : Fragment() , TextToSpeech.OnInitListener {
 
             //show file saved message with file name and path
             Toast.makeText(requireActivity(), "$mFileName.pdf\nis saved to\n$mFilePath", Toast.LENGTH_SHORT).show()
+            testViewModel.setMessage("The Report is downloaded")
         }
         catch (e: Exception){
             //if anything goes wrong causing exception, get and show exception message

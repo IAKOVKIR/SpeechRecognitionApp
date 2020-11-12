@@ -279,6 +279,10 @@ class CashReportViewModel(val adminId: Int, val storeId: Int, private val dataSo
         }
     }
 
+    fun setMessage(line: String) {
+        _message.value = line
+    }
+
     /**
      * method that rounds to 2 decimal places
      */

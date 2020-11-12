@@ -11,10 +11,9 @@ import kotlinx.coroutines.*
 /**
  * ViewModel for UserManagementFragment.
  *
- * @param businessId - the key of the current business we are working on.
  * @param dataSource - UserDao reference.
  */
-class UserManagementViewModel(private val businessId: Int, val dataSource: UserDao) : ViewModel() {
+class UserManagementViewModel(val dataSource: UserDao) : ViewModel() {
 
     /**
      * Hold a reference to SleepDatabase via its SleepDatabaseDao.
@@ -76,7 +75,7 @@ class UserManagementViewModel(private val businessId: Int, val dataSource: UserD
     init {
         //launch a new coroutine in background and continue
         uiScope.launch {
-            _users.value = getAllUsers(businessId)
+            _users.value = getAllUsers()
         }
     }
 
@@ -95,19 +94,33 @@ class UserManagementViewModel(private val businessId: Int, val dataSource: UserD
                 _navigateToCreateNewUser.value = true
             } else {
                 val patternOpenProductNumber = "open user number".toRegex()
+                val patternOpenProductNumber1 = "open use a number".toRegex()
+                val patternOpenProductNumber2 = "open using number".toRegex()
                 val patternOpenProduct = "open".toRegex()
                 val patternFindProduct = "find".toRegex()
 
                 val matchOpenProductNumber = patternOpenProductNumber.find(text)
+                val matchOpenProductNumber1 = patternOpenProductNumber1.find(text)
+                val matchOpenProductNumber2 = patternOpenProductNumber2.find(text)
                 val matchOpenProduct = patternOpenProduct.find(text)
                 val matchFindProduct = patternFindProduct.find(text)
 
                 val indexOpenProductNumber = matchOpenProductNumber?.range?.last
+                val indexOpenProductNumber1 = matchOpenProductNumber1?.range?.last
+                val indexOpenProductNumber2 = matchOpenProductNumber2?.range?.last
                 val indexOpenProduct = matchOpenProduct?.range?.last
                 val indexFindProduct = matchFindProduct?.range?.last
 
-                if (indexOpenProductNumber != null) {
-                    val num = textToInteger(text, indexOpenProductNumber)
+                if (indexOpenProductNumber != null || indexOpenProductNumber1 != null || indexOpenProductNumber2 != null) {
+                    val num = when {
+                        indexOpenProductNumber != null -> {
+                            textToInteger(text, indexOpenProductNumber)
+                        }
+                        indexOpenProductNumber1 != null -> {
+                            textToInteger(text, indexOpenProductNumber1)
+                        }
+                        else -> textToInteger(text, indexOpenProductNumber2!!)
+                    }
 
                     if (num > 0) {
                         val list = users.value
@@ -149,7 +162,7 @@ class UserManagementViewModel(private val businessId: Int, val dataSource: UserD
                     } else
                         _message.value = "User list is empty"
                 } else if (indexFindProduct != null) {
-                    val str = recordedText.substring(indexFindProduct + 1)
+                    val str = text.substring(indexFindProduct + 1)
                     retrieveList(str)
                 } else
                     _message.value = "Cannot understand your command"
@@ -164,9 +177,9 @@ class UserManagementViewModel(private val businessId: Int, val dataSource: UserD
         //launch a new coroutine in background and continue
         uiScope.launch {
             if (str.trim() != "")
-                _users.value = getListWithString("%$str%", businessId)
+                _users.value = getListWithString("%$str%")
             else
-                _users.value = getAllUsers(businessId)
+                _users.value = getAllUsers()
         }
     }
 
@@ -207,18 +220,18 @@ class UserManagementViewModel(private val businessId: Int, val dataSource: UserD
     /**
      * Suspending method that retrieves the list of the users
      */
-    private suspend fun getAllUsers(businessId: Int): List<User> {
+    private suspend fun getAllUsers(): List<User> {
         return withContext(Dispatchers.IO) {
-            database.getAllUsersWithBusinessId(businessId)
+            database.getAllUsersWithBusinessId(1)
         }
     }
 
     /**
      * Suspending method that retrieves the list of the users
      */
-    private suspend fun getListWithString(line: String, businessId: Int): List<User> {
+    private suspend fun getListWithString(line: String): List<User> {
         return withContext(Dispatchers.IO) {
-            database.getAllUsersWithString(line, businessId)
+            database.getAllUsersWithString(line, 1)
         }
     }
 

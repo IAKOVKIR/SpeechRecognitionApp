@@ -82,7 +82,7 @@ class AssignedUsersViewModel(val storeId: Int, private val dataSource: UserDao):
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else if (text.contains("assign users") || text.contains("assign user") || text.contains("assign the user")
-                || text.contains("assign a user"))
+                || text.contains("assign a user") || text.contains("sign users"))
                 _navigateToAssignUsers.value = true
             else {
                 val matchAddProductNumber = "remove user number".toRegex().find(text)

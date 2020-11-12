@@ -169,7 +169,7 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
         //pdf file name
         val mFileName = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())
         //pdf file path
-        val mFilePath = requireContext().getExternalFilesDir(Environment.DIRECTORY_DCIM).toString() + "/" + mFileName +".pdf"
+        val mFilePath = requireContext().getExternalFilesDir(Environment.DIRECTORY_DCIM).toString() + "/delivery_" + mFileName +".pdf"
         try {
             //create instance of PdfWriter class
             PdfWriter.getInstance(mDoc, FileOutputStream(mFilePath))

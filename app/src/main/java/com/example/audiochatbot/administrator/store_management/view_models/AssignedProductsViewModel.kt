@@ -83,7 +83,8 @@ class AssignedProductsViewModel(val storeId: Int, private val dataSource: UserDa
             if (text.contains("go back") || text.contains("return back"))
                 _closeFragment.value = true
             else if (text.contains("assign products") || text.contains("assign product") || text.contains("assign a product")
-                || text.contains("assign the product"))
+                || text.contains("assign the product") || text.contains("assigns products") || text.contains("signed products") ||
+                    text.contains("sign products"))
                 _navigateToAssignProducts.value = true
             else {
                 val matchRemoveProductNumber = "remove product number".toRegex().find(text)
@@ -153,6 +154,7 @@ class AssignedProductsViewModel(val storeId: Int, private val dataSource: UserDa
             str.contains("to") || str.contains("two") -> 2
             str.contains("three") -> 3
             str.contains("for") -> 4
+            str.contains("six") -> 6
             else -> -1
         }
     }
@@ -182,7 +184,7 @@ class AssignedProductsViewModel(val storeId: Int, private val dataSource: UserDa
         uiScope.launch {
             deleteRecordDb(productId)
             val deletedProducts = getRecordDb(productId)
-            if (deletedProducts != null)
+            if (deletedProducts == null)
                 _message.value = "The product was removed successfully "
             else
                 _message.value = "Something went wrong"

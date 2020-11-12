@@ -48,7 +48,7 @@ class DeliveryUserListDetailsFragment : Fragment(), TextToSpeech.OnInitListener 
     private var response = false
     private lateinit var testViewModel: DeliveryUserListDetailsViewModel
     private val requestCodeStt = 1
-    private val STORAGE_CODE: Int = 100
+    private val storageCode: Int = 100
     var list: List<String>? = null
 
     override fun onCreateView(
@@ -125,7 +125,7 @@ class DeliveryUserListDetailsFragment : Fragment(), TextToSpeech.OnInitListener 
                     == PackageManager.PERMISSION_DENIED){
                     //permission was not granted, request it
                     val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    requestPermissions(permissions, STORAGE_CODE)
+                    requestPermissions(permissions, storageCode)
                 }
                 else{
                     //permission already granted, call savePdf() method
@@ -185,7 +185,7 @@ class DeliveryUserListDetailsFragment : Fragment(), TextToSpeech.OnInitListener 
         //pdf file name
         val mFileName = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())
         //pdf file path
-        val mFilePath = requireContext().getExternalFilesDir(Environment.DIRECTORY_DCIM).toString() + "/" + mFileName +".pdf"
+        val mFilePath = requireContext().getExternalFilesDir(Environment.DIRECTORY_DCIM).toString() + "/delivery_" + mFileName +".pdf"
         try {
             //create instance of PdfWriter class
             PdfWriter.getInstance(mDoc, FileOutputStream(mFilePath))
@@ -211,7 +211,7 @@ class DeliveryUserListDetailsFragment : Fragment(), TextToSpeech.OnInitListener 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when(requestCode){
-            STORAGE_CODE -> {
+            storageCode -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     //permission from popup was granted, call savePdf() method
                     savePdf()

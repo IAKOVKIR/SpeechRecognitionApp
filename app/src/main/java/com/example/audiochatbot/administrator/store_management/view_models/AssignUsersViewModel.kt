@@ -83,12 +83,19 @@ class AssignUsersViewModel(private val adminId: Int, val storeId: Int, val busin
             else {
                 val matchOpenProductNumber = "open user number".toRegex().find(text)
                 val matchAddProductNumber = "add user number".toRegex().find(text)
+                val matchAddProductNumber1 = "at user number".toRegex().find(text)
 
                 val indexOpenProductNumber = matchOpenProductNumber?.range?.last
                 val indexAddProductNumber = matchAddProductNumber?.range?.last
+                val indexAddProductNumber1 = matchAddProductNumber1?.range?.last
 
-                if (indexAddProductNumber != null) {
-                    val num = textToInteger(text, indexAddProductNumber)
+                if (indexAddProductNumber != null || indexAddProductNumber1 != null) {
+                    val num = when {
+                        indexAddProductNumber != null -> {
+                            textToInteger(text, indexAddProductNumber)
+                        }
+                        else -> textToInteger(text, indexAddProductNumber1!!)
+                    }
 
                     if (num > 0) {
                         val list = users.value

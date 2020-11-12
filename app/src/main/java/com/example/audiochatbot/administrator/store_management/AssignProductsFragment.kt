@@ -2,9 +2,7 @@ package com.example.audiochatbot.administrator.store_management
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
-import android.media.AudioManager
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
@@ -23,7 +21,6 @@ import com.example.audiochatbot.administrator.store_management.recycler_view_ada
 import com.example.audiochatbot.administrator.store_management.recycler_view_adapters.AssignProductsRecyclerViewAdapter
 import com.example.audiochatbot.administrator.store_management.view_models.AssignProductsViewModel
 import com.example.audiochatbot.administrator.store_management.view_models.AssignProductsViewModelFactory
-import com.example.audiochatbot.administrator.store_management.view_models.AssignUsersViewModel
 import com.example.audiochatbot.database.UniDatabase
 import com.example.audiochatbot.databinding.FragmentAssignProductsBinding
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +33,7 @@ import java.util.*
 class AssignProductsFragment : Fragment(), TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
-    private lateinit var testViewModel: AssignUsersViewModel
+    private lateinit var testViewModel: AssignProductsViewModel
     private val requestCodeStt = 1
     private var response = false
 
@@ -62,14 +59,14 @@ class AssignProductsFragment : Fragment(), TextToSpeech.OnInitListener {
         val userDataSource = UniDatabase.getInstance(application, CoroutineScope(Dispatchers.Main)).userDao
 
         // Get the AudioManager service
-        val audio = activity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        //val audio = activity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         textToSpeech = TextToSpeech(requireActivity(), this)
 
         val viewModelFactory =
             AssignProductsViewModelFactory(storeId!!, businessId!!, userDataSource)
 
-        val testViewModel =
+        testViewModel =
             ViewModelProvider(
                 this, viewModelFactory).get(AssignProductsViewModel::class.java)
 
@@ -114,6 +111,12 @@ class AssignProductsFragment : Fragment(), TextToSpeech.OnInitListener {
                 this.findNavController().navigate(AssignProductsFragmentDirections.actionAssignProductsToProductDetail(productId, storeId!!))
                 testViewModel.onProductNavigated()
             }
+        })
+
+        testViewModel.closeFragment.observe(viewLifecycleOwner, { result ->
+            if (result != null)
+                if (result)
+                    this.findNavController().popBackStack()
         })
 
         return binding.root

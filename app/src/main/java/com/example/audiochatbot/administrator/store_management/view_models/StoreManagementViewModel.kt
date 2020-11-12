@@ -89,10 +89,17 @@ class StoreManagementViewModel(val adminId: Int,val dataSource: UserDao) : ViewM
                 _navigateToCreateNewStore.value = true
             }  else {
                 val matchOpenStoreNumber = "open store number".toRegex().find(text)
+                val matchOpenStoreNumber1 = "open storm number".toRegex().find(text)
                 val indexOpenProductNumber = matchOpenStoreNumber?.range?.last
+                val indexOpenProductNumber1 = matchOpenStoreNumber1?.range?.last
 
-                if (indexOpenProductNumber != null) {
-                    val num = textToInteger(text, indexOpenProductNumber)
+                if (indexOpenProductNumber != null || indexOpenProductNumber1 != null) {
+                    val num = when {
+                        indexOpenProductNumber != null -> {
+                            textToInteger(text, indexOpenProductNumber)
+                        }
+                        else -> textToInteger(text, indexOpenProductNumber1!!)
+                    }
 
                     if (num > 0) {
                         val list = stores.value

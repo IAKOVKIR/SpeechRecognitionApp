@@ -81,7 +81,7 @@ class EmployeeHomeFragment : Fragment(), TextToSpeech.OnInitListener {
 
         binding.apply {
             inventoryCountButton.setOnClickListener {
-                viewModel.setAction(3)
+                viewModel.setAction(1)
             }
 
             viewDeliveryListButton.setOnClickListener {
@@ -89,7 +89,7 @@ class EmployeeHomeFragment : Fragment(), TextToSpeech.OnInitListener {
             }
 
             discardItemsButton.setOnClickListener {
-                viewModel.setAction(1)
+                viewModel.setAction(3)
             }
 
             cashReportButton.setOnClickListener {

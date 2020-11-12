@@ -12,9 +12,21 @@ import kotlinx.coroutines.*
 import java.lang.NumberFormatException
 
 /**
- * ViewModel for CashReportFragment.
+ * ViewModel for EmployeeCashReportFragment.
+ *
+ * @param userId - the key of the current user we are working on.
+ * @param storeId - the key of the current store we are working on.
+ * @param dataSource - UserDao reference.
  */
-class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database: UserDao) : ViewModel() {
+class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val dataSource: UserDao) : ViewModel() {
+
+    /**
+     * Hold a reference to UniDatabase via its UserDao.
+     */
+    private val database = dataSource
+
+    /** Coroutine setup variables */
+
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
@@ -36,24 +48,38 @@ class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database
 
     val cashReports = database.getAllEmployeeCashReports(userId, storeId)
 
+    /**
+     * Lifecycle-aware observable that stores the Store value
+     */
     private var _store = MutableLiveData<Store>()
     val store: LiveData<Store> get() = _store
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
     init {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             _store.value = retrieveStore(storeId)
         }
     }
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = givenText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -147,7 +173,11 @@ class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database
         }
     }
 
+    /**
+     * method that makes a deposit or withdrawal
+     */
     fun depositOrWithdrawMoney(amount: Float, operation: Boolean) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             if (amount > 0) {
                 val id = getCashReportId() + 1
@@ -170,12 +200,18 @@ class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database
         }
     }
 
+    /**
+     * method that rounds to 2 decimal places
+     */
     private fun Float.round(decimals: Int): Float {
         var multiplier = 1F
         repeat(decimals) { multiplier *= 10 }
         return kotlin.math.round(this * multiplier) / multiplier
     }
 
+    /**
+     * method that converts text to a number
+     */
     private fun convertTextToNumber(text: String): Float {
         return when {
             text.contains("one") -> 1F
@@ -186,24 +222,36 @@ class EmployeeCashReportViewModel(val userId: Int, val storeId: Int,val database
         }
     }
 
+    /**
+     * method that retrieves the Store with storeKey
+     */
     private suspend fun retrieveStore(storeKey: Int): Store? {
         return withContext(Dispatchers.IO) {
             database.getStoreWithId(storeKey)
         }
     }
 
+    /**
+     * method that add a new CashOperation record
+     */
     private suspend fun uploadCashReport(cashOperation: CashOperation) {
         withContext(Dispatchers.IO) {
             database.insertCashOperation(cashOperation)
         }
     }
 
+    /**
+     * method that retrieves the id of the last Cash Operation
+     */
     private suspend fun getCashReportId(): Int {
         return withContext(Dispatchers.IO) {
             database.getLastCashReportId()
         }
     }
 
+    /**
+     * method that updates the Store object
+     */
     private suspend fun updateStore(newStore: Store) {
         withContext(Dispatchers.IO) {
             database.updateStore(newStore)

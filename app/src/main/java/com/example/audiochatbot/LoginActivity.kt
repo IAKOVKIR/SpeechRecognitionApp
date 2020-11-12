@@ -32,17 +32,13 @@ class LoginActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     override fun onStart() {
         super.onStart()
-        val time = Time()
-        Log.e("time", "${time.getDate()} / ${time.getTime()}")
         getUser()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: ActivityLoginBinding = DataBindingUtil.setContentView(
-            this,
-            R.layout.activity_login
-        )
+            this, R.layout.activity_login)
 
         // Get the AudioManager service
         val audio = getSystemService(AUDIO_SERVICE) as AudioManager
@@ -110,9 +106,6 @@ class LoginActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED)
                 Log.e("TTS", "The Language specified is not supported!")
-            else {
-                textToSpeech!!.speak("Hello user", TextToSpeech.QUEUE_FLUSH, null, null)
-            }
         } else
             Log.e("TTS", "Initialization Failed!")
     }
@@ -122,7 +115,6 @@ class LoginActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val id: Int = pref.getInt("id", 0)
         val position: String = pref.getString("position", "")!!.trim()
         val password: String = pref.getString("password", "")!!.trim()
-        Log.e("res", "$position$id")
         loginViewModel.checkUser("$position$id", password)
     }
 

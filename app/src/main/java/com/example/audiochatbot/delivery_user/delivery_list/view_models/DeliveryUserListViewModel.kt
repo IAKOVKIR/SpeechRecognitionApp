@@ -45,20 +45,35 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    /**
+     * Lifecycle-aware observable that stores the List of Deliveries
+     */
     private var _deliveries = MutableLiveData<List<Delivery>>()
     val deliveries: LiveData<List<Delivery>> get() = _deliveries
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Delivery value
+     */
     private val _navigateToDeliveryDetails = MutableLiveData<Delivery>()
     val navigateToDeliveryDetails
         get() = _navigateToDeliveryDetails
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _navigateToCreateNewDelivery = MutableLiveData<Boolean>()
     val navigateToCreateNewDelivery get() = _navigateToCreateNewDelivery
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
@@ -66,8 +81,12 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
         refreshTheList()
     }
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(newText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = newText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -140,7 +159,11 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
         }
     }
 
+    /**
+     * method that cancels the delivery
+     */
     fun cancelDelivery(delivery: Delivery) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             delivery.status = "Canceled"
             updateDelivery(delivery)
@@ -152,19 +175,30 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
         }
     }
 
+    /**
+     * method that declines the item
+     */
     private fun declineItems(deliveryProductId: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val newDeliveryProductStatus = DeliveryProductStatus(deliveryProductId, userId, "Canceled", time.getDate(), time.getTime())
             addDProductStatus(newDeliveryProductStatus)
         }
     }
 
+    /**
+     * method that refreshes the list of deliveries
+     */
     fun refreshTheList() {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             _deliveries.value = getItems()
         }
     }
 
+    /**
+     * method that converts text to number
+     */
     private fun textToInteger(text: String, lastIndex: Int): Int {
         val str = text.substring(lastIndex + 1)
         val result = str.filter { it.isDigit() }
@@ -174,39 +208,57 @@ class DeliveryUserListViewModel(val userId: Int, val storeId: Int, val dataSourc
             str.contains("one") -> 1
             str.contains("to") || str.contains("two") -> 2
             str.contains("three") -> 3
-            str.contains("for") -> 4
+            str.contains("for") || str.contains("four") -> 4
             else -> -1
         }
     }
 
+    /**
+     * Suspending method that updates the delivery
+     */
     private suspend fun updateDelivery(delivery: Delivery) {
         withContext(Dispatchers.IO) {
             database.updateDelivery(delivery)
         }
     }
 
+    /**
+     * Suspending method that retrieves the list of deliveries
+     */
     private suspend fun getItems(): List<Delivery> {
         return withContext(Dispatchers.IO) {
             database.getAllDeliveriesWithDeliveryUserAndStoreID(userId, storeId)
         }
     }
 
+    /**
+     * Suspending method that retrieves delivery product id
+     */
     private suspend fun getIDs(deliveryId: Int): List<Int> {
         return withContext(Dispatchers.IO) {
             database.getAllDeliveryProductIDs(deliveryId)
         }
     }
 
+    /**
+     * Suspending method that add a delivery product status record
+     */
     private suspend fun addDProductStatus(deliveryProductStatus: DeliveryProductStatus) {
         withContext(Dispatchers.IO) {
             database.insertDeliveryProductStatus(deliveryProductStatus)
         }
     }
 
+    /**
+     * method that sets a value of clicked delivery
+     */
     fun onDeliveryClicked(delivery: Delivery) {
         _navigateToDeliveryDetails.value = delivery
     }
 
+    /**
+     * method that sets a value of null for all LiveData values except for the list
+     */
     fun onStoreNavigated() {
         _navigateToDeliveryDetails.value = null
         _message.value = null

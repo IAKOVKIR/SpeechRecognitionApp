@@ -45,19 +45,32 @@ class DeliveryUserSelectStoreViewModel(val userId: Int, val dataSource: UserDao)
     // Retrieve the LiveData with the list of the stores
     val stores = database.getAllUserStores(userId)
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _navigateToDiscardItem = MutableLiveData<Int>()
     val navigateToDiscardItem
         get() = _navigateToDiscardItem
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(newText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = newText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -75,7 +88,7 @@ class DeliveryUserSelectStoreViewModel(val userId: Int, val dataSource: UserDao)
                         str.contains("one") -> 1
                         str.contains("to") || str.contains("two") -> 2
                         str.contains("three") -> 3
-                        str.contains("for") -> 4
+                        str.contains("for") || str.contains("four") -> 4
                         else -> -1
                     }
 

@@ -58,6 +58,7 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
     val closeFragment get() = _closeFragment
 
     init {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             _products.value = getItems()
             deliveryProducts = getDeliveryItems()
@@ -90,6 +91,7 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
      */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = givenText.toLowerCase()
             // if the command is go back
@@ -319,6 +321,7 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
      * Method addItem updates the item of the list with entered quantities
      */
     fun addItem(productId: Int, smallQuantity: Int, bigQuantity: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             // Items will be added if the entered total quantity
             // (small unit and big unit quantities combined) is higher than zero.
@@ -341,6 +344,7 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
      * Method removeItem removes the quantities of the product
      */
     fun removeItem(productId: Int) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             // get the index of productId in the list
             val num = productIds.indexOf(productId)
@@ -361,6 +365,7 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
      * Method submitDelivery inserts a new delivery with all added items
      */
     fun submitDelivery() {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             // declare a mutable list for items that has a total quantity higher than zero
             val itemList: MutableList<DeliveryProduct> = arrayListOf()
@@ -395,6 +400,7 @@ class DeliveryUserListDetailsViewModel(val storeId: Int, val adminId: Int, val d
     }
 
     fun generateAReport() {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val list = mutableListOf<String>()
             val del = getDelivery()

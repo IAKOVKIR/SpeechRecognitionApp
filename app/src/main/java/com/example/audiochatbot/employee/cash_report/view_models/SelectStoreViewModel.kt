@@ -30,19 +30,32 @@ class SelectStoreViewModel(val userId: Int,val database: UserDao) : ViewModel() 
 
     val stores = database.getAllUserStores(userId)
 
+    /**
+     * Lifecycle-aware observable that stores the String value
+     */
     private val _message = MutableLiveData<String>()
     val message: LiveData<String?>
         get() = _message
 
+    /**
+     * Lifecycle-aware observable that stores the Int value
+     */
     private val _navigateToDiscardItem = MutableLiveData<Int>()
     val navigateToDiscardItem
         get() = _navigateToDiscardItem
 
+    /**
+     * Lifecycle-aware observable that stores the Boolean value
+     */
     private val _closeFragment = MutableLiveData<Boolean>()
     val closeFragment get() = _closeFragment
 
+    /**
+     * method that checks a given string with all the available ones and then chooses the action
+     */
     @SuppressLint("DefaultLocale")
     fun convertStringToAction(givenText: String) {
+        //launch a new coroutine in background and continue
         uiScope.launch {
             val text = givenText.toLowerCase()
             if (text.contains("go back") || text.contains("return back"))
@@ -91,10 +104,16 @@ class SelectStoreViewModel(val userId: Int,val database: UserDao) : ViewModel() 
         }
     }
 
+    /**
+     * method that updates the LiveData by assigning the id of the selected Store
+     */
     fun onStoreClicked(id: Int) {
         _navigateToDiscardItem.value = id
     }
 
+    /**
+     * method that sets the values of LiveData to null except for the Store List
+     */
     fun onStoreNavigated() {
         _navigateToDiscardItem.value = null
         _message.value = null

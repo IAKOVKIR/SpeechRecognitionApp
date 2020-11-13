@@ -17,7 +17,8 @@ class DeliveryUserHomeViewModel: ViewModel() {
     /**
      * String arrays that contain all the available commands for this view.
      */
-    private val deliveryListArray = arrayOf("open the delivery list", "delivery list", "open delivery list")
+    private val deliveryListArray = arrayOf("open the delivery list", "delivery list", "open delivery list", "open the delivery least",
+        "delivery least", "open delivery least", "deliver released")
     private val logOutArray = arrayOf("log out", "logout")
 
     /**

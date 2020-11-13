@@ -18,8 +18,9 @@ class EmployeeHomeViewModel: ViewModel() {
      * String arrays that contain all the available commands.
      */
     private val inventoryCountArray = arrayOf("open the inventory count", "inventory count",
-        "open inventor account", "inventor account", "open inventory count")
-    private val deliveryListArray = arrayOf("open the delivery list", "delivery list", "open delivery list")
+        "open inventor account", "inventor account", "open inventory count", "open the inventor account")
+    private val deliveryListArray = arrayOf("open the delivery list", "delivery list", "open delivery list", "open the delivery least",
+        "delivery least", "open delivery least", "deliver released")
     private val discardItemsArray = arrayOf("discard items", "discard item")
     private val cashReportArray = arrayOf("cash report", "open the cash report", "open cash report")
     private val logOutArray = arrayOf("log out", "logout")

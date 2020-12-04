@@ -47,7 +47,7 @@ class DiscardItemFragment : Fragment(), TextToSpeech.OnInitListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         val binding: DiscardItemFragmentBinding = DataBindingUtil.inflate(inflater,
             R.layout.discard_item_fragment, container, false)

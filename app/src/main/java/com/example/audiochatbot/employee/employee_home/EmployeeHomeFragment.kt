@@ -44,7 +44,7 @@ class EmployeeHomeFragment : Fragment(), TextToSpeech.OnInitListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         val binding: FragmentEmployeeHomeBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_employee_home, container, false)

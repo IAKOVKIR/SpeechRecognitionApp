@@ -52,7 +52,7 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         // Get a reference to the binding object and inflate the fragment views.
         val binding: FragmentDeliveryDetailsBinding = DataBindingUtil.inflate(inflater,

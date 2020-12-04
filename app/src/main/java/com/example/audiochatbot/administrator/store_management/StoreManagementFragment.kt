@@ -41,7 +41,7 @@ class StoreManagementFragment : Fragment(), TextToSpeech.OnInitListener  {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         // Get a reference to the binding object and inflate the fragment views.
         val binding: FragmentStoreManagementBinding = DataBindingUtil.inflate(inflater,

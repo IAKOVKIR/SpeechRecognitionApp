@@ -40,7 +40,7 @@ class StoreDetailFragment : Fragment(), TextToSpeech.OnInitListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         val binding: FragmentStoreDetailBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_store_detail, container, false)

@@ -39,7 +39,7 @@ class UserDetailFragment : Fragment(), TextToSpeech.OnInitListener {
     private var response = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 
         // Inflate the layout for this fragment
         // Get a reference to the binding object and inflate the fragment views.

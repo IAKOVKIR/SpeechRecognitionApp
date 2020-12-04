@@ -52,7 +52,7 @@ class AssignedProductsFragment : Fragment(), TextToSpeech.OnInitListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         val binding: FragmentAssignedProductsBinding = DataBindingUtil.inflate(inflater,
             R.layout.fragment_assigned_products, container, false)

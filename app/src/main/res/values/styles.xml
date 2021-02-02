@@ -16,4 +16,12 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="BlueButtonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">@drawable/round_square_corner</item>
+    </style>
+
 </resources>

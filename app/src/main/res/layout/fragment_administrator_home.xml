@@ -27,89 +27,84 @@
             android:layout_marginStart="8dp"
             android:contentDescription="@string/microphone_icon"
             android:src="@drawable/ic_baseline_mic_24"
+            android:padding="8dp"
+            android:tint="#FFFFFF"
+            android:background="@drawable/round_square_corner"
             app:layout_constraintBottom_toBottomOf="@+id/view_inventory_button"
             app:layout_constraintStart_toEndOf="@+id/view_inventory_button"
             app:layout_constraintTop_toTopOf="@+id/view_inventory_button" />
 
         <Button
             android:id="@+id/view_inventory_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="@string/view_inventory"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/home_title" />
+            app:layout_constraintTop_toBottomOf="@+id/home_title"
+            style="@style/BlueButtonStyle"/>
 
         <Button
             android:id="@+id/view_delivery_list_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/delivery_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_inventory_button" />
+            app:layout_constraintTop_toBottomOf="@+id/view_inventory_button"
+            style="@style/BlueButtonStyle"/>
 
         <Button
             android:id="@+id/discard_items_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/discard_items"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_delivery_list_button" />
+            app:layout_constraintTop_toBottomOf="@+id/view_delivery_list_button"
+            style="@style/BlueButtonStyle"/>
 
         <Button
             android:id="@+id/cash_report_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/cash_report"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/discard_items_button" />
+            app:layout_constraintTop_toBottomOf="@+id/discard_items_button"
+            style="@style/BlueButtonStyle"/>
 
         <Button
             android:id="@+id/user_management_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/user_management"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cash_report_button" />
+            app:layout_constraintTop_toBottomOf="@+id/cash_report_button"
+            style="@style/BlueButtonStyle"/>
 
         <Button
             android:id="@+id/store_management_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/store_management"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_management_button" />
+            app:layout_constraintTop_toBottomOf="@+id/user_management_button"
+            style="@style/BlueButtonStyle"/>
 
         <Button
             android:id="@+id/product_management_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/product_management"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/store_management_button" />
+            app:layout_constraintTop_toBottomOf="@+id/store_management_button"
+            style="@style/BlueButtonStyle"/>
 
         <Button
             android:id="@+id/log_out_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/log_out"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/product_management_button" />
+            app:layout_constraintTop_toBottomOf="@+id/product_management_button"
+            style="@style/BlueButtonStyle"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

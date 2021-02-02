@@ -22,9 +22,7 @@ class StoreManagementFragmentRecyclerViewAdapter(private val clickListener: Stor
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(
-            parent
-        )
+        return ViewHolder.from(parent)
     }
 
     class ViewHolder private constructor(val binding: StoreManagementItemViewBinding, val context: Context)

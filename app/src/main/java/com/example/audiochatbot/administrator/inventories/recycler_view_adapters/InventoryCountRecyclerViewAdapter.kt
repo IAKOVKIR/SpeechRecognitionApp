@@ -45,12 +45,10 @@ class InventoryCountRecyclerViewAdapter(private val addInventoryListener: AddInv
                 option = false
                 binding.addRemoveButton.text = "remove"
 
-            } else {
-                if (big != 0) {
-                    binding.bigQuantity.setText("$big", TextView.BufferType.EDITABLE)
-                    option = false
-                    binding.addRemoveButton.text = "remove"
-                }
+            } else if (big != 0) {
+                binding.bigQuantity.setText("$big", TextView.BufferType.EDITABLE)
+                option = false
+                binding.addRemoveButton.text = "remove"
             }
 
             binding.addRemoveButton.setOnClickListener {
@@ -58,29 +56,28 @@ class InventoryCountRecyclerViewAdapter(private val addInventoryListener: AddInv
                     val smallNum = binding.smallQuantity.text.toString()
                     val bigNum = binding.bigQuantity.text.toString()
 
-                    if (smallNum != "") {
-                        if (bigNum == "") {
-                            addInventoryListener.onClick(item, smallNum.toInt(), 0)
+                    when {
+                        smallNum != "" -> {
+                            option = if (bigNum == "") {
+                                addInventoryListener.onClick(item, smallNum.toInt(), 0)
 
-                            if (smallNum.toInt() != 0)
-                                option = false
-                        } else {
-                            addInventoryListener.onClick(
-                                item,
-                                smallNum.toInt(),
-                                bigNum.toInt()
-                            )
+                                smallNum.toInt() == 0
+                            } else {
+                                addInventoryListener.onClick(
+                                    item,
+                                    smallNum.toInt(),
+                                    bigNum.toInt()
+                                )
 
-                            if (bigNum.toInt() != 0 || smallNum.toInt() != 0)
-                                option = false
+                                bigNum.toInt() == 0 && smallNum.toInt() == 0
+                            }
                         }
-                    } else if (bigNum != "") {
-                        addInventoryListener.onClick(item, 0, bigNum.toInt())
+                        bigNum != "" -> {
+                            addInventoryListener.onClick(item, 0, bigNum.toInt())
 
-                        if (bigNum.toInt() != 0)
-                            option = false
-                    } else {
-                        addInventoryListener.onClick(item, 0, 0)
+                            option = bigNum.toInt() == 0
+                        }
+                        else -> addInventoryListener.onClick(item, 0, 0)
                     }
 
                 } else

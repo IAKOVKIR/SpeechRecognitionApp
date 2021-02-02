@@ -110,8 +110,7 @@ class DeliveryDetailsFragment : Fragment(), TextToSpeech.OnInitListener {
                     //permission was not granted, request it
                     val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     requestPermissions(permissions, storageCode)
-                }
-                else{
+                } else {
                     //permission already granted, call savePdf() method
                     testViewModel.generateAReport()
                 }
